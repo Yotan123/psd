@@ -60,7 +60,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'DataUnderstanding';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Notebooks with MyST Markdown" href="markdown-notebooks.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -123,6 +122,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -178,11 +179,9 @@
                 </a>
             </li>
         </ul>
-        <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="markdown.html">Markdown Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">Content with notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="markdown-notebooks.html">Notebooks with MyST Markdown</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Understanding</a></li>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="BusinessUnderstanding.html">Bussiness Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ExplorasiData.html">Explorasi Data</a></li>
 </ul>
 
     </div>
@@ -430,17 +429,17 @@ document.write(`
 
 <span class="c1"># Koneksi ke MySQL</span>
 <span class="n">mysql_conn</span> <span class="o">=</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;mysql-3c768195-aqbilbaraka.d.aivencloud.com&quot;</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;mysql-28cb1d4c-yotanalvintobing-psd.d.aivencloud.com&quot;</span><span class="p">,</span>
     <span class="n">user</span><span class="o">=</span><span class="s2">&quot;avnadmin&quot;</span><span class="p">,</span>
-    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;AVNS_WV9i6KvYoQZ3s6FclWP&quot;</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;AVNS_e3Tzp6XE6YCGJ7fV9ku&quot;</span><span class="p">,</span>
     <span class="n">database</span><span class="o">=</span><span class="s2">&quot;defaultdb&quot;</span><span class="p">,</span>
-    <span class="n">port</span><span class="o">=</span><span class="mi">16932</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">25478</span><span class="p">,</span>
     <span class="n">ssl</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ssl&quot;</span><span class="p">:</span> <span class="p">{}}</span>
 <span class="p">)</span>
 <span class="n">mysql_cur</span> <span class="o">=</span> <span class="n">mysql_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
 
 <span class="c1"># Eksekusi query untuk mengambil data dari MySQL</span>
-<span class="n">query_mysql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM irismysql&quot;</span>
+<span class="n">query_mysql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM iris_db&quot;</span>
 <span class="n">mysql_cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query_mysql</span><span class="p">)</span>
 <span class="n">data_mysql</span> <span class="o">=</span> <span class="n">mysql_cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 
@@ -456,8 +455,13 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pymysql in c:\users\acer\appdata\roaming\python\python313\site-packages (1.1.1)
-Note: you may need to restart the kernel to use updated packages.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting pymysql
+  Downloading pymysql-1.1.2-py3-none-any.whl.metadata (4.3 kB)
+Downloading pymysql-1.1.2-py3-none-any.whl (45 kB)
+?25l   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/45.3 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">45.3/45.3 kB</span> <span class=" -Color -Color-Red">2.1 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hInstalling collected packages: pymysql
+Successfully installed pymysql-1.1.2
 DATA SQL
 (1, &#39;Iris-setosa&#39;, 5.1, 3.5, 1.4, 0.2)
 (2, &#39;Iris-setosa&#39;, 4.9, 3.0, 1.4, 0.2)
@@ -623,14 +627,14 @@ DATA SQL
 <span class="n">pg_conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
     <span class="n">dbname</span><span class="o">=</span><span class="s2">&quot;defaultdb&quot;</span><span class="p">,</span>
     <span class="n">user</span><span class="o">=</span><span class="s2">&quot;avnadmin&quot;</span><span class="p">,</span>
-    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;AVNS_Cq_rz3j4QTiiunKJ08p&quot;</span><span class="p">,</span>
-    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;pg-17afc059-aqbilbaraka.d.aivencloud.com&quot;</span><span class="p">,</span>
-    <span class="n">port</span><span class="o">=</span><span class="s2">&quot;16932&quot;</span>
+    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;AVNS_riLCh2YBN7jyLWPgMLi&quot;</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;pg-132def6-yotanalvintobing-psd.d.aivencloud.com&quot;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="s2">&quot;25478&quot;</span>
 <span class="p">)</span>
 <span class="n">pg_cur</span> <span class="o">=</span> <span class="n">pg_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
 
 <span class="c1"># Eksekusi query untuk mengambil data dari PostgreSQL</span>
-<span class="n">query_pg</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM irispostgresql&quot;</span>
+<span class="n">query_pg</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM iris_db_postgre&quot;</span>
 <span class="n">pg_cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query_pg</span><span class="p">)</span>
 <span class="n">data_postgresql</span> <span class="o">=</span> <span class="n">pg_cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 
@@ -646,8 +650,12 @@ DATA SQL
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: psycopg2-binary in c:\laragon\bin\python\python-3.13\lib\site-packages (2.9.10)
-Note: you may need to restart the kernel to use updated packages.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting psycopg2-binary
+  Downloading psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Downloading psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.0/3.0 MB</span> <span class=" -Color -Color-Red">38.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hInstalling collected packages: psycopg2-binary
+Successfully installed psycopg2-binary-2.9.10
 DATA POSTGRESQL
 (1, &#39;Iris-setosa&#39;, 5.1, 3.5, 1.4, 0.2)
 (2, &#39;Iris-setosa&#39;, 4.9, 3.0, 1.4, 0.2)
@@ -813,17 +821,17 @@ DATA POSTGRESQL
 
 <span class="c1"># Buat engine SQLAlchemy untuk MySQL</span>
 <span class="n">mysql_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-    <span class="s2">&quot;mysql+pymysql://avnadmin:AVNS_WV9i6KvYoQZ3s6FclWP@mysql-3c768195-aqbilbaraka.d.aivencloud.com:16932/defaultdb&quot;</span>
+    <span class="s2">&quot;mysql+pymysql://avnadmin:AVNS_e3Tzp6XE6YCGJ7fV9ku@mysql-28cb1d4c-yotanalvintobing-psd.d.aivencloud.com:25478/defaultdb&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># Buat engine SQLAlchemy untuk PostgreSQL</span>
 <span class="n">postgres_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-    <span class="s2">&quot;postgresql+psycopg2://avnadmin:AVNS_Cq_rz3j4QTiiunKJ08p@pg-17afc059-aqbilbaraka.d.aivencloud.com:16932/defaultdb&quot;</span>
+    <span class="s2">&quot;postgresql+psycopg2://avnadmin:AVNS_riLCh2YBN7jyLWPgMLi@pg-132def6-yotanalvintobing-psd.d.aivencloud.com:25478/defaultdb?sslmode=require&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># Query untuk mengambil data</span>
-<span class="n">mysql_query</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, class, petallength, petalwidth FROM irismysql&quot;</span>
-<span class="n">postgres_query</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, sepallength, sepalwidth FROM irispostgresql&quot;</span>
+<span class="n">mysql_query</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, class, petal_length, petal_width FROM Petal&quot;</span>
+<span class="n">postgres_query</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, sepal_length, sepal_width FROM sepal&quot;</span>
 
 <span class="c1"># Ambil data dari MySQL dan PostgreSQL sebagai DataFrame Pandas</span>
 <span class="n">df_mysql</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">mysql_query</span><span class="p">,</span> <span class="n">mysql_engine</span><span class="p">,</span> <span class="n">coerce_float</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -841,12 +849,12 @@ DATA POSTGRESQL
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   id        class  petallength  petalwidth  sepallength  sepalwidth
-0   1  Iris-setosa          1.4         0.2          5.1         3.5
-1   2  Iris-setosa          1.4         0.2          4.9         3.0
-2   3  Iris-setosa          1.3         0.2          4.7         3.2
-3   4  Iris-setosa          1.5         0.2          4.6         3.1
-4   5  Iris-setosa          1.4         0.2          5.0         3.6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   id        class  petal_length  petal_width  sepal_length  sepal_width
+0   1  Iris-setosa           1.4          0.2           5.1          3.5
+1   2  Iris-setosa           1.4          0.2           4.9          3.0
+2   3  Iris-setosa           1.3          0.2           4.7          3.2
+3   4  Iris-setosa           1.5          0.2           4.6          3.1
+4   5  Iris-setosa           1.4          0.2           5.0          3.6
 </pre></div>
 </div>
 </div>
@@ -896,41 +904,41 @@ Tujuannya adalah:</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah Baris dan Kolom: (150, 6)
 
 Nama Kolom dan Tipe Data:
-id               int64
-class           object
-petallength    float64
-petalwidth     float64
-sepallength    float64
-sepalwidth     float64
+id                int64
+class            object
+petal_length    float64
+petal_width     float64
+sepal_length    float64
+sepal_width     float64
 dtype: object
 
 Statistik Deskriptif:
-               id  petallength  petalwidth  sepallength  sepalwidth
-count  150.000000   150.000000  150.000000   150.000000  150.000000
-mean    75.500000     3.758667    1.198667     5.843333    3.054000
-std     43.445368     1.764420    0.763161     0.828066    0.433594
-min      1.000000     1.000000    0.100000     4.300000    2.000000
-25%     38.250000     1.600000    0.300000     5.100000    2.800000
-50%     75.500000     4.350000    1.300000     5.800000    3.000000
-75%    112.750000     5.100000    1.800000     6.400000    3.300000
-max    150.000000     6.900000    2.500000     7.900000    4.400000
+               id  petal_length  petal_width  sepal_length  sepal_width
+count  150.000000    150.000000   150.000000    150.000000   150.000000
+mean    75.500000      3.758667     1.198667      5.843333     3.054000
+std     43.445368      1.764420     0.763161      0.828066     0.433594
+min      1.000000      1.000000     0.100000      4.300000     2.000000
+25%     38.250000      1.600000     0.300000      5.100000     2.800000
+50%     75.500000      4.350000     1.300000      5.800000     3.000000
+75%    112.750000      5.100000     1.800000      6.400000     3.300000
+max    150.000000      6.900000     2.500000      7.900000     4.400000
 
 Jumlah Nilai Unik Tiap Kolom:
-id             150
-class            3
-petallength     43
-petalwidth      22
-sepallength     35
-sepalwidth      23
+id              150
+class             3
+petal_length     43
+petal_width      22
+sepal_length     35
+sepal_width      23
 dtype: int64
 
 Jumlah Missing Value:
-id             0
-class          0
-petallength    0
-petalwidth     0
-sepallength    0
-sepalwidth     0
+id              0
+class           0
+petal_length    0
+petal_width     0
+sepal_length    0
+sepal_width     0
 dtype: int64
 
 Distribusi Kelas:
@@ -941,12 +949,12 @@ Iris-virginica     50
 Name: count, dtype: int64
 
 Korelasi antar Fitur Numerik:
-                   id  petallength  petalwidth  sepallength  sepalwidth
-id           1.000000     0.882747    0.899759     0.716676   -0.397729
-petallength  0.882747     1.000000    0.962757     0.871754   -0.420516
-petalwidth   0.899759     0.962757    1.000000     0.817954   -0.356544
-sepallength  0.716676     0.871754    0.817954     1.000000   -0.109369
-sepalwidth  -0.397729    -0.420516   -0.356544    -0.109369    1.000000
+                    id  petal_length  petal_width  sepal_length  sepal_width
+id            1.000000      0.882747     0.899759      0.716676    -0.397729
+petal_length  0.882747      1.000000     0.962757      0.871754    -0.420516
+petal_width   0.899759      0.962757     1.000000      0.817954    -0.356544
+sepal_length  0.716676      0.871754     0.817954      1.000000    -0.109369
+sepal_width  -0.397729     -0.420516    -0.356544     -0.109369     1.000000
 </pre></div>
 </div>
 </div>
@@ -965,7 +973,7 @@ sepalwidth  -0.397729    -0.420516   -0.356544    -0.109369    1.000000
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/22a49a4fecc21ce81f0f222041b410b8243f2d83d569eda395224edd19053e39.png" src="_images/22a49a4fecc21ce81f0f222041b410b8243f2d83d569eda395224edd19053e39.png" />
+<img alt="_images/339d6eee367c08189d6f97763c31cd6794d8833308a62399a0fef03fd40219ee.png" src="_images/339d6eee367c08189d6f97763c31cd6794d8833308a62399a0fef03fd40219ee.png" />
 </div>
 </div>
 </section>
@@ -985,7 +993,7 @@ Tujuannya adalah untuk melihat pola dasar, kemungkinan outlier, serta gambaran u
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/77879d5e58fe8311050893fc31d7bbb16030447f374ca5f45aaeb765c7978da0.png" src="_images/77879d5e58fe8311050893fc31d7bbb16030447f374ca5f45aaeb765c7978da0.png" />
+<img alt="_images/aec5046515bf621adb2477f7dd2d1da1929d5b642ad17bba48bcebede25c1e02.png" src="_images/aec5046515bf621adb2477f7dd2d1da1929d5b642ad17bba48bcebede25c1e02.png" />
 </div>
 </div>
 <p>Histogram memperlihatkan distribusi dari setiap fitur numerik.</p>
@@ -1000,7 +1008,7 @@ Tujuannya adalah untuk melihat pola dasar, kemungkinan outlier, serta gambaran u
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepallength&quot;</span><span class="p">,</span> <span class="s2">&quot;sepalwidth&quot;</span><span class="p">,</span> <span class="s2">&quot;petallength&quot;</span><span class="p">,</span> <span class="s2">&quot;petalwidth&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Set2&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Boxplot </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> berdasarkan class&quot;</span><span class="p">)</span>
@@ -1010,29 +1018,29 @@ Tujuannya adalah untuk melihat pola dasar, kemungkinan outlier, serta gambaran u
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\acer\AppData\Local\Temp\ipykernel_14452\94481480.py:4: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-1933709071.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Set2&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\94481480.py:4: FutureWarning: 
+/tmp/ipython-input-1933709071.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Set2&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\94481480.py:4: FutureWarning: 
+/tmp/ipython-input-1933709071.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Set2&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\94481480.py:4: FutureWarning: 
+/tmp/ipython-input-1933709071.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Set2&quot;)
 </pre></div>
 </div>
-<img alt="_images/f54e52d4aa76a1cdfc501a1a4899bb6c278d27c3e442ddd670663c08cb5e5954.png" src="_images/f54e52d4aa76a1cdfc501a1a4899bb6c278d27c3e442ddd670663c08cb5e5954.png" />
+<img alt="_images/bf06a03bf6687f2062e1260dd161fe90143a62e0d44c9dabc3b047ca607f7be9.png" src="_images/bf06a03bf6687f2062e1260dd161fe90143a62e0d44c9dabc3b047ca607f7be9.png" />
 </div>
 </div>
 <p>Boxplot membantu melihat perbedaan distribusi tiap fitur antar kelas.</p>
@@ -1047,7 +1055,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sepallength&quot;</span><span class="p">,</span> <span class="s2">&quot;sepalwidth&quot;</span><span class="p">,</span> <span class="s2">&quot;petallength&quot;</span><span class="p">,</span> <span class="s2">&quot;petalwidth&quot;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">]:</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi (KDE) Fitur Numerik berdasarkan Class&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1055,7 +1063,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/e064364629c9f50cb43479c5bc779f179d6937b8b68254ac6f3afca517c29ed9.png" src="_images/e064364629c9f50cb43479c5bc779f179d6937b8b68254ac6f3afca517c29ed9.png" />
+<img alt="_images/7d9b36a696d42f3b040294df49cdb61d53c6bcd9ea0789c245731a525886b29f.png" src="_images/7d9b36a696d42f3b040294df49cdb61d53c6bcd9ea0789c245731a525886b29f.png" />
 </div>
 </div>
 <p>Plot KDE memperlihatkan kepadatan distribusi:</p>
@@ -1076,7 +1084,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4e0c5eb9cb8db64b77ca53b77c373781a1f068fd19584f9607b35faab38dbbfa.png" src="_images/4e0c5eb9cb8db64b77ca53b77c373781a1f068fd19584f9607b35faab38dbbfa.png" />
+<img alt="_images/bdcc1882a2b2543ecbf9553209987f23350037da09850bcc76a7564091609159.png" src="_images/bdcc1882a2b2543ecbf9553209987f23350037da09850bcc76a7564091609159.png" />
 </div>
 </div>
 <p>Pairplot menunjukkan hubungan antar fitur:</p>
@@ -1112,7 +1120,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepallength&quot;</span><span class="p">,</span> <span class="s2">&quot;sepalwidth&quot;</span><span class="p">,</span> <span class="s2">&quot;petallength&quot;</span><span class="p">,</span> <span class="s2">&quot;petalwidth&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Pastel1&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Violin Plot </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> berdasarkan class&quot;</span><span class="p">)</span>
@@ -1122,29 +1130,29 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\acer\AppData\Local\Temp\ipykernel_14452\1975838105.py:4: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-3917967888.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.violinplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Pastel1&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\1975838105.py:4: FutureWarning: 
+/tmp/ipython-input-3917967888.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.violinplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Pastel1&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\1975838105.py:4: FutureWarning: 
+/tmp/ipython-input-3917967888.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.violinplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Pastel1&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\1975838105.py:4: FutureWarning: 
+/tmp/ipython-input-3917967888.py:4: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.violinplot(data=df_combined, x=&quot;class&quot;, y=col, palette=&quot;Pastel1&quot;)
 </pre></div>
 </div>
-<img alt="_images/4d54119fc176ec0020aedc83394b40758304f726cde6e07ddc6d4b0c6efad1e3.png" src="_images/4d54119fc176ec0020aedc83394b40758304f726cde6e07ddc6d4b0c6efad1e3.png" />
+<img alt="_images/99ef45bbf864a7dfa1ad76e9bbf0962afa68d501c805fd8b64c619463bfad813.png" src="_images/99ef45bbf864a7dfa1ad76e9bbf0962afa68d501c805fd8b64c619463bfad813.png" />
 </div>
 </div>
 <p>Violin plot memperlihatkan distribusi kepadatan tiap kelas:</p>
@@ -1171,16 +1179,55 @@ Jika ada, bisa dilakukan imputasi (mengisi dengan rata-rata/median) atau penghap
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>id             0
-class          0
-petallength    0
-petalwidth     0
-sepallength    0
-sepalwidth     0
-dtype: int64
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>id</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>class</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>petal_length</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>petal_width</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>sepal_length</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>sepal_width</th>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div><br><label><b>dtype:</b> int64</label></div></div>
 </div>
 </section>
 <section id="cek-duplikasi-data">
@@ -1216,16 +1263,55 @@ Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>id               int64
-class           object
-petallength    float64
-petalwidth     float64
-sepallength    float64
-sepalwidth     float64
-dtype: object
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>id</th>
+      <td>int64</td>
+    </tr>
+    <tr>
+      <th>class</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>petal_length</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>petal_width</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>sepal_length</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>sepal_width</th>
+      <td>float64</td>
+    </tr>
+  </tbody>
+</table>
+</div><br><label><b>dtype:</b> object</label></div></div>
 </div>
 </section>
 <section id="cek-nilai-unik-pada-kolom-kategori">
@@ -1262,7 +1348,9 @@ dtype: object
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><div>
+<div class="output text_html">
+  <div id="df-d5540e4b-2108-42fb-81f2-1da078996a8a" class="colab-df-container">
+    <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -1281,10 +1369,10 @@ dtype: object
     <tr style="text-align: right;">
       <th></th>
       <th>id</th>
-      <th>petallength</th>
-      <th>petalwidth</th>
-      <th>sepallength</th>
-      <th>sepalwidth</th>
+      <th>petal_length</th>
+      <th>petal_width</th>
+      <th>sepal_length</th>
+      <th>sepal_width</th>
     </tr>
   </thead>
   <tbody>
@@ -1354,7 +1442,217 @@ dtype: object
     </tr>
   </tbody>
 </table>
-</div></div></div>
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-d5540e4b-2108-42fb-81f2-1da078996a8a')"
+            title="Convert this dataframe to an interactive table."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"/>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-d5540e4b-2108-42fb-81f2-1da078996a8a button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-d5540e4b-2108-42fb-81f2-1da078996a8a');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+    <div id="df-4c1b3295-8325-4f93-a6b4-e4e7a6ab22d3">
+      <button class="colab-df-quickchart" onclick="quickchart('df-4c1b3295-8325-4f93-a6b4-e4e7a6ab22d3')"
+                title="Suggest charts"
+                style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+     width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+    </g>
+</svg>
+      </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+      <script>
+        async function quickchart(key) {
+          const quickchartButtonEl =
+            document.querySelector('#' + key + ' button');
+          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+          quickchartButtonEl.classList.add('colab-df-spinner');
+          try {
+            const charts = await google.colab.kernel.invokeFunction(
+                'suggestCharts', [key], {});
+          } catch (error) {
+            console.error('Error during call to suggestCharts:', error);
+          }
+          quickchartButtonEl.classList.remove('colab-df-spinner');
+          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+        }
+        (() => {
+          let quickchartButtonEl =
+            document.querySelector('#df-4c1b3295-8325-4f93-a6b4-e4e7a6ab22d3 button');
+          quickchartButtonEl.style.display =
+            google.colab.kernel.accessAllowed ? 'block' : 'none';
+        })();
+      </script>
+    </div>
+
+    </div>
+  </div>
+</div></div>
 </div>
 </section>
 <section id="visualisasi-outlier">
@@ -1366,7 +1664,7 @@ dtype: object
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepallength&quot;</span><span class="p">,</span> <span class="s2">&quot;sepalwidth&quot;</span><span class="p">,</span> <span class="s2">&quot;petallength&quot;</span><span class="p">,</span> <span class="s2">&quot;petalwidth&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Set3&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Outlier check - </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1376,29 +1674,29 @@ dtype: object
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\acer\AppData\Local\Temp\ipykernel_14452\3944055742.py:7: FutureWarning: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-3588150663.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, y=col, palette=&quot;Set3&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\3944055742.py:7: FutureWarning: 
+/tmp/ipython-input-3588150663.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, y=col, palette=&quot;Set3&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\3944055742.py:7: FutureWarning: 
+/tmp/ipython-input-3588150663.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, y=col, palette=&quot;Set3&quot;)
-C:\Users\acer\AppData\Local\Temp\ipykernel_14452\3944055742.py:7: FutureWarning: 
+/tmp/ipython-input-3588150663.py:7: FutureWarning: 
 
 Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
 
   sns.boxplot(data=df_combined, y=col, palette=&quot;Set3&quot;)
 </pre></div>
 </div>
-<img alt="_images/8eefbed420cb4937375d2763ae29c9b903c6ade7cec5a1d3e109247b9c5e4cff.png" src="_images/8eefbed420cb4937375d2763ae29c9b903c6ade7cec5a1d3e109247b9c5e4cff.png" />
+<img alt="_images/9f491e5f293c2d20113dba1ef305d0411bd25e52b6dd1f91b7b6a9491f9dae36.png" src="_images/9f491e5f293c2d20113dba1ef305d0411bd25e52b6dd1f91b7b6a9491f9dae36.png" />
 </div>
 </div>
 </section>
@@ -1455,15 +1753,6 @@ Jumlah ID unik: 150
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="markdown-notebooks.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Notebooks with MyST Markdown</p>
-      </div>
-    </a>
 </div>
                 </footer>
               
