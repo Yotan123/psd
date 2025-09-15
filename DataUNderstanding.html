@@ -57,7 +57,7 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'DataUnderstanding';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'DataUNderstanding';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Explorasi Data" href="ExplorasiData.html" />
@@ -254,7 +254,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FDataUnderstanding.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FDataUNderstanding.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -284,7 +284,7 @@
       
       
       
-      <li><a href="_sources/DataUnderstanding.ipynb" target="_blank"
+      <li><a href="_sources/DataUNderstanding.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -425,7 +425,7 @@ document.write(`
 <p>Berikut tahapan proses pengumpulan data dari MySQL:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install pymysql
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">pip</span> <span class="n">install</span> <span class="n">pymysql</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pymysql</span>
 
 <span class="c1"># Koneksi ke MySQL</span>
@@ -621,7 +621,7 @@ DATA SQL
 <p>Dan ini adalah proses pengumpulan data dari PostgreSQL:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install psycopg2-binary
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">pip</span> <span class="n">install</span> <span class="n">psycopg2</span><span class="o">-</span><span class="n">binary</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">psycopg2</span>
 
 <span class="c1"># Koneksi ke PostgreSQL</span>
@@ -815,7 +815,7 @@ DATA POSTGRESQL
 <p>Berikut cara menggabungkan kedua data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymysql</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymysql</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">psycopg2</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
@@ -872,7 +872,7 @@ Tujuannya adalah:</p>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Jumlah baris dan kolom</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Jumlah baris dan kolom</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Jumlah Baris dan Kolom:&quot;</span><span class="p">,</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
 <span class="c1"># Nama kolom &amp; tipe data</span>
@@ -962,7 +962,7 @@ sepal_width  -0.397729     -0.420516    -0.356544     -0.109369     1.000000
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Heatmap korelasi</span>
@@ -986,7 +986,7 @@ Tujuannya adalah untuk melihat pola dasar, kemungkinan outlier, serta gambaran u
 <h3>1. Histogram setiap fitur numerik<a class="headerlink" href="#histogram-setiap-fitur-numerik" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Histogram tiap fitur numerik</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Histogram tiap fitur numerik</span>
 <span class="n">df_combined</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Histogram Setiap Fitur Numerik&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1008,7 +1008,7 @@ Tujuannya adalah untuk melihat pola dasar, kemungkinan outlier, serta gambaran u
 <h3>2. Boxplot tiap fitur numerik per kelas<a class="headerlink" href="#boxplot-tiap-fitur-numerik-per-kelas" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Set2&quot;</span><span class="p">)</span>
@@ -1055,7 +1055,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <h3>3. Density Plot (KDE) per fitur numerik<a class="headerlink" href="#density-plot-kde-per-fitur-numerik" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">]:</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi (KDE) Fitur Numerik berdasarkan Class&quot;</span><span class="p">)</span>
@@ -1078,7 +1078,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <h3>4. Pairplot antar fitur<a class="headerlink" href="#pairplot-antar-fitur" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Set1&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;kde&quot;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Set1&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Pairplot Hubungan Antar Fitur&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -1099,7 +1099,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <h3>5. Heatmap Korelasi<a class="headerlink" href="#heatmap-korelasi" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df_combined</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">numeric_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;coolwarm&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Heatmap Korelasi Antar Fitur Numerik&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1120,7 +1120,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 <h3>6. Violin Plot<a class="headerlink" href="#violin-plot" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;sepal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;sepal_width&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_length&quot;</span><span class="p">,</span> <span class="s2">&quot;petal_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_combined</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;Pastel1&quot;</span><span class="p">)</span>
@@ -1174,7 +1174,7 @@ Verifikasi kualitas data mencakup beberapa aspek, yaitu:</p>
 Jika ada, bisa dilakukan imputasi (mengisi dengan rata-rata/median) atau penghapusan data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek missing values</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek missing values</span>
 <span class="n">df_combined</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1237,7 +1237,7 @@ Jika ada, bisa dilakukan imputasi (mengisi dengan rata-rata/median) atau penghap
 Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek data duplikat</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek data duplikat</span>
 <span class="n">df_combined</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1258,7 +1258,7 @@ Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek tipe data</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cek tipe data</span>
 <span class="n">df_combined</span><span class="o">.</span><span class="n">dtypes</span>
 </pre></div>
 </div>
@@ -1326,7 +1326,7 @@ Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 <p>Jika ada ejaan berbeda atau label tambahan, maka data perlu dibersihkan.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nilai unik pada kolom class</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nilai unik pada kolom class</span>
 <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1343,7 +1343,7 @@ Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 <p>Dengan melihat statistik deskriptif, kita dapat mengetahui apakah ada nilai yang tidak wajar (di luar range normal).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistik deskriptif untuk melihat range nilai</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistik deskriptif untuk melihat range nilai</span>
 <span class="n">df_combined</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1661,7 +1661,7 @@ Oleh karena itu, kita cek apakah ada baris duplikat.</p>
 <p>Boxplot digunakan untuk melihat apakah terdapat nilai ekstrem (outlier) pada setiap fitur numerik.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -1707,7 +1707,7 @@ Passing `palette` without assigning `hue` is deprecated and will be removed in v
 Jika ada <code class="docutils literal notranslate"><span class="pre">id</span></code> yang duplikat atau hilang, maka data perlu diperiksa ulang.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Jumlah total baris:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Jumlah total baris:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_combined</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Jumlah ID unik:&quot;</span><span class="p">,</span> <span class="n">df_combined</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">())</span>
 </pre></div>
 </div>
