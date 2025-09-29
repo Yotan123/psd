@@ -386,6 +386,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tampilkan-data-dalam-scatter-plot-menggunakan-pca">Tampilkan data dalam scatter plot  menggunakan PCA</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Tampilkan data dalam scatter plot  menggunakan PCA</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lakukan-penyeimbangan-data-menggunakan-adasyn">Lakukan penyeimbangan data menggunakan ADASYN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grafik-sebelum-balancing">Grafik Sebelum Balancing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grafik-sesudah-balancing">Grafik Sesudah balancing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ploting-data-dari-data-yang-diimbangkan-menggunakan-pca-tandai-data-data-hasil-generatenya">Ploting data dari data yang diimbangkan menggunakan PCA, tandai data data hasil generatenya</a></li>
 </ul>
             </nav>
@@ -660,6 +662,77 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <li><p>Gabungkan hasil → X_res (fitur hasil balancing) dan y_res (label hasil balancing).</p></li>
 <li><p>Cetak distribusi kelas setelah balancing → harus lebih seimbang.</p></li>
 </ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Hitung distribusi sebelum balancing</span>
+<span class="n">class_counts_before</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Hitung distribusi sesudah balancing</span>
+<span class="n">class_counts_after</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y_res</span><span class="p">)</span>
+
+<span class="c1"># Plot grafik batang sebelum balancing</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">class_counts_before</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">class_counts_before</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi Kelas Sebelum Balancing&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Kelas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Jumlah Data&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/71ccd332a84c96a2b0aff4b291611447818c53cf395460bc169fe0463d1ffc03.png" src="_images/71ccd332a84c96a2b0aff4b291611447818c53cf395460bc169fe0463d1ffc03.png" />
+</div>
+</div>
+</section>
+<section id="grafik-sebelum-balancing">
+<h2>Grafik Sebelum Balancing<a class="headerlink" href="#grafik-sebelum-balancing" title="Link to this heading">#</a></h2>
+<p>Grafik ini menampilkan jumlah data asli dari dataset ecoli sebelum dilakukan balancing.</p>
+<p>Terlihat perbedaan yang sangat besar antar kelas:</p>
+<ul class="simple">
+<li><p>Kelas cp paling banyak → 143 data.</p></li>
+<li><p>Kelas im lumayan besar → 77 data.</p></li>
+<li><p>Kelas pp sedang → 52 data.</p></li>
+<li><p>Kelas kecil seperti imU (35), om (20), omL (5).</p></li>
+<li><p>Sangat kecil: imS (2) dan imL (2).</p></li>
+</ul>
+<p>Implikasi:</p>
+<p>Dataset sangat tidak seimbang (imbalanced).</p>
+<p>Jika digunakan langsung untuk training, model akan condong bias ke kelas mayoritas (misalnya sering menebak cp), sementara kelas minoritas seperti imS bisa diabaikan model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot grafik batang sesudah balancing</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">class_counts_after</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">class_counts_after</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lightgreen&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi Kelas Sesudah Balancing&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Kelas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Jumlah Data&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/3cfb6ec7fc47e88f03f84b86a9fca10ee7a9f6532a80cd1a2a148a922ec5d9c3.png" src="_images/3cfb6ec7fc47e88f03f84b86a9fca10ee7a9f6532a80cd1a2a148a922ec5d9c3.png" />
+</div>
+</div>
+</section>
+<section id="grafik-sesudah-balancing">
+<h2>Grafik Sesudah balancing<a class="headerlink" href="#grafik-sesudah-balancing" title="Link to this heading">#</a></h2>
+<p>Grafik ini menampilkan jumlah data setelah dilakukan balancing dengan teknik oversampling sintetis (mirip ADASYN/SMOTE sederhana).</p>
+<ul class="simple">
+<li><p>Semua kelas sekarang punya jumlah yang sama rata → 143 data.</p></li>
+<li><p>Tidak ada lagi kelas minoritas yang “tertinggal”, karena data tambahan dibuat dengan:</p></li>
+<li><p>Menggandakan data kelas kecil.</p></li>
+<li><p>Menambahkan noise kecil supaya tidak sekadar duplikat.</p></li>
+</ul>
+<p>Implikasi:</p>
+<ul class="simple">
+<li><p>Dataset sudah balanced, sehingga model machine learning akan belajar tiap kelas dengan proporsi yang adil.</p></li>
+<li><p>Kelas yang tadinya hanya punya 2 data (imS, imL) sekarang punya data sintetis hingga jumlahnya sama dengan kelas besar.</p></li>
+<li><p>Risiko: karena mayoritas data di kelas ini sintetis, ada kemungkinan model jadi overfitting pada pola buatan.</p></li>
+</ul>
 </section>
 <section id="ploting-data-dari-data-yang-diimbangkan-menggunakan-pca-tandai-data-data-hasil-generatenya">
 <h2>Ploting data dari data yang diimbangkan menggunakan PCA, tandai data data hasil generatenya<a class="headerlink" href="#ploting-data-dari-data-yang-diimbangkan-menggunakan-pca-tandai-data-data-hasil-generatenya" title="Link to this heading">#</a></h2>
@@ -689,7 +762,7 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/63d86497a84cc740fdea65a2942cad2a97eb8d1d8b0efddcfc212beb543f612b.png" src="_images/63d86497a84cc740fdea65a2942cad2a97eb8d1d8b0efddcfc212beb543f612b.png" />
+<img alt="_images/2b2aaaf844c44d02416122dadaceab41b162b1c8494a5aefd4957a8c450c6aa9.png" src="_images/2b2aaaf844c44d02416122dadaceab41b162b1c8494a5aefd4957a8c450c6aa9.png" />
 </div>
 </div>
 <p>Penjelasan:</p>
@@ -767,6 +840,8 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tampilkan-data-dalam-scatter-plot-menggunakan-pca">Tampilkan data dalam scatter plot  menggunakan PCA</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Tampilkan data dalam scatter plot  menggunakan PCA</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lakukan-penyeimbangan-data-menggunakan-adasyn">Lakukan penyeimbangan data menggunakan ADASYN</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grafik-sebelum-balancing">Grafik Sebelum Balancing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grafik-sesudah-balancing">Grafik Sesudah balancing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ploting-data-dari-data-yang-diimbangkan-menggunakan-pca-tandai-data-data-hasil-generatenya">Ploting data dari data yang diimbangkan menggunakan PCA, tandai data data hasil generatenya</a></li>
 </ul>
   </nav></div>
