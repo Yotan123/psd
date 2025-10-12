@@ -185,6 +185,7 @@
 <li class="toctree-l1"><a class="reference internal" href="PreprocessingData.html">Preprocessing Data</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Penyeimbangan Data Ecoli Serta Perbandingan SMOTE dan ADASYN dan Klasifikasi NAIVE BAYES dan RANDOM FOREST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="BaggingClassifier.html">BAGGING CLASSIFIER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dokumentasi.html">Dokumentasi Knime</a></li>
 </ul>
 
     </div>
@@ -427,7 +428,7 @@ document.write(`
 <p>jadi saya membuat kode untuk mengubah format Dataset Ecoli ini agar menjadi csv.Berikut adalah kode nya:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Nama file input dan output</span>
 <span class="n">nama_file_data</span> <span class="o">=</span> <span class="s1">&#39;ecoli.data&#39;</span>
@@ -504,7 +505,7 @@ belum memiliki akun aiven</p></li>
 <p>berikut adalah kodenya:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>pymysql<span class="w"> </span>sqlalchemy<span class="w"> </span>imbalanced-learn
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">pymysql</span> <span class="n">sqlalchemy</span> <span class="n">imbalanced</span><span class="o">-</span><span class="n">learn</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -585,7 +586,7 @@ Jumlah baris: 336
 <p>Setelah itu masuk ketahap menampilkan data kedalam scatter plot menggunakan PCA yang dimana PCA mentransformasi data menjadi dimensi rendah (2)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">X_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -618,7 +619,7 @@ Jumlah baris: 336
 <h2>Lakukan penyeimbangan data menggunakan ADASYN<a class="headerlink" href="#lakukan-penyeimbangan-data-menggunakan-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distribusi kelas sebelum balancing:&quot;</span><span class="p">,</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distribusi kelas sebelum balancing:&quot;</span><span class="p">,</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 
 <span class="n">max_class_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 <span class="n">X_res</span><span class="p">,</span> <span class="n">y_res</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -680,7 +681,7 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Hitung distribusi sebelum balancing</span>
@@ -722,7 +723,7 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <p>Jika digunakan langsung untuk training, model akan condong bias ke kelas mayoritas (misalnya sering menebak cp), sementara kelas minoritas seperti imS bisa diabaikan model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Hitung distribusi sesudah balancing</span>
@@ -768,7 +769,7 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <h2>Ploting data dari data yang diimbangkan menggunakan PCA, tandai data data hasil generatenya<a class="headerlink" href="#ploting-data-dari-data-yang-diimbangkan-menggunakan-pca-tandai-data-data-hasil-generatenya" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Tandai data sintetis</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Tandai data sintetis</span>
 <span class="n">X_rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">X_res_rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">X_res</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">synthetic_mask</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">X_rounded</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X_res_rounded</span><span class="p">]</span>
@@ -809,7 +810,7 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <h2>Klasifikasi NAIVE BAYES SEBELUM ADASYN<a class="headerlink" href="#klasifikasi-naive-bayes-sebelum-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SEBELUM balancing ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SEBELUM balancing ===</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">accuracy_score</span>
@@ -843,6 +844,8 @@ Distribusi kelas setelah balancing: Counter({&#39;cp&#39;: 143, &#39;im&#39;: 14
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Actual&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Confusion Matrix - Naive Bayes (Original Data)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
 </pre></div>
 </div>
 </div>
@@ -883,7 +886,7 @@ weighted avg       0.81      0.83      0.82       101
 <h2>Klasifikasi NAIVE BAYES Setelah ADASYN<a class="headerlink" href="#klasifikasi-naive-bayes-setelah-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SESUDAH balancing (custom ADASYN) ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SESUDAH balancing (custom ADASYN) ===</span>
 
 <span class="c1"># Split data balanced</span>
 <span class="n">X_train_bal</span><span class="p">,</span> <span class="n">X_test_bal</span><span class="p">,</span> <span class="n">y_train_bal</span><span class="p">,</span> <span class="n">y_test_bal</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
@@ -945,7 +948,7 @@ weighted avg       0.86      0.84      0.84       344
 <h2>Perbandingan metrik sebelum dan sesudah ADASYN<a class="headerlink" href="#perbandingan-metrik-sebelum-dan-sesudah-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># === Hitung metric SEBELUM balancing ===</span>
@@ -991,7 +994,7 @@ weighted avg       0.86      0.84      0.84       344
 <p>Tampilkan data dalam scatter plot menggunakan PCA</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
@@ -1024,7 +1027,7 @@ weighted avg       0.86      0.84      0.84       344
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === 4. Visualisasi original data (PCA) ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === 4. Visualisasi original data (PCA) ===</span>
 <span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">X_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
@@ -1048,7 +1051,7 @@ weighted avg       0.86      0.84      0.84       344
 <h2>Lakukan penyeimbangan data menggunakan SMOTE<a class="headerlink" href="#lakukan-penyeimbangan-data-menggunakan-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distribusi kelas sebelum balancing:&quot;</span><span class="p">,</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 
 <span class="c1"># === 5. Balancing dengan SMOTE (lebih stabil) ===</span>
@@ -1073,7 +1076,7 @@ Distribusi kelas setelah balancing: Counter({&#39;im&#39;: 143, &#39;cp&#39;: 14
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === 6. Visualisasi setelah balancing ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === 6. Visualisasi setelah balancing ===</span>
 <span class="n">X_res_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_res</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -1096,7 +1099,7 @@ Distribusi kelas setelah balancing: Counter({&#39;im&#39;: 143, &#39;cp&#39;: 14
 <h2>Klasifikasi NAIVE BAYES sebelum SMOTE<a class="headerlink" href="#klasifikasi-naive-bayes-sebelum-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SEBELUM SMOTE ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SEBELUM SMOTE ===</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">accuracy_score</span>
@@ -1171,7 +1174,7 @@ weighted avg       0.81      0.83      0.82       101
 <h2>Klasifikasi NAIVE BAYES sesudah SMOTE<a class="headerlink" href="#klasifikasi-naive-bayes-sesudah-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SESUDAH SMOTE ===</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># === Klasifikasi Naive Bayes SESUDAH SMOTE ===</span>
 
 <span class="c1"># 1. Split data setelah SMOTE</span>
 <span class="n">X_train_bal</span><span class="p">,</span> <span class="n">X_test_bal</span><span class="p">,</span> <span class="n">y_train_bal</span><span class="p">,</span> <span class="n">y_test_bal</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
@@ -1234,7 +1237,7 @@ weighted avg       0.83      0.78      0.73       344
 <h2>Perbandingan sebelum dan sesudah Smote<a class="headerlink" href="#perbandingan-sebelum-dan-sesudah-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">accuracy_bal</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test_bal</span><span class="p">,</span> <span class="n">y_pred_bal</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">accuracy_bal</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test_bal</span><span class="p">,</span> <span class="n">y_pred_bal</span><span class="p">)</span>
 <span class="n">precision_bal</span> <span class="o">=</span> <span class="n">precision_score</span><span class="p">(</span><span class="n">y_test_bal</span><span class="p">,</span> <span class="n">y_pred_bal</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">)</span>
 <span class="n">recall_bal</span> <span class="o">=</span> <span class="n">recall_score</span><span class="p">(</span><span class="n">y_test_bal</span><span class="p">,</span> <span class="n">y_pred_bal</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">)</span>
 <span class="n">f1_bal</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test_bal</span><span class="p">,</span> <span class="n">y_pred_bal</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;macro&quot;</span><span class="p">)</span>
@@ -1265,7 +1268,7 @@ weighted avg       0.83      0.78      0.73       344
 <h2>Klasifikasi RANDOM FOREST Sebelum ADASYN<a class="headerlink" href="#klasifikasi-random-forest-sebelum-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
 <span class="c1"># Sebelum balancing</span>
 <span class="n">X_train_ori</span><span class="p">,</span> <span class="n">X_test_ori</span><span class="p">,</span> <span class="n">y_train_ori</span><span class="p">,</span> <span class="n">y_test_ori</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span>
@@ -1327,7 +1330,7 @@ weighted avg       0.85      0.86      0.85       101
 <h2>Klasifikasi RANDOM FOREST Sesudah ADASYN<a class="headerlink" href="#klasifikasi-random-forest-sesudah-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setelah balancing</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setelah balancing</span>
 <span class="n">X_train_bal</span><span class="p">,</span> <span class="n">X_test_bal</span><span class="p">,</span> <span class="n">y_train_bal</span><span class="p">,</span> <span class="n">y_test_bal</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
     <span class="n">X_res</span><span class="p">,</span> <span class="n">y_res</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y_res</span>
 <span class="p">)</span>
@@ -1379,7 +1382,7 @@ weighted avg       0.96      0.96      0.96       344
 <h2>Perbandingan Sebelum dan sesudah ADASYN<a class="headerlink" href="#perbandingan-sebelum-dan-sesudah-adasyn" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># ===============================</span>
@@ -1430,7 +1433,7 @@ weighted avg       0.96      0.96      0.96       344
 <h2>Klasifikasi RANDOM FOREST Sebelum SMOTE<a class="headerlink" href="#klasifikasi-random-forest-sebelum-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>
 
 <span class="c1"># Data asli</span>
@@ -1493,7 +1496,7 @@ weighted avg       0.85      0.86      0.85       101
 <h2>Klasifikasi RANDOM FOREST Sesudah SMOTE<a class="headerlink" href="#klasifikasi-random-forest-sesudah-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data setelah SMOTE</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data setelah SMOTE</span>
 <span class="n">X_train_bal</span><span class="p">,</span> <span class="n">X_test_bal</span><span class="p">,</span> <span class="n">y_train_bal</span><span class="p">,</span> <span class="n">y_test_bal</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
     <span class="n">X_res</span><span class="p">,</span> <span class="n">y_res</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y_res</span>
 <span class="p">)</span>
@@ -1545,7 +1548,7 @@ weighted avg       0.96      0.96      0.96       344
 <h2>Perbandingan Random forest Sebelum dan sesudah SMOTE<a class="headerlink" href="#perbandingan-random-forest-sebelum-dan-sesudah-smote" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># ===============================</span>
