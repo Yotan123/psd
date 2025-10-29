@@ -191,30 +191,20 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="PreprocessingData.html">Preprocessing (Iris)</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dokumentasi Knime</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Dokumentasi.html">Dokumentasi PraUTS by KNIME</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Balancing Data</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="PlotingData.html">Penyeimbangan Data (Ecoli)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="BaggingClassifier.html">BaggingClassifier (Ecoli)</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dokumentasi Knime</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Dokumentasi.html">Dokumentasi PraUTS by KNIME</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Banyuwangi Analysis</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="DUbanyuwangi.html">Data Understanding (Banyuwangi)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="BUbanyuwangi.html">Melakukan koneksi ke copernicus Data Space</a></li>
-
-
-
-
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Penanganan Missing Value</a></li>
-
-
-
-
-
-
+<li class="toctree-l1"><a class="reference internal" href="BUbanyuwangi.html">Business Understanding (Banyuwangi)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Preprocessing (Banyuwangi)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModellingData.html">Modelling Data (Banyuwangi)</a></li>
 </ul>
 
@@ -411,15 +401,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Penanganan Missing Value</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membentuk-data-supervised">Membentuk data supervised</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1">Membuat data supervised menggunakan t1</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2">Membuat data supervised menggunakan t1, t2</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3">Membuat data supervised menggunakan t1, t2, t3</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4">Membuat data supervised menggunakan t1, t2, t3, t4</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5">Membuat data supervised menggunakan t1, t2, t3, t4, t5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membentuk-data-supervised">Membentuk data supervised</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1">Membuat data supervised menggunakan t1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2">Membuat data supervised menggunakan t1, t2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3">Membuat data supervised menggunakan t1, t2, t3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4">Membuat data supervised menggunakan t1, t2, t3, t4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5">Membuat data supervised menggunakan t1, t2, t3, t4, t5</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -2294,9 +2282,8 @@ document.write(`
 <li><p>Memastikan data dalam format DataFrame yang bersih</p></li>
 <li><p>Memfokuskan data hanya pada nilai NO₂ untuk proses supervised learning</p></li>
 </ul>
-</section>
 <section id="membentuk-data-supervised">
-<h1>Membentuk data supervised<a class="headerlink" href="#membentuk-data-supervised" title="Link to this heading">#</a></h1>
+<h2>Membentuk data supervised<a class="headerlink" href="#membentuk-data-supervised" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">day1</span> <span class="o">=</span> <span class="n">NO2</span>
@@ -2311,7 +2298,7 @@ document.write(`
 <p>Penjelasan: Membuat 5 copy dari dataset untuk membuat variasi lag features (1-5 hari). Setiap dataset akan digunakan untuk eksperimen dengan jumlah lag yang berbeda.</p>
 </section>
 <section id="membuat-data-supervised-menggunakan-t1">
-<h1>Membuat data supervised menggunakan t1<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1" title="Link to this heading">#</a></h1>
+<h2>Membuat data supervised menggunakan t1<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_lags</span> <span class="o">=</span> <span class="mi">1</span>
@@ -2677,7 +2664,7 @@ document.write(`
 </div>
 </section>
 <section id="membuat-data-supervised-menggunakan-t1-t2">
-<h1>Membuat data supervised menggunakan t1, t2<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2" title="Link to this heading">#</a></h1>
+<h2>Membuat data supervised menggunakan t1, t2<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_lags</span> <span class="o">=</span> <span class="mi">2</span>
@@ -3055,7 +3042,7 @@ document.write(`
 </div>
 </section>
 <section id="membuat-data-supervised-menggunakan-t1-t2-t3">
-<h1>Membuat data supervised menggunakan t1, t2, t3<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3" title="Link to this heading">#</a></h1>
+<h2>Membuat data supervised menggunakan t1, t2, t3<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_lags</span> <span class="o">=</span> <span class="mi">3</span>
@@ -3445,7 +3432,7 @@ document.write(`
 </div>
 </section>
 <section id="membuat-data-supervised-menggunakan-t1-t2-t3-t4">
-<h1>Membuat data supervised menggunakan t1, t2, t3, t4<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4" title="Link to this heading">#</a></h1>
+<h2>Membuat data supervised menggunakan t1, t2, t3, t4<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_lags</span> <span class="o">=</span> <span class="mi">4</span>
@@ -3847,7 +3834,7 @@ document.write(`
 </div>
 </section>
 <section id="membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5">
-<h1>Membuat data supervised menggunakan t1, t2, t3, t4, t5<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5" title="Link to this heading">#</a></h1>
+<h2>Membuat data supervised menggunakan t1, t2, t3, t4, t5<a class="headerlink" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_lags</span> <span class="o">=</span> <span class="mi">5</span>
@@ -4260,6 +4247,7 @@ document.write(`
 </div></div>
 </div>
 </section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -4325,15 +4313,13 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Penanganan Missing Value</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membentuk-data-supervised">Membentuk data supervised</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1">Membuat data supervised menggunakan t1</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2">Membuat data supervised menggunakan t1, t2</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3">Membuat data supervised menggunakan t1, t2, t3</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4">Membuat data supervised menggunakan t1, t2, t3, t4</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5">Membuat data supervised menggunakan t1, t2, t3, t4, t5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membentuk-data-supervised">Membentuk data supervised</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1">Membuat data supervised menggunakan t1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2">Membuat data supervised menggunakan t1, t2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3">Membuat data supervised menggunakan t1, t2, t3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4">Membuat data supervised menggunakan t1, t2, t3, t4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membuat-data-supervised-menggunakan-t1-t2-t3-t4-t5">Membuat data supervised menggunakan t1, t2, t3, t4, t5</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
