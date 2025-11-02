@@ -205,7 +205,7 @@
 <li class="toctree-l1"><a class="reference internal" href="DUbanyuwangi.html">Data Understanding (Banyuwangi)</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Business Understanding (Banyuwangi)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PreprocessingBanyu.html">Preprocessing (Banyuwangi)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ModellingData.html">Modelling Data (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelData.html">Modelling Data (Banyuwangi)</a></li>
 </ul>
 
     </div>
@@ -405,7 +405,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#koordinat-daerah-banyuwangi">Koordinat Daerah Banyuwangi</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-nitrogen-dioksida-no2">Mengambil Data Nitrogen Dioksida(NO2)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengecek-informasi-dataset">Mengecek Informasi Dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-rata-rata-kualitas-udara-no2-setiap-bulan-di-banyuwangi">Visualisasi Rata-Rata Kualitas Udara NO2 Setiap Bulan di Banyuwangi</a></li>
 </ul>
             </nav>
         </div>
@@ -521,7 +520,7 @@ Successfully installed deprecated-1.2.18 openeo-0.45.0 pystac-1.14.1 shapely-2.1
 </div>
 </div>
 </div>
-<p>Mendefinisikan Area of Interest (AOI) dalam format GeoJSON polygon yang mencakup wilayah Kabupaten Bangkalan.</p>
+<p>Mendefinisikan Area of Interest (AOI) dalam format GeoJSON polygon yang mencakup wilayah Kabupaten Banyuwangi.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s5p</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">load_collection</span><span class="p">(</span>
@@ -542,7 +541,7 @@ Successfully installed deprecated-1.2.18 openeo-0.45.0 pystac-1.14.1 shapely-2.1
 <p>Penjelasan:</p>
 <ul class="simple">
 <li><p>Memuat koleksi data Sentinel-5P Level 2</p></li>
-<li><p>spatial_extent: Membatasi data sesuai koordinat Bangkalan</p></li>
+<li><p>spatial_extent: Membatasi data sesuai koordinat Banyuwangi</p></li>
 <li><p>temporal_extent: Periode data dari 1 Januari 2025 - 1 Oktober 2025</p></li>
 <li><p>bands: Hanya mengambil band NO₂ (nitrogen dioksida)</p></li>
 </ul>
@@ -600,7 +599,7 @@ Successfully installed deprecated-1.2.18 openeo-0.45.0 pystac-1.14.1 shapely-2.1
 <ul class="simple">
 <li><p>Masking: Menghilangkan nilai negatif yang merupakan data invalid</p></li>
 <li><p>Agregasi temporal: Menghitung rata-rata harian dari multiple pengukuran per hari</p></li>
-<li><p>Agregasi spasial: Menghitung rata-rata spasial dalam AOI Bangkalan</p></li>
+<li><p>Agregasi spasial: Menghitung rata-rata spasial dalam AOI Banyuwangi</p></li>
 <li><p>Batch processing: Menjalankan pemrosesan di server dan mengunduh hasil dalam format CSV</p></li>
 </ul>
 <div class="cell docutils container">
@@ -1454,42 +1453,6 @@ memory usage: 8.6+ KB
 </div>
 </div>
 </section>
-<section id="visualisasi-rata-rata-kualitas-udara-no2-setiap-bulan-di-banyuwangi">
-<h2>Visualisasi Rata-Rata Kualitas Udara NO2 Setiap Bulan di Banyuwangi<a class="headerlink" href="#visualisasi-rata-rata-kualitas-udara-no2-setiap-bulan-di-banyuwangi" title="Link to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Baca data</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;no2_results/no2_banyuwangi_data.csv&quot;</span><span class="p">)</span>
-
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">])</span>
-
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;month&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">)</span>
-
-<span class="n">df_monthly</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;month&quot;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s2">&quot;NO2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-
-<span class="c1"># 13. Visualisasi hasil</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df_monthly</span><span class="p">[</span><span class="s2">&quot;month&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">df_monthly</span><span class="p">[</span><span class="s2">&quot;NO2&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NO₂ Rata-rata per Bulan&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Rata-rata Bulanan NO₂ (Sentinel-5P) di Bangkalan&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Bulan&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Konsentrasi NO₂&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/tmp/ipython-input-4048192070.py:6: UserWarning: Converting to PeriodArray/Index representation will drop timezone information.
-  df[&quot;month&quot;] = df[&quot;date&quot;].dt.to_period(&quot;M&quot;)
-</pre></div>
-</div>
-<img alt="_images/a92fe7b41b682a4928f24e803e14744bc61ce515b0a971f8cf826c4b426ec7b2.png" src="_images/a92fe7b41b682a4928f24e803e14744bc61ce515b0a971f8cf826c4b426ec7b2.png" />
-</div>
-</div>
-</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1560,7 +1523,6 @@ memory usage: 8.6+ KB
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#koordinat-daerah-banyuwangi">Koordinat Daerah Banyuwangi</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengambil-data-nitrogen-dioksida-no2">Mengambil Data Nitrogen Dioksida(NO2)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mengecek-informasi-dataset">Mengecek Informasi Dataset</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-rata-rata-kualitas-udara-no2-setiap-bulan-di-banyuwangi">Visualisasi Rata-Rata Kualitas Udara NO2 Setiap Bulan di Banyuwangi</a></li>
 </ul>
   </nav></div>
 
