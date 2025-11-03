@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; My sample book</title>
+    <title>Modeling &amp; Evaluation (Random Forest) Suara Buka Tutup &#8212; My sample book</title>
   
   
   
@@ -57,9 +57,11 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'Suara3';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Suaralanjutana';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deployment Identifikasi Suara Buka Tutup" href="DeploySuara.html" />
+    <link rel="prev" title="Preprocessing Suara Buka Tutup" href="Suarapreprocess.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -121,8 +123,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -206,6 +206,14 @@
 <li class="toctree-l1"><a class="reference internal" href="BUbanyuwangi.html">Business Understanding (Banyuwangi)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PreprocessingBanyu.html">Preprocessing (Banyuwangi)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ModelData.html">Modelling Data (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deploy.html">Deployment Program Prediksi (Banyuwangi)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Buka Tutup suara</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Suara.html">Data Understanding buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Suarapreprocess.html">Preprocesing buka tutup suara</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Modeling Dan Evaluasi buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeploySuara.html">Deployment Program buka tutup suara</a></li>
 </ul>
 
     </div>
@@ -277,7 +285,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FSuara3.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FSuaralanjutana.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -307,7 +315,7 @@
       
       
       
-      <li><a href="_sources/Suara3.ipynb" target="_blank"
+      <li><a href="_sources/Suaralanjutana.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -378,9 +386,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -391,19 +397,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>Modeling & Evaluation (Random Forest) Suara Buka Tutup</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
-</ul>
-
-            </nav>
         </div>
     </div>
 </div>
@@ -413,7 +411,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <div class="cell docutils container">
+  <section id="modeling-evaluation-random-forest-suara-buka-tutup">
+<h1>Modeling &amp; Evaluation (Random Forest) Suara Buka Tutup<a class="headerlink" href="#modeling-evaluation-random-forest-suara-buka-tutup" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
@@ -1135,6 +1135,7 @@ Probabilitas: Buka=76.5%, Tutup=23.5%
 </div>
 </div>
 </div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1166,27 +1167,30 @@ Probabilitas: Buka=76.5%, Tutup=23.5%
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="Suarapreprocess.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Preprocessing Suara Buka Tutup</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="DeploySuara.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Deployment Identifikasi Suara Buka Tutup</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
-</ul>
-
-  </nav></div>
-
-</div></div>
               
             
           </div>
