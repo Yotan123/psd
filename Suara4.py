@@ -24,18 +24,12 @@ st.markdown("""
         color: #1f77b4;
         text-align: center;
         margin-bottom: 2rem;
-        font-family: 'Arial', sans-serif;
     }
     .prediction-box {
         padding: 1rem;
         border-radius: 10px;
         margin: 1rem 0;
         text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-    }
-    .prediction-box:hover {
-        transform: scale(1.05);
     }
     .prediction-buka {
         background-color: #d4edda;
@@ -53,23 +47,6 @@ st.markdown("""
         border-radius: 5px;
         margin: 0.5rem 0;
     }
-    .sidebar-header {
-        font-size: 1.5rem;
-        color: #1f77b4;
-        margin-top: 2rem;
-    }
-    .st-file-uploader {
-        background-color: #f0f8ff;
-        padding: 1rem;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .st-file-uploader:hover {
-        background-color: #e1efff;
-    }
-    .st-spinner {
-        color: #007bff;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -79,7 +56,7 @@ st.markdown('<h1 class="main-header">Audio Classification: Suara Buka vs Tutup</
 def load_model():
     """Load the trained Random Forest model"""
     try:
-        model = joblib.load('model_results/rf_model_buka_tutup.pkl')
+        model = joblib.load('saved_models/rf_model_buka_tutup.pkl')
         return model, True
     except FileNotFoundError:
         st.error("Model tidak ditemukan! Pastikan file 'saved_models/rf_model_buka_tutup.pkl' tersedia.")
@@ -179,6 +156,8 @@ def create_waveform_plot(y, sr, title="Audio Waveform"):
     
     return fig
 
+
+
 def main():
     model, model_loaded = load_model()
     
@@ -199,7 +178,7 @@ def main():
     with col1:
         st.header("Upload Audio File")
         uploaded_file = st.file_uploader(
-            "Pilih file audio (format WAV). Suara dapat diambil dari link berikut: https://www.kaggle.com/datasets/muhammadridhoisdi/audio-recognition-buka-and-tutup",
+            "pilih file audio (harap menggunakan format WAV). Suara dapat diambil dari link berikut: https://www.kaggle.com/datasets/muhammadridhoisdi/audio-recognition-buka-and-tutup",
             type=['wav'],
             help="Upload audio file yang ingin diklasifikasi (akan diproses menjadi 22050 Hz, 1 detik)"
         )
@@ -279,6 +258,8 @@ def main():
                         y_processed, sr_processed, "Processed Audio Waveform (1 second, 22050 Hz)"
                     )
                     st.plotly_chart(waveform_fig, use_container_width=True)
+                
+
                 
                 os.unlink(temp_file_path)
     
