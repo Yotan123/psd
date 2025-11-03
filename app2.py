@@ -16,8 +16,8 @@ def load_model(model_type):
 def load_thresholds():
     return joblib.load('thresholds.pkl')
 
-st.set_page_config(page_title="Prediksi NO₂ Pematangsiantar", page_icon="🌫️")
-st.title("🌫️ Prediksi Kadar NO₂ - Pematangsiantar")
+st.set_page_config(page_title="Prediksi NO₂ Banyuwangi", page_icon="🌫️")
+st.title("🌫️ Prediksi Kadar NO₂ - Banyuwangi")
 st.caption("Prediksi kadar NO₂ troposfer (mol/m²) menggunakan model KNN berdasarkan data Sentinel-5P.")
 
 # Pilihan model prediksi

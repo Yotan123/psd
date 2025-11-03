@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import joblib
 
 # Memuat model dan scaler untuk setiap hari
 @st.cache_resource
