@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 import tempfile
+import sounddevice as sd
+import wave
+import io
 
 st.set_page_config(
     page_title="Audio Classification: Buka vs Tutup",
@@ -156,7 +159,23 @@ def create_waveform_plot(y, sr, title="Audio Waveform"):
     
     return fig
 
-
+def record_audio(duration=3, samplerate=22050):
+    """
+    Record audio from the microphone and save it as a WAV file.
+    """
+    st.info(f"Recording for {duration} seconds...")
+    recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32')
+    sd.wait()
+    
+    # Save recording to a temporary file
+    temp_wav = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+    with wave.open(temp_wav, 'wb') as wf:
+        wf.setnchannels(1)  # Mono
+        wf.setsampwidth(2)  # 2 bytes per sample
+        wf.setframerate(samplerate)
+        wf.writeframes((recording * 32767).astype(np.int16).tobytes())
+    
+    return temp_wav.name
 
 def main():
     model, model_loaded = load_model()
@@ -197,7 +216,6 @@ def main():
             st.audio(uploaded_file, format='audio/wav')
             
             if st.button("🔍 Classify Audio", type="primary"):
-                
                 with st.spinner("🔄 Processing audio..."):
                     prediction, probabilities, features, y_processed, sr_processed = predict_audio(
                         temp_file_path, model
@@ -258,24 +276,43 @@ def main():
                         y_processed, sr_processed, "Processed Audio Waveform (1 second, 22050 Hz)"
                     )
                     st.plotly_chart(waveform_fig, use_container_width=True)
-                
 
-                
                 os.unlink(temp_file_path)
     
-    st.header("Cara Menggunakan Aplikasi Ini")
-    st.markdown("""
-    1. **Upload** file audio (format: hanya bisa format WAV)
-    2. **Click** tombol "Classify Audio" untuk memproses
-    3. **Lihat** hasil prediksi dan confidence score
-    4. **Analisis** waveform dan fitur audio yang diekstrak
-    
-    **Processing Details:**
-    - Audio akan di-resample ke 22050 Hz
-    - Durasi akan dipotong/diperpanjang menjadi tepat 1 detik
-    - Normalisasi amplitudo akan diterapkan
-    - 10 fitur akustik akan diekstrak untuk klasifikasi
-    """)
-
-if __name__ == "__main__":
-    main()
+    with col1:
+        st.header("Record Audio")
+        if st.button("🎤 Record Audio", type="primary"):
+            # Record audio and process it
+            temp_file_path = record_audio(duration=3)
+            st.audio(temp_file_path, format='audio/wav')
+            
+            with st.spinner("🔄 Processing recorded audio..."):
+                prediction, probabilities, features, y_processed, sr_processed = predict_audio(
+                    temp_file_path, model
+                )
+                
+            if prediction is not None:
+                with col2:
+                    st.header("Classification Results")
+                    confidence = max(probabilities) * 100
+                    if prediction.lower() == 'buka':
+                        st.markdown(f"""
+                        <div class="prediction-box prediction-buka">
+                            <h2>BUKA</h2>
+                            <p><strong>Confidence: {confidence:.1f}%</strong></p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                        <div class="prediction-box prediction-tutup">
+                            <h2>TUTUP</h2>
+                            <p><strong>Confidence: {confidence:.1f}%</strong></p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    st.subheader("Prediction Probabilities")
+                    
+                    prob_text = f"""
+                    **Probabilitas:**
+                    - Buka: {probabilities[0]*100:.1f}%
+                    - Tutup: {probabilities[1]*100:.1f}%

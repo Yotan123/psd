@@ -9,6 +9,8 @@ scikit-learn
 joblib
 librosa
 plotly
+sounddevice
+wave
 
 
 
