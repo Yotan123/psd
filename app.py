@@ -5,19 +5,19 @@ import joblib
 @st.cache_resource
 def load_model(model_type):
     if model_type == "1_hari":
-        model = joblib.load('knn_model_day2.pkl')
-        scaler = joblib.load('scaler_day2.pkl')
+        model = joblib.load('saved_models/knn_model_day2.pkl')
+        scaler = joblib.load('saved_models/scaler_day2.pkl')
     else:  # 3_hari
-        model = joblib.load('knn_model_day3.pkl')
-        scaler = joblib.load('scaler_day3.pkl')
+        model = joblib.load('saved_models/knn_model_day3.pkl')
+        scaler = joblib.load('saved_models/scaler_day3.pkl')
     return model, scaler
 
 @st.cache_data
 def load_thresholds():
-    return joblib.load('thresholds.pkl')
+    return joblib.load('saved_models/thresholds_day3.pkl')
 
-st.set_page_config(page_title="Prediksi NO₂ Banyuwangi", page_icon="🌫️")
-st.title("🌫️ Prediksi Kadar NO₂ - Banyuwangi")
+st.set_page_config(page_title="Prediksi NO₂ Bangkalan", page_icon="🌫️")
+st.title("🌫️ Prediksi Kadar NO₂ - Bangkalan")
 st.caption("Prediksi kadar NO₂ troposfer (mol/m²) menggunakan model KNN berdasarkan data Sentinel-5P.")
 
 # Pilihan model prediksi
