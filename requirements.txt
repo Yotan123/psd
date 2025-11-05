@@ -8,6 +8,8 @@ seaborn
 scikit-learn
 joblib
 librosa
+plotly
+
 
 
 
