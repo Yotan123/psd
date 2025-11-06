@@ -9,103 +9,330 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 import tempfile
-import sounddevice as sd
-import wave
+from pydub import AudioSegment
+from pydub.playback import play
 import io
+import wave
+import time
 
 st.set_page_config(
-    page_title="Audio Classification: Buka vs Tutup",
-    page_icon="🎵",
+    page_title="Audio Classifier - Buka vs Tutup",
+    page_icon="🎧",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
+# Updated CSS styling with modern look
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 2.5rem;
-        color: #1f77b4;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .main-title {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 3rem;
+        font-weight: 700;
         text-align: center;
         margin-bottom: 2rem;
-    }
-    .prediction-box {
         padding: 1rem;
-        border-radius: 10px;
+        border-radius: 15px;
+        color: transparent;
+    }
+    
+    .prediction-container {
+        background: linear-gradient(145deg, #f0f0f0, #ffffff);
+        border-radius: 20px;
+        padding: 2rem;
         margin: 1rem 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .prediction-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .prediction-success {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+    }
+    
+    .prediction-error {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+    }
+    
+    .feature-card {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 0.5rem 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-left: 4px solid #667eea;
+    }
+    
+    .upload-area {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 3rem 2rem;
         text-align: center;
+        background: linear-gradient(145deg, #f8f9ff, #ffffff);
+        transition: all 0.3s ease;
     }
-    .prediction-buka {
-        background-color: #d4edda;
-        border: 2px solid #28a745;
-        color: #155724;
+    
+    .upload-area:hover {
+        border-color: #764ba2;
+        background: linear-gradient(145deg, #ffffff, #f8f9ff);
+        transform: scale(1.02);
     }
-    .prediction-tutup {
-        background-color: #f8d7da;
-        border: 2px solid #dc3545;
-        color: #721c24;
+    
+    .metric-card {
+        background: linear-gradient(145deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
-    .feature-info {
-        background-color: #f8f9fa;
+    
+    .audio-player {
+        background: linear-gradient(145deg, #f0f0f0, #ffffff);
+        border-radius: 12px;
         padding: 1rem;
-        border-radius: 5px;
+        margin: 1rem 0;
+    }
+    
+    .info-section {
+        background: linear-gradient(145deg, #e3f2fd, #ffffff);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 1rem 0;
+        border-left: 5px solid #2196f3;
+    }
+    
+    .button-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .button-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .button-record {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        border: none;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .button-record:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+    
+    .button-stop {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        border: none;
+        color: #333;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .button-stop:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4);
+    }
+    
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .sidebar-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .glow-effect {
+        position: relative;
+    }
+    
+    .glow-effect::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: linear-gradient(45deg, #667eea, #764ba2, #4facfe, #00f2fe);
+        border-radius: 20px;
+        z-index: -1;
+        opacity: 0.3;
+        filter: blur(10px);
+    }
+    
+    .recording-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        background-color: #ff6b6b;
+        border-radius: 50%;
+        margin-right: 8px;
+        animation: pulse 1s infinite;
+    }
+    
+    .tab-content {
+        background: linear-gradient(145deg, #f8f9ff, #ffffff);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 1rem 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .microphone-section {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        margin: 1rem 0;
+    }
+    
+    .microphone-section h3 {
+        color: white;
+        margin: 0 0 1rem 0;
+    }
+    
+    .microphone-section p {
+        color: rgba(255,255,255,0.8);
         margin: 0.5rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 class="main-header">Audio Classification: Suara Buka vs Tutup</h1>', unsafe_allow_html=True)
+# Header with gradient effect
+st.markdown('<h1 class="main-title">🎧 Audio Classification Hub: Buka vs Tutup</h1>', unsafe_allow_html=True)
 
 @st.cache_resource
 def load_model():
-    """Load the trained Random Forest model"""
+    """Load the trained Random Forest model with fallback"""
     try:
-        model = joblib.load('saved_models/rf_model_buka_tutup.pkl')
-        return model, True
-    except FileNotFoundError:
-        st.error("Model tidak ditemukan! Pastikan file 'saved_models/rf_model_buka_tutup.pkl' tersedia.")
-        return None, False
+        # Try multiple possible model paths
+        model_paths = [
+            'model_results/rf_model_buka_tutup.pkl',
+            'rf_model_buka_tutup.pkl',
+            'models/rf_model_buka_tutup.pkl',
+            'saved_models/rf_model_buka_tutup.pkl'
+        ]
+        
+        for path in model_paths:
+            if os.path.exists(path):
+                model = joblib.load(path)
+                return model, True, path
+        
+        st.error("❌ Model file not found in any expected location!")
+        st.info("Expected paths: 'model_results/rf_model_buka_tutup.pkl', 'rf_model_buka_tutup.pkl', 'models/rf_model_buka_tutup.pkl', 'saved_models/rf_model_buka_tutup.pkl'")
+        return None, False, None
+        
+    except Exception as e:
+        st.error(f"❌ Error loading model: {str(e)}")
+        st.info("Make sure the model file exists and is properly formatted.")
+        return None, False, None
 
 def extract_features(y, sr=22050):
     """
     Extract audio features exactly like in your notebook
     """
-    feat = {
-        "mean": np.mean(y),
-        "var": np.var(y),
-        "skew": stats.skew(y),
-        "kurt": stats.kurtosis(y),
-        "rms": np.sqrt(np.mean(y**2)),
-        "zcr": np.mean(librosa.feature.zero_crossing_rate(y)),
-        "centroid": np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)),
-        "bandwidth": np.mean(librosa.feature.spectral_bandwidth(y=y, sr=sr)),
-        "rolloff": np.mean(librosa.feature.spectral_rolloff(y=y, sr=sr))
-    }
-    
-    hist, _ = np.histogram(y, bins=50, density=True)
-    hist = hist[hist > 0]  
-    feat["entropy"] = -np.sum(hist * np.log2(hist + 1e-10))
-    
-    return feat
+    try:
+        feat = {
+            "mean": np.mean(y),
+            "var": np.var(y),
+            "skew": stats.skew(y),
+            "kurt": stats.kurtosis(y),
+            "rms": np.sqrt(np.mean(y**2)),
+            "zcr": np.mean(librosa.feature.zero_crossing_rate(y)[0]),
+            "centroid": np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)[0]),
+            "bandwidth": np.mean(librosa.feature.spectral_bandwidth(y=y, sr=sr)[0]),
+            "rolloff": np.mean(librosa.feature.spectral_rolloff(y=y, sr=sr)[0])
+        }
+        
+        hist, _ = np.histogram(y, bins=50, density=True)
+        hist = hist[hist > 0]  
+        feat["entropy"] = -np.sum(hist * np.log2(hist + 1e-10))
+        
+        return feat
+    except Exception as e:
+        st.error(f"Feature extraction error: {str(e)}")
+        return None
 
 def preprocess_audio(y, sr, target_sr=22050):
     """
     Preprocess audio exactly like in your notebook
     """
-    if sr != target_sr:
-        y = librosa.resample(y, orig_sr=sr, target_sr=target_sr)
-        sr = target_sr
-    
-    # durasi tidak lebih dari 1 detik
-    max_len = int(sr * 1.0)
-    if len(y) < max_len:
-        y = np.pad(y, (0, max_len - len(y)), mode='constant')
-    else:
-        y = y[:max_len]
-    
-    # Normalisasi
-    y = y / np.max(np.abs(y) + 1e-6)
-    
-    return y, sr
+    try:
+        if sr != target_sr:
+            y = librosa.resample(y, orig_sr=sr, target_sr=target_sr)
+            sr = target_sr
+        
+        # durasi tidak lebih dari 1 detik
+        max_len = int(sr * 1.0)
+        if len(y) < max_len:
+            y = np.pad(y, (0, max_len - len(y)), mode='constant')
+        else:
+            y = y[:max_len]
+        
+        # Normalisasi
+        y = y / (np.max(np.abs(y)) + 1e-6)
+        
+        return y, sr
+    except Exception as e:
+        st.error(f"Audio preprocessing error: {str(e)}")
+        return None, None
 
 def predict_audio(audio_file, model):
     """
@@ -113,13 +340,19 @@ def predict_audio(audio_file, model):
     """
     try:
         # Load audio
-        y, sr = librosa.load(audio_file, sr=22050)
+        y, sr = librosa.load(audio_file, sr=None)  # Load with original sample rate
         
         # Preprocess
         y_processed, sr_processed = preprocess_audio(y, sr)
         
+        if y_processed is None:
+            return None, None, None, None, None
+        
         # Extract features
         features = extract_features(y_processed, sr_processed)
+        
+        if features is None:
+            return None, None, None, None, None
         
         # Convert to DataFrame
         X_new = pd.DataFrame([features])
@@ -131,188 +364,372 @@ def predict_audio(audio_file, model):
         return pred_label, pred_proba, features, y_processed, sr_processed
         
     except Exception as e:
-        st.error(f"Error in prediction: {e}")
+        st.error(f"❌ Error in prediction: {str(e)}")
         return None, None, None, None, None
 
 def create_waveform_plot(y, sr, title="Audio Waveform"):
     """
     Create waveform plot using plotly
     """
-    time = np.linspace(0, len(y)/sr, len(y))
-    
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=time, y=y,
-        mode='lines',
-        name='Amplitude',
-        line=dict(color='blue', width=1)
-    ))
-    
-    fig.update_layout(
-        title=title,
-        xaxis_title='Time (seconds)',
-        yaxis_title='Amplitude',
-        showlegend=False,
-        height=300,
-        margin=dict(l=0, r=0, t=40, b=0)
-    )
-    
-    return fig
+    try:
+        time = np.linspace(0, len(y)/sr, len(y))
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=time, y=y,
+            mode='lines',
+            name='Amplitude',
+            line=dict(color='#667eea', width=2)
+        ))
+        
+        fig.update_layout(
+            title=title,
+            xaxis_title='Time (seconds)',
+            yaxis_title='Amplitude',
+            showlegend=False,
+            height=300,
+            margin=dict(l=0, r=0, t=40, b=0),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+        )
+        
+        return fig
+    except Exception as e:
+        st.error(f"Waveform plot error: {str(e)}")
+        return None
 
-def record_audio(duration=3, samplerate=22050):
+def record_audio(duration=1.0, sample_rate=22050):
     """
-    Record audio from the microphone and save it as a WAV file.
+    Record audio from microphone using Streamlit's audio input (fallback)
     """
-    st.info(f"Recording for {duration} seconds...")
-    recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32')
-    sd.wait()
-    
-    # Save recording to a temporary file
-    temp_wav = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
-    with wave.open(temp_wav, 'wb') as wf:
-        wf.setnchannels(1)  # Mono
-        wf.setsampwidth(2)  # 2 bytes per sample
-        wf.setframerate(samplerate)
-        wf.writeframes((recording * 32767).astype(np.int16).tobytes())
-    
-    return temp_wav.name
+    try:
+        # Show a message that direct recording is not supported
+        st.warning("🎤 **Fitur rekam suara langsung tidak didukung di semua platform.**")
+        st.info("Silakan upload file audio WAV untuk analisis.")
+        
+        # Use Streamlit's audio input if available (for future compatibility)
+        audio_input = st.experimental_audio_input("Rekam suara Anda (jika didukung):")
+        if audio_input:
+            # Save the audio input to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                tmp_file.write(audio_input.read())
+                return tmp_file.name
+        else:
+            return None
+            
+    except Exception as e:
+        st.error(f"Recording error: {str(e)}")
+        return None
 
 def main():
-    model, model_loaded = load_model()
+    # Load model
+    model, model_loaded, model_path = load_model()
     
     if not model_loaded:
+        st.error("🚨 **CRITICAL ERROR**: Model tidak dapat dimuat. Aplikasi tidak dapat berjalan tanpa model.")
         st.stop()
     
-    st.sidebar.header("📋 Model Information")
-    st.sidebar.info(f"""
-    **Model:** Random Forest
-    **Classes:** {', '.join(model.classes_)}
-    **Trees:** {model.n_estimators}
-    **Features:** {model.n_features_in_}
-    **Preprocessing:** Audio normalization & 1-second duration
-    """)
+    # Sidebar with model info
+    with st.sidebar:
+        st.markdown('<div class="sidebar-header">🤖 Model Information</div>', unsafe_allow_html=True)
+        
+        if model is not None and hasattr(model, 'classes_'):
+            st.info(f"""
+            **🎯 Model Type:** Random Forest
+            **🔢 Classes:** {', '.join(model.classes_)}
+            **📊 Features:** {model.n_features_in_ if hasattr(model, 'n_features_in_') else 'Unknown'}
+            **🌱 Trees:** {model.n_estimators if hasattr(model, 'n_estimators') else 'Unknown'}
+            **💾 Path:** {model_path}
+            """)
     
-    col1, col2 = st.columns([1, 1])
+    # Create tabs for different input methods
+    tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Record Audio"])
     
-    with col1:
-        st.header("Upload Audio File")
+    with tab1:
+        st.markdown('<div class="upload-area">', unsafe_allow_html=True)
+        st.header("🎤 Upload & Analyze Audio")
+        
         uploaded_file = st.file_uploader(
-            "pilih file audio (harap menggunakan format WAV). Suara dapat diambil dari link berikut: https://www.kaggle.com/datasets/muhammadridhoisdi/audio-recognition-buka-and-tutup",
+            "Upload file audio WAV untuk klasifikasi",
             type=['wav'],
-            help="Upload audio file yang ingin diklasifikasi (akan diproses menjadi 22050 Hz, 1 detik)"
+            help="Upload audio file WAV (akan diproses menjadi 1 detik @ 22050 Hz)"
         )
         
         if uploaded_file is not None:
+            # File details
             file_details = {
-                "Filename": uploaded_file.name,
-                "File size": f"{uploaded_file.size / 1024:.2f} KB"
+                "📁 Filename": uploaded_file.name,
+                "📊 File size": f"{uploaded_file.size / 1024:.2f} KB",
+                "🎵 Status": "✅ Ready for processing"
             }
+            
             st.json(file_details)
             
+            # Save uploaded file temporarily
             with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
                 tmp_file.write(uploaded_file.read())
                 temp_file_path = tmp_file.name
             
-            st.audio(uploaded_file, format='audio/wav')
+            # Audio player
+            st.markdown('<div class="audio-player">', unsafe_allow_html=True)
+            st.audio(temp_file_path, format='audio/wav')
+            st.markdown('</div>', unsafe_allow_html=True)
             
-            if st.button("🔍 Classify Audio", type="primary"):
-                with st.spinner("🔄 Processing audio..."):
+            # Classification button
+            if st.button("🔍 Analyze Audio", type="primary"):
+                with st.spinner("🔄 Processing audio... This may take a few seconds..."):
                     prediction, probabilities, features, y_processed, sr_processed = predict_audio(
                         temp_file_path, model
                     )
                 
                 if prediction is not None:
+                    # Results in col2
+                    col1, col2 = st.columns([1, 1])
                     with col2:
-                        st.header("Classification Results")
+                        st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
+                        st.header("📊 Classification Results")
                         
                         confidence = max(probabilities) * 100
+                        predicted_class = prediction.lower()
                         
-                        if prediction.lower() == 'buka':
+                        # Prediction display with gradient
+                        if predicted_class == 'buka':
                             st.markdown(f"""
-                            <div class="prediction-box prediction-buka">
-                                <h2>BUKA</h2>
-                                <p><strong>Confidence: {confidence:.1f}%</strong></p>
+                            <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: BUKA</h2>
+                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div class="prediction-box prediction-tutup">
-                                <h2>TUTUP</h2>
-                                <p><strong>Confidence: {confidence:.1f}%</strong></p>
+                            <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
+                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: TUTUP</h2>
+                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
                             </div>
                             """, unsafe_allow_html=True)
                         
-                        st.subheader("Prediction Probabilities")
-                        
-                        prob_text = f"""
-                        **Probabilitas:**
-                        - Buka: {probabilities[0]*100:.1f}%
-                        - Tutup: {probabilities[1]*100:.1f}%
-                        """
-                        st.markdown(prob_text)
+                        # Probability details
+                        st.subheader("📈 Detail Probabilitas")
                         
                         prob_df = pd.DataFrame({
-                            'Class': model.classes_,
-                            'Probability': probabilities * 100
+                            'Kelas': model.classes_,
+                            'Probabilitas (%)': probabilities * 100
                         })
                         
+                        # Bar chart
                         fig = px.bar(
                             prob_df, 
-                            x='Class', 
-                            y='Probability',
-                            title='Class Probabilities (%)',
-                            color='Probability',
-                            color_continuous_scale='RdYlBu_r',
-                            text='Probability'
+                            x='Kelas', 
+                            y='Probabilitas (%)',
+                            title='Distribusi Probabilitas Kelas',
+                            color='Probabilitas (%)',
+                            color_continuous_scale='RdYlGn',
+                            text='Probabilitas (%)'
                         )
                         fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-                        fig.update_layout(showlegend=False)
+                        fig.update_layout(
+                            showlegend=False,
+                            height=400,
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                        )
                         st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Feature analysis
+                        st.subheader("🔍 Analisis Fitur")
+                        if features:
+                            feature_cols = st.columns(3)
+                            feature_names = list(features.keys())
+                            
+                            for i, (name, value) in enumerate(features.items()):
+                                col_idx = i % 3
+                                with feature_cols[col_idx]:
+                                    st.markdown(f"""
+                                    <div class="feature-card">
+                                        <strong>{name.upper()}</strong><br>
+                                        <small>{value:.4f}</small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                        
+                        st.markdown('</div>', unsafe_allow_html=True)
                 
-                st.header("Audio Analysis")
-
+                # Waveform analysis
                 if y_processed is not None:
+                    st.markdown('<div class="info-section">', unsafe_allow_html=True)
+                    st.subheader("📊 Visualisasi Audio")
                     waveform_fig = create_waveform_plot(
-                        y_processed, sr_processed, "Processed Audio Waveform (1 second, 22050 Hz)"
+                        y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
                     )
-                    st.plotly_chart(waveform_fig, use_container_width=True)
-
-                os.unlink(temp_file_path)
-    
-    with col1:
-        st.header("Record Audio")
-        if st.button("🎤 Record Audio", type="primary"):
-            # Record audio and process it
-            temp_file_path = record_audio(duration=3)
-            st.audio(temp_file_path, format='audio/wav')
+                    if waveform_fig:
+                        st.plotly_chart(waveform_fig, use_container_width=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
             
-            with st.spinner("🔄 Processing recorded audio..."):
-                prediction, probabilities, features, y_processed, sr_processed = predict_audio(
-                    temp_file_path, model
-                )
+            # Clean up temp file
+            if 'temp_file_path' in locals():
+                os.unlink(temp_file_path)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with tab2:
+        st.markdown('<div class="upload-area">', unsafe_allow_html=True)
+        st.header("🎤 Record & Analyze Audio")
+        
+        # Show microphone section with explanation
+        st.markdown('<div class="microphone-section">', unsafe_allow_html=True)
+        st.markdown("""
+        <h3>🎤 Fitur Rekam Suara</h3>
+        <p>Fitur ini memungkinkan Anda merekam suara langsung dari mikrofon.</p>
+        <p><strong>Catatan:</strong> Fitur ini mungkin tidak berfungsi di semua platform atau browser.</p>
+        """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Use Streamlit's experimental audio input
+        audio_input = st.experimental_audio_input("Rekam suara Anda (durasi maksimal 1 detik):")
+        
+        if audio_input:
+            # Save the audio input to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                tmp_file.write(audio_input.read())
+                recorded_file_path = tmp_file.name
+            
+            # Play the recorded audio
+            st.audio(recorded_file_path, format='audio/wav')
+            
+            # Analyze button
+            if st.button("🔍 Analyze Recorded Audio", type="primary"):
+                with st.spinner("🔄 Processing recorded audio..."):
+                    prediction, probabilities, features, y_processed, sr_processed = predict_audio(
+                        recorded_file_path, model
+                    )
                 
-            if prediction is not None:
-                with col2:
-                    st.header("Classification Results")
-                    confidence = max(probabilities) * 100
-                    if prediction.lower() == 'buka':
-                        st.markdown(f"""
-                        <div class="prediction-box prediction-buka">
-                            <h2>BUKA</h2>
-                            <p><strong>Confidence: {confidence:.1f}%</strong></p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"""
-                        <div class="prediction-box prediction-tutup">
-                            <h2>TUTUP</h2>
-                            <p><strong>Confidence: {confidence:.1f}%</strong></p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    st.subheader("Prediction Probabilities")
-                    
-                    prob_text = f"""
-                    **Probabilitas:**
-                    - Buka: {probabilities[0]*100:.1f}%
-                    - Tutup: {probabilities[1]*100:.1f}%
+                if prediction is not None:
+                    # Results in col2
+                    col1, col2 = st.columns([1, 1])
+                    with col2:
+                        st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
+                        st.header("📊 Classification Results")
+                        
+                        confidence = max(probabilities) * 100
+                        predicted_class = prediction.lower()
+                        
+                        # Prediction display with gradient
+                        if predicted_class == 'buka':
+                            st.markdown(f"""
+                            <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: BUKA</h2>
+                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
+                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: TUTUP</h2>
+                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        # Probability details
+                        st.subheader("📈 Detail Probabilitas")
+                        
+                        prob_df = pd.DataFrame({
+                            'Kelas': model.classes_,
+                            'Probabilitas (%)': probabilities * 100
+                        })
+                        
+                        # Bar chart
+                        fig = px.bar(
+                            prob_df, 
+                            x='Kelas', 
+                            y='Probabilitas (%)',
+                            title='Distribusi Probabilitas Kelas',
+                            color='Probabilitas (%)',
+                            color_continuous_scale='RdYlGn',
+                            text='Probabilitas (%)'
+                        )
+                        fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+                        fig.update_layout(
+                            showlegend=False,
+                            height=400,
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Feature analysis
+                        st.subheader("🔍 Analisis Fitur")
+                        if features:
+                            feature_cols = st.columns(3)
+                            feature_names = list(features.keys())
+                            
+                            for i, (name, value) in enumerate(features.items()):
+                                col_idx = i % 3
+                                with feature_cols[col_idx]:
+                                    st.markdown(f"""
+                                    <div class="feature-card">
+                                        <strong>{name.upper()}</strong><br>
+                                        <small>{value:.4f}</small>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                        
+                        st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Waveform analysis for recorded audio
+                if y_processed is not None:
+                    st.markdown('<div class="info-section">', unsafe_allow_html=True)
+                    st.subheader("📊 Visualisasi Audio")
+                    waveform_fig = create_waveform_plot(
+                        y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
+                    )
+                    if waveform_fig:
+                        st.plotly_chart(waveform_fig, use_container_width=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Clean up temp file
+                os.unlink(recorded_file_path)
+        else:
+            st.info("👆 **Silakan klik tombol di atas untuk merekam suara Anda**")
+            st.warning("Fitur rekam suara memerlukan izin mikrofon dari browser Anda.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Info section
+    st.markdown('<div class="info-section">', unsafe_allow_html=True)
+    st.header("ℹ️ Panduan Penggunaan")
+    
+    col_info1, col_info2 = st.columns(2)
+    
+    with col_info1:
+        st.markdown("""
+        ### 📋 Langkah-langkah:
+        1. **Upload** file audio WAV atau **Record** langsung
+        2. **Klik** tombol "Analyze Audio"
+        3. **Lihat** hasil prediksi dan confidence
+        4. **Analisis** fitur dan waveform
+        
+        ### 🎯 Fitur Utama:
+        - Klasifikasi suara "Buka" vs "Tutup"
+        - Visualisasi waveform
+        - Probabilitas klasifikasi
+        - Ekstraksi fitur audio
+        - Rekam suara langsung (jika didukung)
+        """)
+    
+    with col_info2:
+        st.markdown("""
+        ### ⚙️ Prosesing:
+        - Resampling: 22050 Hz
+        - Durasi: 1 detik (potong/isi)
+        - Normalisasi amplitudo
+        - 10 fitur akustik diekstrak
+        
+        ### 📊 Model:
+        - Random Forest Classifier
+        - Multi-feature extraction
+        - Real-time prediction
+        - Cloud deployment friendly
+        """)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()
