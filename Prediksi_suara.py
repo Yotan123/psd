@@ -9,11 +9,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 import tempfile
-from pydub import AudioSegment
-from pydub.playback import play
-import io
-import wave
-import time
 
 st.set_page_config(
     page_title="Audio Classifier - Buka vs Tutup",
@@ -398,29 +393,6 @@ def create_waveform_plot(y, sr, title="Audio Waveform"):
         st.error(f"Waveform plot error: {str(e)}")
         return None
 
-def record_audio(duration=1.0, sample_rate=22050):
-    """
-    Record audio from microphone using Streamlit's audio input (fallback)
-    """
-    try:
-        # Show a message that direct recording is not supported
-        st.warning("🎤 **Fitur rekam suara langsung tidak didukung di semua platform.**")
-        st.info("Silakan upload file audio WAV untuk analisis.")
-        
-        # Use Streamlit's audio input if available (for future compatibility)
-        audio_input = st.experimental_audio_input("Rekam suara Anda (jika didukung):")
-        if audio_input:
-            # Save the audio input to a temporary file
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                tmp_file.write(audio_input.read())
-                return tmp_file.name
-        else:
-            return None
-            
-    except Exception as e:
-        st.error(f"Recording error: {str(e)}")
-        return None
-
 def main():
     # Load model
     model, model_loaded, model_path = load_model()
@@ -442,8 +414,16 @@ def main():
             **💾 Path:** {model_path}
             """)
     
+    # Check if Streamlit has audio input feature
+    streamlit_version = st.__version__
+    major, minor, patch = map(int, streamlit_version.split('.'))
+    has_audio_input = (major >= 1 and minor >= 29) or major > 1  # Available from 1.29.0
+    
     # Create tabs for different input methods
-    tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Record Audio"])
+    if has_audio_input:
+        tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Record Audio"])
+    else:
+        tab1, = st.tabs(["📁 Upload File"])
     
     with tab1:
         st.markdown('<div class="upload-area">', unsafe_allow_html=True)
@@ -570,127 +550,133 @@ def main():
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    with tab2:
-        st.markdown('<div class="upload-area">', unsafe_allow_html=True)
-        st.header("🎤 Record & Analyze Audio")
-        
-        # Show microphone section with explanation
-        st.markdown('<div class="microphone-section">', unsafe_allow_html=True)
-        st.markdown("""
-        <h3>🎤 Fitur Rekam Suara</h3>
-        <p>Fitur ini memungkinkan Anda merekam suara langsung dari mikrofon.</p>
-        <p><strong>Catatan:</strong> Fitur ini mungkin tidak berfungsi di semua platform atau browser.</p>
-        """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Use Streamlit's experimental audio input
-        audio_input = st.experimental_audio_input("Rekam suara Anda (durasi maksimal 1 detik):")
-        
-        if audio_input:
-            # Save the audio input to a temporary file
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                tmp_file.write(audio_input.read())
-                recorded_file_path = tmp_file.name
+    # Only show record tab if Streamlit version supports it
+    if has_audio_input:
+        with tab2:
+            st.markdown('<div class="upload-area">', unsafe_allow_html=True)
+            st.header("🎤 Record & Analyze Audio")
             
-            # Play the recorded audio
-            st.audio(recorded_file_path, format='audio/wav')
+            # Show microphone section with explanation
+            st.markdown('<div class="microphone-section">', unsafe_allow_html=True)
+            st.markdown(f"""
+            <h3>🎤 Fitur Rekam Suara (Streamlit v{streamlit_version})</h3>
+            <p>Fitur ini memungkinkan Anda merekam suara langsung dari mikrofon.</p>
+            <p><strong>Catatan:</strong> Fitur ini mungkin tidak berfungsi di semua platform atau browser.</p>
+            """, unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
             
-            # Analyze button
-            if st.button("🔍 Analyze Recorded Audio", type="primary"):
-                with st.spinner("🔄 Processing recorded audio..."):
-                    prediction, probabilities, features, y_processed, sr_processed = predict_audio(
-                        recorded_file_path, model
-                    )
+            # Use Streamlit's audio input
+            try:
+                audio_input = st.audio_input("Rekam suara Anda (durasi maksimal 1 detik):")
                 
-                if prediction is not None:
-                    # Results in col2
-                    col1, col2 = st.columns([1, 1])
-                    with col2:
-                        st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
-                        st.header("📊 Classification Results")
+                if audio_input:
+                    # Save the audio input to a temporary file
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                        tmp_file.write(audio_input.read())
+                        recorded_file_path = tmp_file.name
+                    
+                    # Play the recorded audio
+                    st.audio(recorded_file_path, format='audio/wav')
+                    
+                    # Analyze button
+                    if st.button("🔍 Analyze Recorded Audio", type="primary"):
+                        with st.spinner("🔄 Processing recorded audio..."):
+                            prediction, probabilities, features, y_processed, sr_processed = predict_audio(
+                                recorded_file_path, model
+                            )
                         
-                        confidence = max(probabilities) * 100
-                        predicted_class = prediction.lower()
-                        
-                        # Prediction display with gradient
-                        if predicted_class == 'buka':
-                            st.markdown(f"""
-                            <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: BUKA</h2>
-                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
-                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI: TUTUP</h2>
-                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        # Probability details
-                        st.subheader("📈 Detail Probabilitas")
-                        
-                        prob_df = pd.DataFrame({
-                            'Kelas': model.classes_,
-                            'Probabilitas (%)': probabilities * 100
-                        })
-                        
-                        # Bar chart
-                        fig = px.bar(
-                            prob_df, 
-                            x='Kelas', 
-                            y='Probabilitas (%)',
-                            title='Distribusi Probabilitas Kelas',
-                            color='Probabilitas (%)',
-                            color_continuous_scale='RdYlGn',
-                            text='Probabilitas (%)'
-                        )
-                        fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-                        fig.update_layout(
-                            showlegend=False,
-                            height=400,
-                            plot_bgcolor='rgba(0,0,0,0)',
-                            paper_bgcolor='rgba(0,0,0,0)',
-                        )
-                        st.plotly_chart(fig, use_container_width=True)
-                        
-                        # Feature analysis
-                        st.subheader("🔍 Analisis Fitur")
-                        if features:
-                            feature_cols = st.columns(3)
-                            feature_names = list(features.keys())
-                            
-                            for i, (name, value) in enumerate(features.items()):
-                                col_idx = i % 3
-                                with feature_cols[col_idx]:
+                        if prediction is not None:
+                            # Results in col2
+                            col1, col2 = st.columns([1, 1])
+                            with col2:
+                                st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
+                                st.header("📊 Classification Results")
+                                
+                                confidence = max(probabilities) * 100
+                                predicted_class = prediction.lower()
+                                
+                                # Prediction display with gradient
+                                if predicted_class == 'buka':
                                     st.markdown(f"""
-                                    <div class="feature-card">
-                                        <strong>{name.upper()}</strong><br>
-                                        <small>{value:.4f}</small>
+                                    <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                        <h2 style="color: white; margin: 0;">🎯 PREDIKSI: BUKA</h2>
+                                        <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
                                     </div>
                                     """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                    <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
+                                        <h2 style="color: white; margin: 0;">🎯 PREDIKSI: TUTUP</h2>
+                                        <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{confidence:.1f}%</strong></p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                
+                                # Probability details
+                                st.subheader("📈 Detail Probabilitas")
+                                
+                                prob_df = pd.DataFrame({
+                                    'Kelas': model.classes_,
+                                    'Probabilitas (%)': probabilities * 100
+                                })
+                                
+                                # Bar chart
+                                fig = px.bar(
+                                    prob_df, 
+                                    x='Kelas', 
+                                    y='Probabilitas (%)',
+                                    title='Distribusi Probabilitas Kelas',
+                                    color='Probabilitas (%)',
+                                    color_continuous_scale='RdYlGn',
+                                    text='Probabilitas (%)'
+                                )
+                                fig.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+                                fig.update_layout(
+                                    showlegend=False,
+                                    height=400,
+                                    plot_bgcolor='rgba(0,0,0,0)',
+                                    paper_bgcolor='rgba(0,0,0,0)',
+                                )
+                                st.plotly_chart(fig, use_container_width=True)
+                                
+                                # Feature analysis
+                                st.subheader("🔍 Analisis Fitur")
+                                if features:
+                                    feature_cols = st.columns(3)
+                                    feature_names = list(features.keys())
+                                    
+                                    for i, (name, value) in enumerate(features.items()):
+                                        col_idx = i % 3
+                                        with feature_cols[col_idx]:
+                                            st.markdown(f"""
+                                            <div class="feature-card">
+                                                <strong>{name.upper()}</strong><br>
+                                                <small>{value:.4f}</small>
+                                            </div>
+                                            """, unsafe_allow_html=True)
+                                
+                                st.markdown('</div>', unsafe_allow_html=True)
                         
-                        st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Waveform analysis for recorded audio
-                if y_processed is not None:
-                    st.markdown('<div class="info-section">', unsafe_allow_html=True)
-                    st.subheader("📊 Visualisasi Audio")
-                    waveform_fig = create_waveform_plot(
-                        y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
-                    )
-                    if waveform_fig:
-                        st.plotly_chart(waveform_fig, use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Clean up temp file
-                os.unlink(recorded_file_path)
-        else:
-            st.info("👆 **Silakan klik tombol di atas untuk merekam suara Anda**")
-            st.warning("Fitur rekam suara memerlukan izin mikrofon dari browser Anda.")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+                        # Waveform analysis for recorded audio
+                        if y_processed is not None:
+                            st.markdown('<div class="info-section">', unsafe_allow_html=True)
+                            st.subheader("📊 Visualisasi Audio")
+                            waveform_fig = create_waveform_plot(
+                                y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
+                            )
+                            if waveform_fig:
+                                st.plotly_chart(waveform_fig, use_container_width=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+                        
+                        # Clean up temp file
+                        os.unlink(recorded_file_path)
+                else:
+                    st.info("👆 **Silakan klik tombol di atas untuk merekam suara Anda**")
+                    st.warning("Fitur rekam suara memerlukan izin mikrofon dari browser Anda.")
+            except Exception as e:
+                st.error(f"Fitur rekam suara tidak tersedia: {str(e)}")
+                st.info("Silakan gunakan tab Upload File untuk menganalisis audio.")
+            
+            st.markdown('</div>', unsafe_allow_html=True)
     
     # Info section
     st.markdown('<div class="info-section">', unsafe_allow_html=True)
@@ -701,7 +687,7 @@ def main():
     with col_info1:
         st.markdown("""
         ### 📋 Langkah-langkah:
-        1. **Upload** file audio WAV atau **Record** langsung
+        1. **Upload** file audio WAV atau **Record** langsung (jika didukung)
         2. **Klik** tombol "Analyze Audio"
         3. **Lihat** hasil prediksi dan confidence
         4. **Analisis** fitur dan waveform
