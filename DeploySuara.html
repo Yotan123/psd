@@ -211,7 +211,13 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Suara.html">Data Understanding buka tutup suara</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Suarapreprocess.html">Preprocesing buka tutup suara</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Suaralanjutana.html">Modeling Dan Evaluasi buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Suaralanjutana.html">Modeling &amp; Evaluation (Random Forest) Suara Buka Tutup</a></li>
+
+
+
+
+
+
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Deployment Program buka tutup suara</a></li>
 </ul>
 
@@ -412,9 +418,10 @@ document.write(`
                   
   <section id="deployment-identifikasi-suara-buka-tutup">
 <h1>Deployment Identifikasi Suara Buka Tutup<a class="headerlink" href="#deployment-identifikasi-suara-buka-tutup" title="Link to this heading">#</a></h1>
+<p>ini adalah link deployment program analisa suara buka tutup <a class="reference external" href="https://suarabukatutup.streamlit.app/#c12906a1">https://suarabukatutup.streamlit.app/#c12906a1</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -427,290 +434,812 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
 <span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span>
-    <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;Audio Classification: Buka vs Tutup&quot;</span><span class="p">,</span>
-    <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;🎵&quot;</span><span class="p">,</span>
+    <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;Audio Classifier - Aksi &amp; Pembicara&quot;</span><span class="p">,</span> <span class="c1"># Updated title</span>
+    <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;🎧&quot;</span><span class="p">,</span>
     <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span><span class="p">,</span>
-    <span class="n">initial_sidebar_state</span><span class="o">=</span><span class="s2">&quot;expanded&quot;</span>
+    <span class="n">initial_sidebar_state</span><span class="o">=</span><span class="s2">&quot;collapsed&quot;</span>
 <span class="p">)</span>
 
+<span class="c1"># Updated CSS styling with modern look</span>
 <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;style&gt;</span>
-<span class="s2">    .main-header {</span>
-<span class="s2">        font-size: 2.5rem;</span>
-<span class="s2">        color: #1f77b4;</span>
+<span class="s2">    @import url(&#39;https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;display=swap&#39;);</span>
+
+<span class="s2">    html, body, [class*=&quot;css&quot;] {</span>
+<span class="s2">        font-family: &#39;Inter&#39;, sans-serif;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .main-title {</span>
+<span class="s2">        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span>
+<span class="s2">        -webkit-background-clip: text;</span>
+<span class="s2">        -webkit-text-fill-color: transparent;</span>
+<span class="s2">        background-clip: text;</span>
+<span class="s2">        font-size: 3rem;</span>
+<span class="s2">        font-weight: 700;</span>
 <span class="s2">        text-align: center;</span>
 <span class="s2">        margin-bottom: 2rem;</span>
-<span class="s2">        font-family: &#39;Arial&#39;, sans-serif;</span>
-<span class="s2">    }</span>
-<span class="s2">    .prediction-box {</span>
 <span class="s2">        padding: 1rem;</span>
-<span class="s2">        border-radius: 10px;</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        color: transparent;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .prediction-container {</span>
+<span class="s2">        background: linear-gradient(145deg, #f0f0f0, #ffffff);</span>
+<span class="s2">        border-radius: 20px;</span>
+<span class="s2">        padding: 2rem;</span>
 <span class="s2">        margin: 1rem 0;</span>
-<span class="s2">        text-align: center;</span>
-<span class="s2">        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);</span>
+<span class="s2">        box-shadow: 0 10px 30px rgba(0,0,0,0.1);</span>
+<span class="s2">        border: 1px solid #e0e0e0;</span>
 <span class="s2">        transition: all 0.3s ease;</span>
 <span class="s2">    }</span>
-<span class="s2">    .prediction-box:hover {</span>
-<span class="s2">        transform: scale(1.05);</span>
+
+<span class="s2">    .prediction-container:hover {</span>
+<span class="s2">        transform: translateY(-5px);</span>
+<span class="s2">        box-shadow: 0 15px 40px rgba(0,0,0,0.15);</span>
 <span class="s2">    }</span>
-<span class="s2">    .prediction-buka {</span>
-<span class="s2">        background-color: #d4edda;</span>
-<span class="s2">        border: 2px solid #28a745;</span>
-<span class="s2">        color: #155724;</span>
+
+<span class="s2">    .prediction-success {</span>
+<span class="s2">        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);</span>
+<span class="s2">        color: white;</span>
 <span class="s2">    }</span>
-<span class="s2">    .prediction-tutup {</span>
-<span class="s2">        background-color: #f8d7da;</span>
-<span class="s2">        border: 2px solid #dc3545;</span>
-<span class="s2">        color: #721c24;</span>
+
+<span class="s2">    .prediction-error {</span>
+<span class="s2">        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);</span>
+<span class="s2">        color: white;</span>
 <span class="s2">    }</span>
-<span class="s2">    .feature-info {</span>
-<span class="s2">        background-color: #f8f9fa;</span>
-<span class="s2">        padding: 1rem;</span>
-<span class="s2">        border-radius: 5px;</span>
+
+<span class="s2">    .feature-card {</span>
+<span class="s2">        background: linear-gradient(145deg, #ffffff, #f8f9fa);</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        padding: 1.5rem;</span>
 <span class="s2">        margin: 0.5rem 0;</span>
+<span class="s2">        box-shadow: 0 5px 15px rgba(0,0,0,0.08);</span>
+<span class="s2">        border-left: 4px solid #667eea;</span>
 <span class="s2">    }</span>
-<span class="s2">    .sidebar-header {</span>
-<span class="s2">        font-size: 1.5rem;</span>
-<span class="s2">        color: #1f77b4;</span>
-<span class="s2">        margin-top: 2rem;</span>
+
+<span class="s2">    .upload-area {</span>
+<span class="s2">        border: 3px dashed #667eea;</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        padding: 3rem 2rem;</span>
+<span class="s2">        text-align: center;</span>
+<span class="s2">        background: linear-gradient(145deg, #f8f9ff, #ffffff);</span>
+<span class="s2">        transition: all 0.3s ease;</span>
 <span class="s2">    }</span>
-<span class="s2">    .st-file-uploader {</span>
-<span class="s2">        background-color: #f0f8ff;</span>
+
+<span class="s2">    .upload-area:hover {</span>
+<span class="s2">        border-color: #764ba2;</span>
+<span class="s2">        background: linear-gradient(145deg, #ffffff, #f8f9ff);</span>
+<span class="s2">        transform: scale(1.02);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .metric-card {</span>
+<span class="s2">        background: linear-gradient(145deg, #667eea, #764ba2);</span>
+<span class="s2">        color: white;</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        padding: 1.5rem;</span>
+<span class="s2">        text-align: center;</span>
+<span class="s2">        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .audio-player {</span>
+<span class="s2">        background: linear-gradient(145deg, #f0f0f0, #ffffff);</span>
+<span class="s2">        border-radius: 12px;</span>
 <span class="s2">        padding: 1rem;</span>
-<span class="s2">        border-radius: 5px;</span>
-<span class="s2">        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);</span>
+<span class="s2">        margin: 1rem 0;</span>
 <span class="s2">    }</span>
-<span class="s2">    .st-file-uploader:hover {</span>
-<span class="s2">        background-color: #e1efff;</span>
+
+<span class="s2">    .info-section {</span>
+<span class="s2">        background: linear-gradient(145deg, #e3f2fd, #ffffff);</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        padding: 2rem;</span>
+<span class="s2">        margin: 1rem 0;</span>
+<span class="s2">        border-left: 5px solid #2196f3;</span>
 <span class="s2">    }</span>
-<span class="s2">    .st-spinner {</span>
-<span class="s2">        color: #007bff;</span>
+
+<span class="s2">    .button-primary {</span>
+<span class="s2">        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span>
+<span class="s2">        border: none;</span>
+<span class="s2">        color: white;</span>
+<span class="s2">        padding: 1rem 2rem;</span>
+<span class="s2">        border-radius: 12px;</span>
+<span class="s2">        font-size: 1.1rem;</span>
+<span class="s2">        font-weight: 600;</span>
+<span class="s2">        cursor: pointer;</span>
+<span class="s2">        transition: all 0.3s ease;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .button-primary:hover {</span>
+<span class="s2">        transform: translateY(-2px);</span>
+<span class="s2">        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .button-record {</span>
+<span class="s2">        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);</span>
+<span class="s2">        border: none;</span>
+<span class="s2">        color: white;</span>
+<span class="s2">        padding: 1rem 2rem;</span>
+<span class="s2">        border-radius: 12px;</span>
+<span class="s2">        font-size: 1.1rem;</span>
+<span class="s2">        font-weight: 600;</span>
+<span class="s2">        cursor: pointer;</span>
+<span class="s2">        transition: all 0.3s ease;</span>
+<span class="s2">        width: 100%;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .button-record:hover {</span>
+<span class="s2">        transform: translateY(-2px);</span>
+<span class="s2">        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .button-stop {</span>
+<span class="s2">        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);</span>
+<span class="s2">        border: none;</span>
+<span class="s2">        color: #333;</span>
+<span class="s2">        padding: 1rem 2rem;</span>
+<span class="s2">        border-radius: 12px;</span>
+<span class="s2">        font-size: 1.1rem;</span>
+<span class="s2">        font-weight: 600;</span>
+<span class="s2">        cursor: pointer;</span>
+<span class="s2">        transition: all 0.3s ease;</span>
+<span class="s2">        width: 100%;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .button-stop:hover {</span>
+<span class="s2">        transform: translateY(-2px);</span>
+<span class="s2">        box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .feature-grid {</span>
+<span class="s2">        display: grid;</span>
+<span class="s2">        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));</span>
+<span class="s2">        gap: 1rem;</span>
+<span class="s2">        margin: 1rem 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .sidebar-header {</span>
+<span class="s2">        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span>
+<span class="s2">        -webkit-background-clip: text;</span>
+<span class="s2">        -webkit-text-fill-color: transparent;</span>
+<span class="s2">        background-clip: text;</span>
+<span class="s2">        font-size: 1.5rem;</span>
+<span class="s2">        font-weight: 700;</span>
+<span class="s2">        margin-bottom: 1rem;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .pulse-animation {</span>
+<span class="s2">        animation: pulse 2s infinite;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    @keyframes pulse {</span>
+<span class="s2">        0% { transform: scale(1); }</span>
+<span class="s2">        50% { transform: scale(1.05); }</span>
+<span class="s2">        100% { transform: scale(1); }</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .glow-effect {</span>
+<span class="s2">        position: relative;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .glow-effect::after {</span>
+<span class="s2">        content: &#39;&#39;;</span>
+<span class="s2">        position: absolute;</span>
+<span class="s2">        top: -5px;</span>
+<span class="s2">        left: -5px;</span>
+<span class="s2">        right: -5px;</span>
+<span class="s2">        bottom: -5px;</span>
+<span class="s2">        background: linear-gradient(45deg, #667eea, #764ba2, #4facfe, #00f2fe);</span>
+<span class="s2">        border-radius: 20px;</span>
+<span class="s2">        z-index: -1;</span>
+<span class="s2">        opacity: 0.3;</span>
+<span class="s2">        filter: blur(10px);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .recording-indicator {</span>
+<span class="s2">        display: inline-block;</span>
+<span class="s2">        width: 12px;</span>
+<span class="s2">        height: 12px;</span>
+<span class="s2">        background-color: #ff6b6b;</span>
+<span class="s2">        border-radius: 50%;</span>
+<span class="s2">        margin-right: 8px;</span>
+<span class="s2">        animation: pulse 1s infinite;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .tab-content {</span>
+<span class="s2">        background: linear-gradient(145deg, #f8f9ff, #ffffff);</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        padding: 2rem;</span>
+<span class="s2">        margin: 1rem 0;</span>
+<span class="s2">        box-shadow: 0 5px 15px rgba(0,0,0,0.1);</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .microphone-section {</span>
+<span class="s2">        background: linear-gradient(135deg, #667eea, #764ba2);</span>
+<span class="s2">        color: white;</span>
+<span class="s2">        padding: 1.5rem;</span>
+<span class="s2">        border-radius: 15px;</span>
+<span class="s2">        text-align: center;</span>
+<span class="s2">        margin: 1rem 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .microphone-section h3 {</span>
+<span class="s2">        color: white;</span>
+<span class="s2">        margin: 0 0 1rem 0;</span>
+<span class="s2">    }</span>
+
+<span class="s2">    .microphone-section p {</span>
+<span class="s2">        color: rgba(255,255,255,0.8);</span>
+<span class="s2">        margin: 0.5rem 0;</span>
 <span class="s2">    }</span>
 <span class="s2">&lt;/style&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;h1 class=&quot;main-header&quot;&gt;Audio Classification: Suara Buka vs Tutup&lt;/h1&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Header with gradient effect</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;h1 class=&quot;main-title&quot;&gt;🎧 Klasifikasi Audio: Aksi Buka/Tutup &amp; Pengenalan Pembicara&lt;/h1&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="nd">@st</span><span class="o">.</span><span class="n">cache_resource</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_model</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the trained Random Forest model&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_models</span><span class="p">():</span> <span class="c1"># Renamed function</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the trained Random Forest models (action and speaker)&quot;&quot;&quot;</span>
+    <span class="n">action_model</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">speaker_model</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">action_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;model_results&#39;</span><span class="p">,</span> <span class="s1">&#39;rf_model_buka_tutup_tuned.pkl&#39;</span><span class="p">)</span>
+    <span class="n">speaker_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;model_results&#39;</span><span class="p">,</span> <span class="s1">&#39;rf_model_speaker_recognition_updated.pkl&#39;</span><span class="p">)</span>
+    <span class="n">models_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">loaded_paths</span> <span class="o">=</span> <span class="p">{}</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;model_results/rf_model_buka_tutup.pkl&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="kc">True</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Model tidak ditemukan! Pastikan file &#39;saved_models/rf_model_buka_tutup.pkl&#39; tersedia.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">action_model_path</span><span class="p">):</span>
+            <span class="n">action_model</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">action_model_path</span><span class="p">)</span>
+            <span class="n">loaded_paths</span><span class="p">[</span><span class="s1">&#39;action_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">action_model_path</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Model Aksi dimuat dari: </span><span class="si">{</span><span class="n">action_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Model Aksi tidak ditemukan di: </span><span class="si">{</span><span class="n">action_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">models_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">speaker_model_path</span><span class="p">):</span>
+            <span class="n">speaker_model</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">speaker_model_path</span><span class="p">)</span>
+            <span class="n">loaded_paths</span><span class="p">[</span><span class="s1">&#39;speaker_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">speaker_model_path</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Model Pembicara dimuat dari: </span><span class="si">{</span><span class="n">speaker_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Model Pembicara tidak ditemukan di: </span><span class="si">{</span><span class="n">speaker_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">models_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error saat memuat satu atau lebih model: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pastikan file model ada dan dalam format yang benar.&quot;</span><span class="p">)</span>
+        <span class="n">models_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">action_model</span><span class="p">,</span> <span class="n">speaker_model</span><span class="p">,</span> <span class="n">models_loaded</span><span class="p">,</span> <span class="n">loaded_paths</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_features</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">22050</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract audio features exactly like in your notebook</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">feat</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
-        <span class="s2">&quot;var&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
-        <span class="s2">&quot;skew&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
-        <span class="s2">&quot;kurt&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
-        <span class="s2">&quot;rms&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span>
-        <span class="s2">&quot;zcr&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">zero_crossing_rate</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span>
-        <span class="s2">&quot;centroid&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_centroid</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)),</span>
-        <span class="s2">&quot;bandwidth&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_bandwidth</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)),</span>
-        <span class="s2">&quot;rolloff&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_rolloff</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">))</span>
-    <span class="p">}</span>
-    
-    <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">hist</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">hist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>  
-    <span class="n">feat</span><span class="p">[</span><span class="s2">&quot;entropy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">hist</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">hist</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">))</span>
-    
-    <span class="k">return</span> <span class="n">feat</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">feat</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+            <span class="s2">&quot;var&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+            <span class="s2">&quot;skew&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+            <span class="s2">&quot;kurt&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+            <span class="s2">&quot;rms&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="s2">&quot;zcr&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">zero_crossing_rate</span><span class="p">(</span><span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="s2">&quot;centroid&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_centroid</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="s2">&quot;bandwidth&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_bandwidth</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="s2">&quot;rolloff&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_rolloff</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">}</span>
+
+        <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">hist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">feat</span><span class="p">[</span><span class="s2">&quot;entropy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">hist</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">hist</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">feat</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature extraction error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">preprocess_audio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="mi">22050</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Preprocess audio exactly like in your notebook</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sr</span> <span class="o">!=</span> <span class="n">target_sr</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">orig_sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">)</span>
-        <span class="n">sr</span> <span class="o">=</span> <span class="n">target_sr</span>
-    
-    <span class="c1"># durasi tidak lebih dari 1 detik</span>
-    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sr</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_len</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="n">max_len</span><span class="p">]</span>
-    
-    <span class="c1"># Normalisasi</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">sr</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sr</span> <span class="o">!=</span> <span class="n">target_sr</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">orig_sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">)</span>
+            <span class="n">sr</span> <span class="o">=</span> <span class="n">target_sr</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">predict_audio</span><span class="p">(</span><span class="n">audio_file</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="c1"># durasi tidak lebih dari 1 detik</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sr</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="n">max_len</span><span class="p">]</span>
+
+        <span class="c1"># Normalisasi</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">sr</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Audio preprocessing error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_audio</span><span class="p">(</span><span class="n">audio_file</span><span class="p">,</span> <span class="n">action_model</span><span class="p">,</span> <span class="n">speaker_model</span><span class="p">):</span> <span class="c1"># Updated signature</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Predict audio classification - same logic as your notebook</span>
+<span class="sd">    Predict audio classification and speaker recognition</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Load audio</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">audio_file</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">22050</span><span class="p">)</span>
-        
+        <span class="n">y</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">audio_file</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Load with original sample rate</span>
+
         <span class="c1"># Preprocess</span>
         <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span> <span class="o">=</span> <span class="n">preprocess_audio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="p">)</span>
-        
+
+        <span class="k">if</span> <span class="n">y_processed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># Updated return for None</span>
+
         <span class="c1"># Extract features</span>
         <span class="n">features</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">(</span><span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span><span class="p">)</span>
-        
+
+        <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># Updated return for None</span>
+
         <span class="c1"># Convert to DataFrame</span>
         <span class="n">X_new</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">features</span><span class="p">])</span>
-        
-        <span class="c1"># Predict</span>
-        <span class="n">pred_label</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">pred_proba</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        
-        <span class="k">return</span> <span class="n">pred_label</span><span class="p">,</span> <span class="n">pred_proba</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span>
-        
+
+        <span class="c1"># Predict action</span>
+        <span class="n">pred_action_label</span> <span class="o">=</span> <span class="n">action_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pred_action_proba</span> <span class="o">=</span> <span class="n">action_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Predict speaker</span>
+        <span class="n">pred_speaker_label</span> <span class="o">=</span> <span class="n">speaker_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pred_speaker_proba</span> <span class="o">=</span> <span class="n">speaker_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_new</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># --- START: Modified logic for speaker prediction --- #</span>
+        <span class="k">if</span> <span class="n">pred_speaker_label</span> <span class="o">==</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">:</span>
+            <span class="c1"># Find indices for &#39;Asep&#39; and &#39;Yotan&#39;</span>
+            <span class="n">asep_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span> <span class="o">==</span> <span class="s1">&#39;Asep&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">yotan_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span> <span class="o">==</span> <span class="s1">&#39;Yotan&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asep_idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">yotan_idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">prob_asep</span> <span class="o">=</span> <span class="n">pred_speaker_proba</span><span class="p">[</span><span class="n">asep_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">prob_yotan</span> <span class="o">=</span> <span class="n">pred_speaker_proba</span><span class="p">[</span><span class="n">yotan_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+                <span class="k">if</span> <span class="n">prob_asep</span> <span class="o">&gt;</span> <span class="n">prob_yotan</span><span class="p">:</span>
+                    <span class="n">pred_speaker_label</span> <span class="o">=</span> <span class="s1">&#39;Asep&#39;</span>
+                    <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="n">prob_asep</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">pred_speaker_label</span> <span class="o">=</span> <span class="s1">&#39;Yotan&#39;</span>
+                    <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="n">prob_yotan</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Fallback if Asep or Yotan not in classes (shouldn&#39;t happen with updated model)</span>
+                <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_speaker_proba</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_speaker_proba</span><span class="p">)</span>
+        <span class="c1"># --- END: Modified logic for speaker prediction --- #</span>
+
+        <span class="k">return</span> <span class="n">pred_action_label</span><span class="p">,</span> <span class="n">pred_action_proba</span><span class="p">,</span> <span class="n">pred_speaker_label</span><span class="p">,</span> <span class="n">pred_speaker_proba</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span>
+
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in prediction: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error in prediction: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># Updated return for None</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">create_waveform_plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Audio Waveform&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create waveform plot using plotly</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="n">sr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-    
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
-        <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span>
-        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">))</span>
-    
-    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
-        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
-        <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span>
-        <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span>
-        <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
-        <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">fig</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="n">sr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#667eea&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span>
+            <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Amplitudo&#39;</span><span class="p">,</span>
+            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+            <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+            <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fig</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Waveform plot error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-    <span class="n">model</span><span class="p">,</span> <span class="n">model_loaded</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">()</span>
-    
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_loaded</span><span class="p">:</span>
+    <span class="c1"># Load models</span>
+    <span class="n">action_model</span><span class="p">,</span> <span class="n">speaker_model</span><span class="p">,</span> <span class="n">models_loaded</span><span class="p">,</span> <span class="n">loaded_paths</span> <span class="o">=</span> <span class="n">load_models</span><span class="p">()</span> <span class="c1"># Updated call</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">models_loaded</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;🚨 **CRITICAL ERROR**: Satu atau lebih model tidak dapat dimuat. Aplikasi tidak dapat berjalan tanpa model.&quot;</span><span class="p">)</span> <span class="c1"># Updated message</span>
         <span class="n">st</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-    
-    <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;📋 Model Information&quot;</span><span class="p">)</span>
-    <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    **Model:** Random Forest</span>
-<span class="s2">    **Classes:** </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="si">}</span>
-<span class="s2">    **Trees:** </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">n_estimators</span><span class="si">}</span>
-<span class="s2">    **Features:** </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">n_features_in_</span><span class="si">}</span>
-<span class="s2">    **Preprocessing:** Audio normalization &amp; 1-second duration</span>
-<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-    
-    <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    
-    <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
-        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Upload Audio File&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Sidebar with model info</span>
+    <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;sidebar-header&quot;&gt;🤖 Informasi Model&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Updated title</span>
+
+        <span class="k">if</span> <span class="n">action_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            **🎯 Model Aksi (Buka/Tutup):**</span>
+<span class="s2">            **Tipe:** Random Forest</span>
+<span class="s2">            **Kelas:** </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">action_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">            **Path:** </span><span class="si">{</span><span class="n">loaded_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action_model&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">speaker_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            **🎤 Model Pembicara (Asep/Yotan):**</span>
+<span class="s2">            **Tipe:** Random Forest</span>
+<span class="s2">            **Kelas:** </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">            **Path:** </span><span class="si">{</span><span class="n">loaded_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;speaker_model&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if Streamlit has audio input feature using hasattr</span>
+    <span class="n">has_audio_input</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="s1">&#39;audio_input&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create tabs for different input methods</span>
+    <span class="k">if</span> <span class="n">has_audio_input</span><span class="p">:</span>
+        <span class="n">tab1</span><span class="p">,</span> <span class="n">tab2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span><span class="s2">&quot;📁 Upload File&quot;</span><span class="p">,</span> <span class="s2">&quot;🎤 Rekam Suara&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tab1</span><span class="p">,</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tabs</span><span class="p">([</span><span class="s2">&quot;📁 Upload File&quot;</span><span class="p">])</span>
+
+    <span class="k">with</span> <span class="n">tab1</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;upload-area&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;🎤 Unggah &amp; Analisis Audio&quot;</span><span class="p">)</span>
+
         <span class="n">uploaded_file</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span>
-            <span class="s2">&quot;Pilih file audio (format WAV). Suara dapat diambil dari link berikut: https://www.kaggle.com/datasets/muhammadridhoisdi/audio-recognition-buka-and-tutup&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Unggah file audio WAV untuk klasifikasi&quot;</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;wav&#39;</span><span class="p">],</span>
-            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Upload audio file yang ingin diklasifikasi (akan diproses menjadi 22050 Hz, 1 detik)&quot;</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Unggah file audio WAV (akan diproses menjadi 1 detik @ 22050 Hz)&quot;</span>
         <span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">uploaded_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># File details</span>
             <span class="n">file_details</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;Filename&quot;</span><span class="p">:</span> <span class="n">uploaded_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="s2">&quot;File size&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uploaded_file</span><span class="o">.</span><span class="n">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span>
+                <span class="s2">&quot;📁 Nama File&quot;</span><span class="p">:</span> <span class="n">uploaded_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;📊 Ukuran File&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uploaded_file</span><span class="o">.</span><span class="n">size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;🎵 Status&quot;</span><span class="p">:</span> <span class="s2">&quot;✅ Siap untuk diproses&quot;</span>
             <span class="p">}</span>
+
             <span class="n">st</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">file_details</span><span class="p">)</span>
-            
+
+            <span class="c1"># Save uploaded file temporarily</span>
             <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.wav&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp_file</span><span class="p">:</span>
                 <span class="n">tmp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">uploaded_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
                 <span class="n">temp_file_path</span> <span class="o">=</span> <span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span>
-            
-            <span class="n">st</span><span class="o">.</span><span class="n">audio</span><span class="p">(</span><span class="n">uploaded_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;audio/wav&#39;</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;🔍 Classify Audio&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">):</span>
-                
-                <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="s2">&quot;🔄 Processing audio...&quot;</span><span class="p">):</span>
-                    <span class="n">prediction</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span> <span class="o">=</span> <span class="n">predict_audio</span><span class="p">(</span>
-                        <span class="n">temp_file_path</span><span class="p">,</span> <span class="n">model</span>
+
+            <span class="c1"># Audio player</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;audio-player&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">audio</span><span class="p">(</span><span class="n">temp_file_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;audio/wav&#39;</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Classification button</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;🔍 Analisis Audio&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="s2">&quot;🔄 Memproses audio... Ini mungkin memakan waktu beberapa detik...&quot;</span><span class="p">):</span>
+                    <span class="n">pred_action_label</span><span class="p">,</span> <span class="n">pred_action_proba</span><span class="p">,</span> <span class="n">pred_speaker_label</span><span class="p">,</span> <span class="n">pred_speaker_proba</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span> <span class="o">=</span> <span class="n">predict_audio</span><span class="p">(</span>
+                        <span class="n">temp_file_path</span><span class="p">,</span> <span class="n">action_model</span><span class="p">,</span> <span class="n">speaker_model</span> <span class="c1"># Updated call</span>
                     <span class="p">)</span>
-                
-                <span class="k">if</span> <span class="n">prediction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">pred_action_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># Updated check</span>
+                    <span class="c1"># Results in col2</span>
+                    <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
                     <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
-                        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Classification Results&quot;</span><span class="p">)</span>
-                        
-                        <span class="n">confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
-                        
-                        <span class="k">if</span> <span class="n">prediction</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;buka&#39;</span><span class="p">:</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;prediction-container glow-effect&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;📊 Hasil Klasifikasi&quot;</span><span class="p">)</span>
+
+                        <span class="c1"># Display Action Prediction</span>
+                        <span class="n">action_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_action_proba</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="n">predicted_action_class</span> <span class="o">=</span> <span class="n">pred_action_label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">predicted_action_class</span> <span class="o">==</span> <span class="s1">&#39;buka&#39;</span><span class="p">:</span>
                             <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                            &lt;div class=&quot;prediction-box prediction-buka&quot;&gt;</span>
-<span class="s2">                                &lt;h2&gt;BUKA&lt;/h2&gt;</span>
-<span class="s2">                                &lt;p&gt;&lt;strong&gt;Confidence: </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                            &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);&quot;&gt;</span>
+<span class="s2">                                &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;🎯 PREDIKSI AKSI: BUKA&lt;/h2&gt;</span>
+<span class="s2">                                &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">action_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
 <span class="s2">                            &lt;/div&gt;</span>
 <span class="s2">                            &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                            &lt;div class=&quot;prediction-box prediction-tutup&quot;&gt;</span>
-<span class="s2">                                &lt;h2&gt;TUTUP&lt;/h2&gt;</span>
-<span class="s2">                                &lt;p&gt;&lt;strong&gt;Confidence: </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                            &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);&quot;&gt;</span>
+<span class="s2">                                &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;🎯 PREDIKSI AKSI: TUTUP&lt;/h2&gt;</span>
+<span class="s2">                                &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">action_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
 <span class="s2">                            &lt;/div&gt;</span>
 <span class="s2">                            &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                        
-                        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Prediction Probabilities&quot;</span><span class="p">)</span>
-                        
-                        <span class="n">prob_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                        **Probabilitas:**</span>
-<span class="s2">                        - Buka: </span><span class="si">{</span><span class="n">probabilities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%</span>
-<span class="s2">                        - Tutup: </span><span class="si">{</span><span class="n">probabilities</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%</span>
-<span class="s2">                        &quot;&quot;&quot;</span>
-                        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">prob_text</span><span class="p">)</span>
-                        
-                        <span class="n">prob_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-                            <span class="s1">&#39;Class&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
-                            <span class="s1">&#39;Probability&#39;</span><span class="p">:</span> <span class="n">probabilities</span> <span class="o">*</span> <span class="mi">100</span>
-                        <span class="p">})</span>
-                        
-                        <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-                            <span class="n">prob_df</span><span class="p">,</span> 
-                            <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> 
-                            <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">,</span>
-                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Class Probabilities (%)&#39;</span><span class="p">,</span>
-                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span><span class="p">,</span>
-                            <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;RdYlBu_r&#39;</span><span class="p">,</span>
-                            <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Probability&#39;</span>
-                        <span class="p">)</span>
-                        <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">&#39;%</span><span class="si">{text:.1f}</span><span class="s1">%&#39;</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">)</span>
-                        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                
-                <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Audio Analysis&quot;</span><span class="p">)</span>
 
+                        <span class="c1"># Display Speaker Prediction</span>
+                        <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_speaker_proba</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;🎤 Prediksi Pembicara&quot;</span><span class="p">)</span>
+                        <span class="c1"># The predict_audio function now guarantees pred_speaker_label is Asep or Yotan</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                        &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);&quot;&gt;</span>
+<span class="s2">                            &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;👤 PEMBICARA: </span><span class="si">{</span><span class="n">pred_speaker_label</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">                            &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">speaker_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                        &lt;/div&gt;</span>
+<span class="s2">                        &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="c1"># Probability details for Action</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📈 Detail Probabilitas Aksi&quot;</span><span class="p">)</span>
+                        <span class="n">prob_action_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                            <span class="s1">&#39;Kelas&#39;</span><span class="p">:</span> <span class="n">action_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+                            <span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">:</span> <span class="n">pred_action_proba</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="p">})</span>
+                        <span class="n">fig_action</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                            <span class="n">prob_action_df</span><span class="p">,</span>
+                            <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span>
+                            <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribusi Probabilitas Aksi&#39;</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                            <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;RdYlGn&#39;</span><span class="p">,</span>
+                            <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span>
+                        <span class="p">)</span>
+                        <span class="n">fig_action</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">&#39;%</span><span class="si">{text:.1f}</span><span class="s1">%&#39;</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">)</span>
+                        <span class="n">fig_action</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+                            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="c1"># Smaller height</span>
+                            <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                            <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_action</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="c1"># Probability details for Speaker</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📈 Detail Probabilitas Pembicara&quot;</span><span class="p">)</span>
+                        <span class="c1"># Re-calculate prob_speaker_df to exclude &#39;Unknown&#39; if it was originally predicted and overridden</span>
+                        <span class="n">speaker_classes_filtered</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span> <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">]</span>
+                        <span class="n">speaker_proba_filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">proba</span> <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">proba</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">pred_speaker_proba</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">]</span>
+
+                        <span class="n">prob_speaker_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                            <span class="s1">&#39;Kelas&#39;</span><span class="p">:</span> <span class="n">speaker_classes_filtered</span><span class="p">,</span>
+                            <span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">speaker_proba_filtered</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                        <span class="p">})</span>
+                        <span class="n">fig_speaker</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                            <span class="n">prob_speaker_df</span><span class="p">,</span>
+                            <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span>
+                            <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribusi Probabilitas Pembicara&#39;</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                            <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;RdYlGn&#39;</span><span class="p">,</span>
+                            <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span>
+                        <span class="p">)</span>
+                        <span class="n">fig_speaker</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">&#39;%</span><span class="si">{text:.1f}</span><span class="s1">%&#39;</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">)</span>
+                        <span class="n">fig_speaker</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+                            <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="c1"># Smaller height</span>
+                            <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                            <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_speaker</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="c1"># Feature analysis</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;🔍 Analisis Fitur&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">features</span><span class="p">:</span>
+                            <span class="n">feature_cols</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                            <span class="c1"># feature_names = list(features.keys()) # This line is not used</span>
+                            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                                <span class="n">col_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span>
+                                <span class="k">with</span> <span class="n">feature_cols</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]:</span>
+                                    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                    &lt;div class=&quot;feature-card&quot;&gt;</span>
+<span class="s2">                                        &lt;strong&gt;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&lt;/strong&gt;&lt;br&gt;</span>
+<span class="s2">                                        &lt;small&gt;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&lt;/small&gt;</span>
+<span class="s2">                                    &lt;/div&gt;</span>
+<span class="s2">                                    &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Waveform analysis</span>
                 <span class="k">if</span> <span class="n">y_processed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;info-section&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📊 Visualisasi Audio&quot;</span><span class="p">)</span>
                     <span class="n">waveform_fig</span> <span class="o">=</span> <span class="n">create_waveform_plot</span><span class="p">(</span>
-                        <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span><span class="p">,</span> <span class="s2">&quot;Processed Audio Waveform (1 second, 22050 Hz)&quot;</span>
+                        <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span><span class="p">,</span> <span class="s2">&quot;Waveform Audio (1 detik, 22050 Hz)&quot;</span>
                     <span class="p">)</span>
-                    <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">waveform_fig</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                
+                    <span class="k">if</span> <span class="n">waveform_fig</span><span class="p">:</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">waveform_fig</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Clean up temp file</span>
+            <span class="k">if</span> <span class="s1">&#39;temp_file_path&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">temp_file_path</span><span class="p">)</span>
-    
-    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;Cara Menggunakan Aplikasi Ini&quot;</span><span class="p">)</span>
-    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    1. **Upload** file audio (format: hanya bisa format WAV)</span>
-<span class="s2">    2. **Click** tombol &quot;Classify Audio&quot; untuk memproses</span>
-<span class="s2">    3. **Lihat** hasil prediksi dan confidence score</span>
-<span class="s2">    4. **Analisis** waveform dan fitur audio yang diekstrak</span>
-<span class="s2">    </span>
-<span class="s2">    **Processing Details:**</span>
-<span class="s2">    - Audio akan di-resample ke 22050 Hz</span>
-<span class="s2">    - Durasi akan dipotong/diperpanjang menjadi tepat 1 detik</span>
-<span class="s2">    - Normalisasi amplitudo akan diterapkan</span>
-<span class="s2">    - 10 fitur akustik akan diekstrak untuk klasifikasi</span>
-<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Only show record tab if Streamlit version supports it</span>
+    <span class="k">if</span> <span class="n">has_audio_input</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">tab2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;upload-area&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;🎤 Rekam Suara&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Use Streamlit&#39;s audio input</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">audio_input</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">audio_input</span><span class="p">(</span><span class="s2">&quot;Rekam suara Anda (durasi maksimal 1 detik):&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">audio_input</span><span class="p">:</span>
+                    <span class="c1"># Save the audio input to a temporary file</span>
+                    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.wav&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp_file</span><span class="p">:</span>
+                        <span class="n">tmp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">audio_input</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                        <span class="n">recorded_file_path</span> <span class="o">=</span> <span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span>
+
+                    <span class="c1"># Play the recorded audio</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">audio</span><span class="p">(</span><span class="n">recorded_file_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;audio/wav&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Analyze button</span>
+                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;🔍 Analisis Audio Rekaman&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">):</span>
+                        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="s2">&quot;🔄 Memproses audio rekaman...&quot;</span><span class="p">):</span>
+                            <span class="n">pred_action_label</span><span class="p">,</span> <span class="n">pred_action_proba</span><span class="p">,</span> <span class="n">pred_speaker_label</span><span class="p">,</span> <span class="n">pred_speaker_proba</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span> <span class="o">=</span> <span class="n">predict_audio</span><span class="p">(</span>
+                                <span class="n">recorded_file_path</span><span class="p">,</span> <span class="n">action_model</span><span class="p">,</span> <span class="n">speaker_model</span> <span class="c1"># Updated call</span>
+                            <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">pred_action_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># Updated check</span>
+                            <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+                            <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;prediction-container glow-effect&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;📊 Hasil Klasifikasi&quot;</span><span class="p">)</span>
+
+                                <span class="c1"># Display Action Prediction</span>
+                                <span class="n">action_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_action_proba</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                                <span class="n">predicted_action_class</span> <span class="o">=</span> <span class="n">pred_action_label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">predicted_action_class</span> <span class="o">==</span> <span class="s1">&#39;buka&#39;</span><span class="p">:</span>
+                                    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                    &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);&quot;&gt;</span>
+<span class="s2">                                        &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;🎯 PREDIKSI AKSI: BUKA&lt;/h2&gt;</span>
+<span class="s2">                                        &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">action_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                                    &lt;/div&gt;</span>
+<span class="s2">                                    &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                    &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);&quot;&gt;</span>
+<span class="s2">                                        &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;🎯 PREDIKSI AKSI: TUTUP&lt;/h2&gt;</span>
+<span class="s2">                                        &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">action_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                                    &lt;/div&gt;</span>
+<span class="s2">                                    &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                <span class="c1"># Display Speaker Prediction</span>
+                                <span class="n">speaker_confidence</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pred_speaker_proba</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;🎤 Prediksi Pembicara&quot;</span><span class="p">)</span>
+                                <span class="c1"># The predict_audio function now guarantees pred_speaker_label is Asep or Yotan</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                &lt;div class=&quot;metric-card&quot; style=&quot;background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);&quot;&gt;</span>
+<span class="s2">                                    &lt;h2 style=&quot;color: white; margin: 0;&quot;&gt;👤 PEMBICARA: </span><span class="si">{</span><span class="n">pred_speaker_label</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">                                    &lt;p style=&quot;color: white; margin: 0.5rem 0; font-size: 1.2rem;&quot;&gt;Confidence: &lt;strong&gt;</span><span class="si">{</span><span class="n">speaker_confidence</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="s2">                                &lt;/div&gt;</span>
+<span class="s2">                                &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                <span class="c1"># Probability details for Action</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📈 Detail Probabilitas Aksi&quot;</span><span class="p">)</span>
+                                <span class="n">prob_action_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                                    <span class="s1">&#39;Kelas&#39;</span><span class="p">:</span> <span class="n">action_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span>
+                                    <span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">:</span> <span class="n">pred_action_proba</span> <span class="o">*</span> <span class="mi">100</span>
+                                <span class="p">})</span>
+                                <span class="n">fig_action</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                                    <span class="n">prob_action_df</span><span class="p">,</span>
+                                    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span>
+                                    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribusi Probabilitas Aksi&#39;</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                                    <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;RdYlGn&#39;</span><span class="p">,</span>
+                                    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span>
+                                <span class="p">)</span>
+                                <span class="n">fig_action</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">&#39;%</span><span class="si">{text:.1f}</span><span class="s1">%&#39;</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">)</span>
+                                <span class="n">fig_action</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+                                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                                    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                                    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                                <span class="p">)</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_action</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                <span class="c1"># Probability details for Speaker</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📈 Detail Probabilitas Pembicara&quot;</span><span class="p">)</span>
+                                <span class="c1"># Re-calculate prob_speaker_df to exclude &#39;Unknown&#39; if it was originally predicted and overridden</span>
+                                <span class="n">speaker_classes_filtered</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span> <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span> <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">]</span>
+                                <span class="n">speaker_proba_filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">proba</span> <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">proba</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">speaker_model</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">pred_speaker_proba</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">]</span>
+
+                                <span class="n">prob_speaker_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                                    <span class="s1">&#39;Kelas&#39;</span><span class="p">:</span> <span class="n">speaker_classes_filtered</span><span class="p">,</span>
+                                    <span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">speaker_proba_filtered</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                                <span class="p">})</span>
+                                <span class="n">fig_speaker</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                                    <span class="n">prob_speaker_df</span><span class="p">,</span>
+                                    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Kelas&#39;</span><span class="p">,</span>
+                                    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribusi Probabilitas Pembicara&#39;</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span><span class="p">,</span>
+                                    <span class="n">color_continuous_scale</span><span class="o">=</span><span class="s1">&#39;RdYlGn&#39;</span><span class="p">,</span>
+                                    <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Probabilitas (%)&#39;</span>
+                                <span class="p">)</span>
+                                <span class="n">fig_speaker</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">texttemplate</span><span class="o">=</span><span class="s1">&#39;%</span><span class="si">{text:.1f}</span><span class="s1">%&#39;</span><span class="p">,</span> <span class="n">textposition</span><span class="o">=</span><span class="s1">&#39;outside&#39;</span><span class="p">)</span>
+                                <span class="n">fig_speaker</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+                                    <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                                    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                                    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span><span class="p">,</span>
+                                <span class="p">)</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">fig_speaker</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                <span class="c1"># Feature analysis</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;🔍 Analisis Fitur&quot;</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">features</span><span class="p">:</span>
+                                    <span class="n">feature_cols</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                                        <span class="n">col_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span>
+                                        <span class="k">with</span> <span class="n">feature_cols</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]:</span>
+                                            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                            &lt;div class=&quot;feature-card&quot;&gt;</span>
+<span class="s2">                                                &lt;strong&gt;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&lt;/strong&gt;&lt;br&gt;</span>
+<span class="s2">                                                &lt;small&gt;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&lt;/small&gt;</span>
+<span class="s2">                                            &lt;/div&gt;</span>
+<span class="s2">                                            &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="c1"># Waveform analysis for recorded audio</span>
+                        <span class="k">if</span> <span class="n">y_processed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;info-section&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                            <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📊 Visualisasi Audio&quot;</span><span class="p">)</span>
+                            <span class="n">waveform_fig</span> <span class="o">=</span> <span class="n">create_waveform_plot</span><span class="p">(</span>
+                                <span class="n">y_processed</span><span class="p">,</span> <span class="n">sr_processed</span><span class="p">,</span> <span class="s2">&quot;Waveform Audio (1 detik, 22050 Hz)&quot;</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">waveform_fig</span><span class="p">:</span>
+                                <span class="n">st</span><span class="o">.</span><span class="n">plotly_chart</span><span class="p">(</span><span class="n">waveform_fig</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                        <span class="c1"># Clean up temp file</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">recorded_file_path</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;👆 **Silakan klik tombol di atas untuk merekam suara Anda**&quot;</span><span class="p">)</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Fitur rekam suara memerlukan izin mikrofon dari browser Anda.&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fitur rekam suara tidak tersedia: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Silakan gunakan tab Unggah File untuk menganalisis audio.&quot;</span><span class="p">)</span>
+
+            <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Jika tidak ada fitur rekam suara</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;🎤 Fitur rekam suara tidak tersedia di versi Streamlit ini.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Info section</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;info-section&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;ℹ️ Panduan Penggunaan&quot;</span><span class="p">)</span>
+
+    <span class="n">col_info1</span><span class="p">,</span> <span class="n">col_info2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">col_info1</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        ### 📋 Langkah-langkah:</span>
+<span class="s2">        1. **Unggah** file audio WAV atau **Rekam** langsung (jika didukung)</span>
+<span class="s2">        2. **Klik** tombol &quot;Analisis Audio&quot;</span>
+<span class="s2">        3. **Lihat** hasil prediksi aksi (Buka/Tutup) dan pembicara (Asep/Yotan/Tidak Dikenal)</span>
+<span class="s2">        4. **Analisis** fitur dan waveform</span>
+
+<span class="s2">        ### 🎯 Fitur Utama:</span>
+<span class="s2">        - Klasifikasi suara &quot;Buka&quot; vs &quot;Tutup&quot;</span>
+<span class="s2">        - Pengenalan Pembicara &quot;Asep&quot; vs &quot;Yotan&quot;</span>
+<span class="s2">        - Visualisasi waveform</span>
+<span class="s2">        - Probabilitas klasifikasi</span>
+<span class="s2">        - Ekstraksi fitur audio</span>
+<span class="s2">        - Rekam suara langsung (jika didukung)</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">col_info2</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        ### ⚙️ Prosesing:</span>
+<span class="s2">        - Resampling: 22050 Hz</span>
+<span class="s2">        - Durasi: 1 detik (potong/isi)</span>
+<span class="s2">        - Normalisasi amplitudo</span>
+<span class="s2">        - 10 fitur akustik diekstrak</span>
+
+<span class="s2">        ### 📊 Model:</span>
+<span class="s2">        - Random Forest Classifier (untuk Aksi)</span>
+<span class="s2">        - Random Forest Classifier (untuk Pembicara)</span>
+<span class="s2">        - Multi-feature extraction</span>
+<span class="s2">        - Real-time prediction</span>
+<span class="s2">        - Cloud deployment friendly</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -718,49 +1247,95 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-11-02 22:30:45.456 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.458 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.660 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-11-09 12:42:17.843 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:17.845 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.130 
   <span class=" -Color -Color-Bold -Color-Bold-Yellow">Warning:</span> to view this Streamlit app on a browser, run it with the following
   command:
 
     streamlit run /home/codespace/.local/lib/python3.12/site-packages/ipykernel_launcher.py [ARGUMENTS]
-2025-11-02 22:30:45.661 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.661 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.663 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.663 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.665 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.669 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.670 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.673 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.673 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.911 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.912 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.913 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.914 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.914 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.916 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.916 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.918 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.919 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.920 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.921 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.921 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.923 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.924 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.925 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.926 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.927 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.928 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.930 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.930 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.932 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.933 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.934 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.935 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.936 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.937 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2025-11-02 22:30:45.938 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.130 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.131 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.132 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.134 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.134 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.140 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.141 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.142 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.143 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.144 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.146 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.146 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.147 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.149 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.149 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.150 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.151 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.154 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.156 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.156 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.157 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.157 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.158 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.158 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.160 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.160 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.161 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.161 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.162 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.163 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.163 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.164 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.165 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.165 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.166 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.167 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.167 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.168 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.168 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.170 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.170 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.171 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.172 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.173 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.173 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.174 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.174 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.175 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.175 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.176 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.177 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.177 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.178 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.179 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.180 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.180 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.181 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.181 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.183 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.183 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.184 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.185 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.186 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.186 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.187 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.187 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.188 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.189 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.199 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.201 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.202 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.203 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.205 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.205 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.207 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.207 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.208 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.211 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.211 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.212 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.216 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2025-11-09 12:42:18.218 Thread &#39;MainThread&#39;: missing ScriptRunContext! This warning can be ignored when running in bare mode.
 </pre></div>
 </div>
 </div>
