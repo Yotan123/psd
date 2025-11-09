@@ -455,10 +455,15 @@ def main():
             **Path:** {loaded_paths.get('speaker_model', 'N/A')}
             """)
 
-    # Check if Streamlit has audio input feature
-    has_audio_input = hasattr(st, 'audio_input')
-
     # Create tabs for different input methods
+    # Try to detect and use audio input feature safely
+    try:
+        # Try to use st.audio_input to see if it works
+        _ = st.audio_input
+        has_audio_input = True
+    except AttributeError:
+        has_audio_input = False
+
     if has_audio_input:
         tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Audio"])
     else:
