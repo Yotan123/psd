@@ -61,7 +61,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Deployment Identifikasi Suara Buka Tutup" href="DeploySuara.html" />
-    <link rel="prev" title="Preprocessing Suara Buka Tutup" href="Suarapreprocess.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="Suarapreprocess.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -211,7 +211,6 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Buka Tutup suara</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="Suara.html">Data Understanding buka tutup suara</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Suarapreprocess.html">Preprocesing buka tutup suara</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Modeling Dan Evaluasi buka tutup suara</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DeploySuara.html">Deployment Program buka tutup suara</a></li>
 </ul>
@@ -1135,6 +1134,59 @@ Probabilitas: Buka=76.5%, Tutup=23.5%
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="c1"># Tentukan direktori sumber dan tujuan</span>
+<span class="n">TRAIN_DIR</span> <span class="o">=</span> <span class="s1">&#39;/path/to/train&#39;</span>  <span class="c1"># Ganti dengan path ke direktori train Anda</span>
+<span class="n">VAL_DIR</span> <span class="o">=</span> <span class="s1">&#39;/path/to/validation&#39;</span>  <span class="c1"># Ganti dengan path ke direktori validation Anda</span>
+
+<span class="c1"># Membuat direktori validation jika belum ada</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">VAL_DIR</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Definisikan rasio pembagian</span>
+<span class="n">split_ratio</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># 20% untuk validation, sisanya untuk training</span>
+
+<span class="c1"># Fungsi untuk membagi data menjadi train dan validation</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_data</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">,</span> <span class="n">split_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">source_dir</span><span class="p">):</span>
+        <span class="n">label_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">label_path</span><span class="p">):</span>  <span class="c1"># Pastikan label adalah direktori</span>
+            <span class="c1"># Buat folder label di direktori validation</span>
+            <span class="n">val_label_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">val_label_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">subfolder</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;buka&#39;</span><span class="p">,</span> <span class="s1">&#39;tutup&#39;</span><span class="p">]:</span>  <span class="c1"># Sesuaikan dengan struktur folder Anda</span>
+                <span class="n">subfolder_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="n">subfolder</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">subfolder_path</span><span class="p">):</span>
+                    <span class="c1"># Buat subfolder buka dan tutup di validation</span>
+                    <span class="n">val_subfolder_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val_label_path</span><span class="p">,</span> <span class="n">subfolder</span><span class="p">)</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">val_subfolder_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    
+                    <span class="c1"># Ambil daftar file WAV dalam subfolder</span>
+                    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">subfolder_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.wav&#39;</span><span class="p">)]</span>
+                    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>  <span class="c1"># Acak file agar pembagian acak</span>
+                    <span class="n">num_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">*</span> <span class="n">split_ratio</span><span class="p">)</span>  <span class="c1"># Tentukan berapa banyak file untuk validasi</span>
+                    <span class="n">val_files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[:</span><span class="n">num_val</span><span class="p">]</span>  <span class="c1"># Ambil file untuk validation</span>
+                    <span class="n">train_files</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">num_val</span><span class="p">:]</span>  <span class="c1"># Sisanya untuk training</span>
+                    
+                    <span class="c1"># Salin file ke folder tujuan</span>
+                    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">val_files</span><span class="p">:</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subfolder_path</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val_subfolder_path</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> files from </span><span class="si">{</span><span class="n">subfolder_path</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">val_subfolder_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Memanggil fungsi untuk membagi data</span>
+<span class="n">split_data</span><span class="p">(</span><span class="n">TRAIN_DIR</span><span class="p">,</span> <span class="n">VAL_DIR</span><span class="p">,</span> <span class="n">split_ratio</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pembagian data train dan validation selesai.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1173,7 +1225,7 @@ Probabilitas: Buka=76.5%, Tutup=23.5%
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Preprocessing Suara Buka Tutup</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
       </div>
     </a>
     <a class="right-next"
