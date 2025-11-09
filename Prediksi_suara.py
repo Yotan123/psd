@@ -456,9 +456,7 @@ def main():
             """)
 
     # Check if Streamlit has audio input feature
-    streamlit_version = st.__version__
-    major, minor, patch = map(int, streamlit_version.split('.'))
-    has_audio_input = (major >= 1 and minor >= 29) or major > 1  # Available from 1.29.0
+    has_audio_input = hasattr(st, 'audio_input')
 
     # Create tabs for different input methods
     if has_audio_input:
@@ -632,6 +630,7 @@ def main():
             st.header("🎤 Rekam & Analisis Audio")
 
             # Show microphone section with explanation
+            streamlit_version = st.__version__
             st.markdown(f"""
             <div class="microphone-section">
             <h3>🎤 Fitur Rekam Suara (Streamlit v{streamlit_version})</h3>
@@ -784,6 +783,9 @@ def main():
                 st.info("Silakan gunakan tab Unggah File untuk menganalisis audio.")
 
             st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        # Jika tidak ada fitur rekam suara
+        st.info("🎤 Fitur rekam suara tidak tersedia di versi Streamlit ini.")
 
     # Info section
     st.markdown('<div class="info-section">', unsafe_allow_html=True)
