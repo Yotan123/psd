@@ -429,6 +429,16 @@ def create_waveform_plot(y, sr, title="Audio Waveform"):
         return None
 
 def main():
+    # Debug info
+    st.write(f"Streamlit Version: {st.__version__}")
+    try:
+        _ = st.audio_input
+        st.write("✅ `st.audio_input` tersedia")
+        has_audio_input = True
+    except AttributeError:
+        st.write("❌ `st.audio_input` tidak tersedia")
+        has_audio_input = False
+
     # Load models
     action_model, speaker_model, models_loaded, loaded_paths = load_models() # Updated call
 
@@ -456,14 +466,6 @@ def main():
             """)
 
     # Create tabs for different input methods
-    # Try to detect and use audio input feature safely
-    try:
-        # Try to use st.audio_input to see if it works
-        _ = st.audio_input
-        has_audio_input = True
-    except AttributeError:
-        has_audio_input = False
-
     if has_audio_input:
         tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Audio"])
     else:
