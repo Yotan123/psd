@@ -12,5 +12,4 @@ plotly==5.18.0
 streamlit==1.30.0
 scikit-learn==1.6.1
 setuptools==68.2.2
-streamlit-webrtc==0.47.0
 

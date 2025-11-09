@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 import tempfile
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-import av
 
 st.set_page_config(
     page_title="Audio Classifier - Aksi & Pembicara", # Updated title
@@ -457,8 +455,14 @@ def main():
             **Path:** {loaded_paths.get('speaker_model', 'N/A')}
             """)
 
+    # Check if Streamlit has audio input feature using hasattr
+    has_audio_input = hasattr(st, 'audio_input')
+
     # Create tabs for different input methods
-    tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Suara"])
+    if has_audio_input:
+        tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Suara"])
+    else:
+        tab1, = st.tabs(["📁 Upload File"])
 
     with tab1:
         st.markdown('<div class="upload-area">', unsafe_allow_html=True)
@@ -619,52 +623,33 @@ def main():
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-    with tab2:
-        st.markdown('<div class="upload-area">', unsafe_allow_html=True)
-        st.header("🎤 Rekam Suara")
+    # Only show record tab if Streamlit version supports it
+    if has_audio_input:
+        with tab2:
+            st.markdown('<div class="upload-area">', unsafe_allow_html=True)
+            st.header("🎤 Rekam Suara")
 
-        # WebRTC Audio Streamer
-        rtc_configuration = RTCConfiguration({
-            "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-        })
+            # Use Streamlit's audio input
+            try:
+                audio_input = st.audio_input("Rekam suara Anda (durasi maksimal 1 detik):")
 
-        webrtc_ctx = webrtc_streamer(
-            key="audio",
-            mode=WebRtcMode.SENDONLY,
-            audio_receiver_size=1024,
-            rtc_configuration=rtc_configuration,
-            media_stream_constraints={"video": False, "audio": True},
-        )
+                if audio_input:
+                    # Save the audio input to a temporary file
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                        tmp_file.write(audio_input.read())
+                        recorded_file_path = tmp_file.name
 
-        if webrtc_ctx and webrtc_ctx.audio_receiver:
-            if st.button("🔍 Simpan & Analisis Rekaman"):
-                with st.spinner("🔄 Memproses audio... Ini mungkin memakan waktu beberapa detik..."):
-                    # Collect audio frames
-                    frames = []
-                    try:
-                        while True:
-                            frame = webrtc_ctx.audio_receiver.get_frame(timeout=1)
-                            frames.append(frame)
-                    except Exception:
-                        pass  # No more frames
+                    # Play the recorded audio
+                    st.audio(recorded_file_path, format='audio/wav')
 
-                    if frames:
-                        # Concatenate frames
-                        audio_data = np.concatenate([frame.to_ndarray() for frame in frames], axis=0)
-                        # Normalize to [-1, 1] float32
-                        audio_data = audio_data.astype(np.float32) / 32768.0  # Assuming int16
+                    # Analyze button
+                    if st.button("🔍 Analisis Audio Rekaman", type="primary"):
+                        with st.spinner("🔄 Memproses audio rekaman..."):
+                            pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
+                                recorded_file_path, action_model, speaker_model # Updated call
+                            )
 
-                        # Save to temporary file as WAV
-                        with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                            librosa.output.write_wav(tmp_file.name, audio_data, sr=44100)  # Default sr for WebRTC
-                            temp_file_path = tmp_file.name
-
-                        # Predict
-                        pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
-                            temp_file_path, action_model, speaker_model
-                        )
-
-                        if pred_action_label is not None:
+                        if pred_action_label is not None: # Updated check
                             col1, col2 = st.columns([1, 1])
                             with col2:
                                 st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
@@ -691,6 +676,7 @@ def main():
                                 # Display Speaker Prediction
                                 speaker_confidence = max(pred_speaker_proba) * 100
                                 st.subheader("🎤 Prediksi Pembicara")
+                                # The predict_audio function now guarantees pred_speaker_label is Asep or Yotan
                                 st.markdown(f"""
                                 <div class="metric-card" style="background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);">
                                     <h2 style="color: white; margin: 0;">👤 PEMBICARA: {pred_speaker_label.upper()}</h2>
@@ -724,6 +710,7 @@ def main():
 
                                 # Probability details for Speaker
                                 st.subheader("📈 Detail Probabilitas Pembicara")
+                                # Re-calculate prob_speaker_df to exclude 'Unknown' if it was originally predicted and overridden
                                 speaker_classes_filtered = [cls for cls in speaker_model.classes_ if cls != 'Unknown']
                                 speaker_proba_filtered = [proba for cls, proba in zip(speaker_model.classes_, pred_speaker_proba) if cls != 'Unknown']
 
@@ -765,7 +752,7 @@ def main():
 
                                 st.markdown('</div>', unsafe_allow_html=True)
 
-                        # Waveform analysis
+                        # Waveform analysis for recorded audio
                         if y_processed is not None:
                             st.markdown('<div class="info-section">', unsafe_allow_html=True)
                             st.subheader("📊 Visualisasi Audio")
@@ -777,13 +764,18 @@ def main():
                             st.markdown('</div>', unsafe_allow_html=True)
 
                         # Clean up temp file
-                        os.unlink(temp_file_path)
-                    else:
-                        st.warning("Tidak ada audio yang direkam. Silakan coba lagi.")
-        else:
-            st.info("Silakan klik tombol di bawah untuk mengaktifkan mikrofon dan mulai merekam.")
+                        os.unlink(recorded_file_path)
+                else:
+                    st.info("👆 **Silakan klik tombol di atas untuk merekam suara Anda**")
+                    st.warning("Fitur rekam suara memerlukan izin mikrofon dari browser Anda.")
+            except Exception as e:
+                st.error(f"Fitur rekam suara tidak tersedia: {str(e)}")
+                st.info("Silakan gunakan tab Unggah File untuk menganalisis audio.")
 
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        # Jika tidak ada fitur rekam suara
+        st.info("🎤 Fitur rekam suara tidak tersedia di versi Streamlit ini.")
 
     # Info section
     st.markdown('<div class="info-section">', unsafe_allow_html=True)
@@ -794,7 +786,7 @@ def main():
     with col_info1:
         st.markdown("""
         ### 📋 Langkah-langkah:
-        1. **Unggah** file audio WAV atau **Rekam** langsung
+        1. **Unggah** file audio WAV atau **Rekam** langsung (jika didukung)
         2. **Klik** tombol "Analisis Audio"
         3. **Lihat** hasil prediksi aksi (Buka/Tutup) dan pembicara (Asep/Yotan/Tidak Dikenal)
         4. **Analisis** fitur dan waveform
@@ -805,7 +797,7 @@ def main():
         - Visualisasi waveform
         - Probabilitas klasifikasi
         - Ekstraksi fitur audio
-        - Rekam suara langsung
+        - Rekam suara langsung (jika didukung)
         """)
 
     with col_info2:
