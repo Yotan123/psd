@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 import tempfile
-# Import dari streamlit-audiorec
-from streamlit_audiorec import st_audiorec
 
 st.set_page_config(
     page_title="Audio Classifier - Aksi & Pembicara", # Updated title
@@ -279,7 +277,7 @@ def load_models(): # Renamed function
             loaded_paths['speaker_model'] = speaker_model_path
             st.success(f"✅ Model Pembicara dimuat dari: {speaker_model_path}")
         else:
-            st.error(f"❌ Model Pembicara tidak ditemakan di: {speaker_model_path}")
+            st.error(f"❌ Model Pembicara tidak ditemukan di: {speaker_model_path}")
             models_loaded = False
 
     except Exception as e:
@@ -457,8 +455,14 @@ def main():
             **Path:** {loaded_paths.get('speaker_model', 'N/A')}
             """)
 
+    # Check if Streamlit has audio input feature using hasattr
+    has_audio_input = hasattr(st, 'audio_input')
+
     # Create tabs for different input methods
-    tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Suara"])
+    if has_audio_input:
+        tab1, tab2 = st.tabs(["📁 Upload File", "🎤 Rekam Suara"])
+    else:
+        tab1, = st.tabs(["📁 Upload File"])
 
     with tab1:
         st.markdown('<div class="upload-area">', unsafe_allow_html=True)
@@ -619,146 +623,159 @@ def main():
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-    with tab2:
-        st.markdown('<div class="upload-area">', unsafe_allow_html=True)
-        st.header("🎤 Rekam Suara")
+    # Only show record tab if Streamlit version supports it
+    if has_audio_input:
+        with tab2:
+            st.markdown('<div class="upload-area">', unsafe_allow_html=True)
+            st.header("🎤 Rekam Suara")
 
-        # Gunakan st_audiorec
-        wav_audio_data = st_audiorec()
+            # Use Streamlit's audio input
+            try:
+                audio_input = st.audio_input("Rekam suara Anda (durasi maksimal 1 detik):")
 
-        if wav_audio_data:
-            st.audio(wav_audio_data, format='audio/wav')
+                if audio_input:
+                    # Save the audio input to a temporary file
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
+                        tmp_file.write(audio_input.read())
+                        recorded_file_path = tmp_file.name
 
-            # Simpan data audio ke file sementara
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                tmp_file.write(wav_audio_data)
-                recorded_file_path = tmp_file.name
+                    # Play the recorded audio
+                    st.audio(recorded_file_path, format='audio/wav')
 
-            # Analyze button
-            if st.button("🔍 Analisis Audio Rekaman", type="primary"):
-                with st.spinner("🔄 Memproses audio rekaman..."):
-                    pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
-                        recorded_file_path, action_model, speaker_model # Updated call
-                    )
+                    # Analyze button
+                    if st.button("🔍 Analisis Audio Rekaman", type="primary"):
+                        with st.spinner("🔄 Memproses audio rekaman..."):
+                            pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
+                                recorded_file_path, action_model, speaker_model # Updated call
+                            )
 
-                if pred_action_label is not None: # Updated check
-                    col1, col2 = st.columns([1, 1])
-                    with col2:
-                        st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
-                        st.header("📊 Hasil Klasifikasi")
+                        if pred_action_label is not None: # Updated check
+                            col1, col2 = st.columns([1, 1])
+                            with col2:
+                                st.markdown('<div class="prediction-container glow-effect">', unsafe_allow_html=True)
+                                st.header("📊 Hasil Klasifikasi")
 
-                        # Display Action Prediction
-                        action_confidence = max(pred_action_proba) * 100
-                        predicted_action_class = pred_action_label.lower()
-                        if predicted_action_class == 'buka':
-                            st.markdown(f"""
-                            <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI AKSI: BUKA</h2>
-                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{action_confidence:.1f}%</strong></p>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            st.markdown(f"""
-                            <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
-                                <h2 style="color: white; margin: 0;">🎯 PREDIKSI AKSI: TUTUP</h2>
-                                <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{action_confidence:.1f}%</strong></p>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                        # Display Speaker Prediction
-                        speaker_confidence = max(pred_speaker_proba) * 100
-                        st.subheader("🎤 Prediksi Pembicara")
-                        # The predict_audio function now guarantees pred_speaker_label is Asep or Yotan
-                        st.markdown(f"""
-                        <div class="metric-card" style="background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);">
-                            <h2 style="color: white; margin: 0;">👤 PEMBICARA: {pred_speaker_label.upper()}</h2>
-                            <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{speaker_confidence:.1f}%</strong></p>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                        # Probability details for Action
-                        st.subheader("📈 Detail Probabilitas Aksi")
-                        prob_action_df = pd.DataFrame({
-                            'Kelas': action_model.classes_,
-                            'Probabilitas (%)': pred_action_proba * 100
-                        })
-                        fig_action = px.bar(
-                            prob_action_df,
-                            x='Kelas',
-                            y='Probabilitas (%)',
-                            title='Distribusi Probabilitas Aksi',
-                            color='Probabilitas (%)',
-                            color_continuous_scale='RdYlGn',
-                            text='Probabilitas (%)'
-                        )
-                        fig_action.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-                        fig_action.update_layout(
-                            showlegend=False,
-                            height=300,
-                            plot_bgcolor='rgba(0,0,0,0)',
-                            paper_bgcolor='rgba(0,0,0,0)',
-                        )
-                        st.plotly_chart(fig_action, use_container_width=True)
-
-                        # Probability details for Speaker
-                        st.subheader("📈 Detail Probabilitas Pembicara")
-                        # Re-calculate prob_speaker_df to exclude 'Unknown' if it was originally predicted and overridden
-                        speaker_classes_filtered = [cls for cls in speaker_model.classes_ if cls != 'Unknown']
-                        speaker_proba_filtered = [proba for cls, proba in zip(speaker_model.classes_, pred_speaker_proba) if cls != 'Unknown']
-
-                        prob_speaker_df = pd.DataFrame({
-                            'Kelas': speaker_classes_filtered,
-                            'Probabilitas (%)': np.array(speaker_proba_filtered) * 100
-                        })
-                        fig_speaker = px.bar(
-                            prob_speaker_df,
-                            x='Kelas',
-                            y='Probabilitas (%)',
-                            title='Distribusi Probabilitas Pembicara',
-                            color='Probabilitas (%)',
-                            color_continuous_scale='RdYlGn',
-                            text='Probabilitas (%)'
-                        )
-                        fig_speaker.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
-                        fig_speaker.update_layout(
-                            showlegend=False,
-                            height=300,
-                            plot_bgcolor='rgba(0,0,0,0)',
-                            paper_bgcolor='rgba(0,0,0,0)',
-                        )
-                        st.plotly_chart(fig_speaker, use_container_width=True)
-
-                        # Feature analysis
-                        st.subheader("🔍 Analisis Fitur")
-                        if features:
-                            feature_cols = st.columns(3)
-                            for i, (name, value) in enumerate(features.items()):
-                                col_idx = i % 3
-                                with feature_cols[col_idx]:
+                                # Display Action Prediction
+                                action_confidence = max(pred_action_proba) * 100
+                                predicted_action_class = pred_action_label.lower()
+                                if predicted_action_class == 'buka':
                                     st.markdown(f"""
-                                    <div class="feature-card">
-                                        <strong>{name.upper()}</strong><br>
-                                        <small>{value:.4f}</small>
+                                    <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                        <h2 style="color: white; margin: 0;">🎯 PREDIKSI AKSI: BUKA</h2>
+                                        <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{action_confidence:.1f}%</strong></p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                    <div class="metric-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
+                                        <h2 style="color: white; margin: 0;">🎯 PREDIKSI AKSI: TUTUP</h2>
+                                        <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{action_confidence:.1f}%</strong></p>
                                     </div>
                                     """, unsafe_allow_html=True)
 
-                        st.markdown('</div>', unsafe_allow_html=True)
+                                # Display Speaker Prediction
+                                speaker_confidence = max(pred_speaker_proba) * 100
+                                st.subheader("🎤 Prediksi Pembicara")
+                                # The predict_audio function now guarantees pred_speaker_label is Asep or Yotan
+                                st.markdown(f"""
+                                <div class="metric-card" style="background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);">
+                                    <h2 style="color: white; margin: 0;">👤 PEMBICARA: {pred_speaker_label.upper()}</h2>
+                                    <p style="color: white; margin: 0.5rem 0; font-size: 1.2rem;">Confidence: <strong>{speaker_confidence:.1f}%</strong></p>
+                                </div>
+                                """, unsafe_allow_html=True)
 
-                # Waveform analysis for recorded audio
-                if y_processed is not None:
-                    st.markdown('<div class="info-section">', unsafe_allow_html=True)
-                    st.subheader("📊 Visualisasi Audio")
-                    waveform_fig = create_waveform_plot(
-                        y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
-                    )
-                    if waveform_fig:
-                        st.plotly_chart(waveform_fig, use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                                # Probability details for Action
+                                st.subheader("📈 Detail Probabilitas Aksi")
+                                prob_action_df = pd.DataFrame({
+                                    'Kelas': action_model.classes_,
+                                    'Probabilitas (%)': pred_action_proba * 100
+                                })
+                                fig_action = px.bar(
+                                    prob_action_df,
+                                    x='Kelas',
+                                    y='Probabilitas (%)',
+                                    title='Distribusi Probabilitas Aksi',
+                                    color='Probabilitas (%)',
+                                    color_continuous_scale='RdYlGn',
+                                    text='Probabilitas (%)'
+                                )
+                                fig_action.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+                                fig_action.update_layout(
+                                    showlegend=False,
+                                    height=300,
+                                    plot_bgcolor='rgba(0,0,0,0)',
+                                    paper_bgcolor='rgba(0,0,0,0)',
+                                )
+                                st.plotly_chart(fig_action, use_container_width=True)
 
-                # Clean up temp file
-                os.unlink(recorded_file_path)
+                                # Probability details for Speaker
+                                st.subheader("📈 Detail Probabilitas Pembicara")
+                                # Re-calculate prob_speaker_df to exclude 'Unknown' if it was originally predicted and overridden
+                                speaker_classes_filtered = [cls for cls in speaker_model.classes_ if cls != 'Unknown']
+                                speaker_proba_filtered = [proba for cls, proba in zip(speaker_model.classes_, pred_speaker_proba) if cls != 'Unknown']
 
-        st.markdown('</div>', unsafe_allow_html=True)
+                                prob_speaker_df = pd.DataFrame({
+                                    'Kelas': speaker_classes_filtered,
+                                    'Probabilitas (%)': np.array(speaker_proba_filtered) * 100
+                                })
+                                fig_speaker = px.bar(
+                                    prob_speaker_df,
+                                    x='Kelas',
+                                    y='Probabilitas (%)',
+                                    title='Distribusi Probabilitas Pembicara',
+                                    color='Probabilitas (%)',
+                                    color_continuous_scale='RdYlGn',
+                                    text='Probabilitas (%)'
+                                )
+                                fig_speaker.update_traces(texttemplate='%{text:.1f}%', textposition='outside')
+                                fig_speaker.update_layout(
+                                    showlegend=False,
+                                    height=300,
+                                    plot_bgcolor='rgba(0,0,0,0)',
+                                    paper_bgcolor='rgba(0,0,0,0)',
+                                )
+                                st.plotly_chart(fig_speaker, use_container_width=True)
+
+                                # Feature analysis
+                                st.subheader("🔍 Analisis Fitur")
+                                if features:
+                                    feature_cols = st.columns(3)
+                                    for i, (name, value) in enumerate(features.items()):
+                                        col_idx = i % 3
+                                        with feature_cols[col_idx]:
+                                            st.markdown(f"""
+                                            <div class="feature-card">
+                                                <strong>{name.upper()}</strong><br>
+                                                <small>{value:.4f}</small>
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                                st.markdown('</div>', unsafe_allow_html=True)
+
+                        # Waveform analysis for recorded audio
+                        if y_processed is not None:
+                            st.markdown('<div class="info-section">', unsafe_allow_html=True)
+                            st.subheader("📊 Visualisasi Audio")
+                            waveform_fig = create_waveform_plot(
+                                y_processed, sr_processed, "Waveform Audio (1 detik, 22050 Hz)"
+                            )
+                            if waveform_fig:
+                                st.plotly_chart(waveform_fig, use_container_width=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
+
+                        # Clean up temp file
+                        os.unlink(recorded_file_path)
+                else:
+                    st.info("👆 **Silakan klik tombol di atas untuk merekam suara Anda**")
+                    st.warning("Fitur rekam suara memerlukan izin mikrofon dari browser Anda.")
+            except Exception as e:
+                st.error(f"Fitur rekam suara tidak tersedia: {str(e)}")
+                st.info("Silakan gunakan tab Unggah File untuk menganalisis audio.")
+
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        # Jika tidak ada fitur rekam suara
+        st.info("🎤 Fitur rekam suara tidak tersedia di versi Streamlit ini.")
 
     # Info section
     st.markdown('<div class="info-section">', unsafe_allow_html=True)
