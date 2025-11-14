@@ -259,7 +259,7 @@ def load_models(): # Renamed function
     action_model = None
     speaker_model = None
     action_model_path = os.path.join('model_results', 'rf_model_buka_tutup_tuned.pkl')
-    speaker_model_path = os.path.join('model_results', 'rf_model_speaker_recognition_tuned.pkl') # Changed to tuned model
+    speaker_model_path = os.path.join('model_results', 'rf_model_speaker_recognition_updated.pkl') # Changed to tuned model
 
     models_loaded = True
     loaded_paths = {}
