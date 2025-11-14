@@ -250,23 +250,39 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Header with gradient effect
-st.markdown('<h1 class="main-title">🎧 Klasifikasi Audio: Aksi Buka/Tutup & Pengenalan Pembicara</h1>', unsafe_allow_html=True)
+# Memastikan TARGET_SR terdefinisi atau setel nilai default
+TARGET_SR = 22050 # Sesuaikan jika Anda menggunakan SR yang berbeda
 
 @st.cache_resource
 def load_models(): # Renamed function
-    """Load the trained Random Forest models (action and speaker)"""
+    """Load the trained Random Forest models (action and speaker) and their expected feature names"""
     action_model = None
     speaker_model = None
     action_model_path = os.path.join('model_results', 'rf_model_buka_tutup_tuned.pkl')
-    speaker_model_path = os.path.join('model_results', 'rf_model_speaker_recognition_updated.pkl')
+    speaker_model_path = os.path.join('model_results', 'rf_model_speaker_recognition_tuned.pkl') # Changed to tuned model
+
     models_loaded = True
     loaded_paths = {}
+    action_model_features = None
+    speaker_model_features = None
 
     try:
         if os.path.exists(action_model_path):
             action_model = joblib.load(action_model_path)
             loaded_paths['action_model'] = action_model_path
+            # Ambil feature names yang diharapkan model, jika ada
+            if hasattr(action_model, 'feature_names_in_'):
+                action_model_features = action_model.feature_names_in_
+            elif hasattr(action_model, 'estimators_') and hasattr(action_model.estimators_[0], 'feature_names_in_'):
+                # Fallback for older sklearn versions or specific model types
+                action_model_features = action_model.estimators_[0].feature_names_in_
+            else:
+                # Fallback to a common list if feature_names_in_ is not available
+                print("Warning: action_model.feature_names_in_ not found. Assuming full feature set for action model.")
+                # This fallback needs to be carefully managed based on how the model was trained
+                # For now, we'll try to infer or use a placeholder if we absolutely must.
+                # In a real scenario, this would be derived from X_train.columns
+                action_model_features = None # Set to None, indicating it needs to be handled downstream
             st.success(f"✅ Model Aksi dimuat dari: {action_model_path}")
         else:
             st.error(f"❌ Model Aksi tidak ditemukan di: {action_model_path}")
@@ -275,6 +291,15 @@ def load_models(): # Renamed function
         if os.path.exists(speaker_model_path):
             speaker_model = joblib.load(speaker_model_path)
             loaded_paths['speaker_model'] = speaker_model_path
+            # Ambil feature names yang diharapkan model, jika ada
+            if hasattr(speaker_model, 'feature_names_in_'):
+                speaker_model_features = speaker_model.feature_names_in_
+            elif hasattr(speaker_model, 'estimators_') and hasattr(speaker_model.estimators_[0], 'feature_names_in_'):
+                # Fallback for older sklearn versions or specific model types
+                speaker_model_features = speaker_model.estimators_[0].feature_names_in_
+            else:
+                print("Warning: speaker_model.feature_names_in_ not found. Assuming full feature set for speaker model.")
+                speaker_model_features = None
             st.success(f"✅ Model Pembicara dimuat dari: {speaker_model_path}")
         else:
             st.error(f"❌ Model Pembicara tidak ditemukan di: {speaker_model_path}")
@@ -285,30 +310,53 @@ def load_models(): # Renamed function
         st.info("Pastikan file model ada dan dalam format yang benar.")
         models_loaded = False
 
-    return action_model, speaker_model, models_loaded, loaded_paths
+    return action_model, speaker_model, models_loaded, loaded_paths, action_model_features, speaker_model_features
 
 def extract_features(y, sr=22050):
     """
-    Extract audio features exactly like in your notebook
+    Extract audio features exactly like in your notebook (updated with MFCCs)
     """
     try:
-        feat = {
-            "mean": np.mean(y),
-            "var": np.var(y),
-            "skew": stats.skew(y),
-            "kurt": stats.kurtosis(y),
-            "rms": np.sqrt(np.mean(y**2)),
-            "zcr": np.mean(librosa.feature.zero_crossing_rate(y)[0]),
-            "centroid": np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)[0]),
-            "bandwidth": np.mean(librosa.feature.spectral_bandwidth(y=y, sr=sr)[0]),
-            "rolloff": np.mean(librosa.feature.spectral_rolloff(y=y, sr=sr)[0])
-        }
+        # durasi tidak lebih dari 1 detik
+        max_len = int(sr * 1.0)
+        if len(y) < max_len:
+            y = np.pad(y, (0, max_len - len(y)), mode='constant')
+        else:
+            y = y[:max_len]
 
+        y = y / (np.max(np.abs(y)) + 1e-6) # Normalisasi
+
+        feats = {}
+        # Fitur domain waktu
+        feats['mean'] = np.mean(y)
+        feats['var'] = np.var(y)
+        feats['skew'] = stats.skew(y)
+        feats['kurt'] = stats.kurtosis(y)
+        feats['rms'] = librosa.feature.rms(y=y).mean()
+        feats['zcr'] = np.mean(librosa.feature.zero_crossing_rate(y))
+
+        # Fitur domain frekuensi
+        centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
+        bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+        feats['centroid'] = np.mean(centroid)
+        feats['bandwidth'] = np.mean(bandwidth)
+
+        # spectral rolloff
+        rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+        feats['rolloff'] = np.mean(rolloff)
+
+        # Entropy amplitudo (dari distribusi histogram amplitudo)
         hist, _ = np.histogram(y, bins=50, density=True)
         hist = hist[hist > 0]
-        feat["entropy"] = -np.sum(hist * np.log2(hist + 1e-10))
+        feats['amplitude_entropy'] = -np.sum(hist * np.log2(hist))
 
-        return feat
+        # Menambahkan MFCCs (Mel-frequency cepstral coefficients)
+        n_mfcc = 13
+        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
+        for i in range(n_mfcc):
+            feats[f'mfcc_mean_{i+1}'] = np.mean(mfccs[i])
+
+        return feats
     except Exception as e:
         st.error(f"Feature extraction error: {str(e)}")
         return None
@@ -337,7 +385,7 @@ def preprocess_audio(y, sr, target_sr=22050):
         st.error(f"Audio preprocessing error: {str(e)}")
         return None, None
 
-def predict_audio(audio_file, action_model, speaker_model): # Updated signature
+def predict_audio(audio_file, action_model, speaker_model, action_model_features, speaker_model_features): # Updated signature
     """
     Predict audio classification and speaker recognition
     """
@@ -346,52 +394,53 @@ def predict_audio(audio_file, action_model, speaker_model): # Updated signature
         y, sr = librosa.load(audio_file, sr=None)  # Load with original sample rate
 
         # Preprocess
-        y_processed, sr_processed = preprocess_audio(y, sr)
+        y_processed, sr_processed = preprocess_audio(y, sr, TARGET_SR)
 
         if y_processed is None:
             return None, None, None, None, None, None, None # Updated return for None
 
-        # Extract features
-        features = extract_features(y_processed, sr_processed)
+        # Extract features (all 23 features)
+        features_dict = extract_features(y_processed, sr_processed)
 
-        if features is None:
+        if features_dict is None:
             return None, None, None, None, None, None, None # Updated return for None
 
-        # Convert to DataFrame
-        X_new = pd.DataFrame([features])
+        # Convert to DataFrame (ensure all extracted features are present)
+        X_new_features_raw = pd.DataFrame([features_dict])
+
+        # --- Prepare features for Action Model ---
+        # Filter fitur mentah agar hanya menyertakan fitur-fitur yang dipilih oleh model aksi
+        if action_model_features is not None:
+            X_new_for_action_model = X_new_features_raw[action_model_features]
+        else:
+            # Fallback jika feature_names_in_ tidak ditemukan (idealnya tidak terjadi)
+            print("Warning: action_model_features not available. Using all raw features for action model.")
+            X_new_for_action_model = X_new_features_raw
+
+        # --- Prepare features for Speaker Model ---
+        # Filter fitur mentah agar hanya menyertakan fitur-fitur yang dipilih oleh model pembicara
+        if speaker_model_features is not None:
+            X_new_for_speaker_model = X_new_features_raw[speaker_model_features]
+        else:
+            # Fallback jika feature_names_in_ tidak ditemukan (idealnya tidak terjadi)
+            print("Warning: speaker_model_features not available. Using all raw features for speaker model.")
+            X_new_for_speaker_model = X_new_features_raw
 
         # Predict action
-        pred_action_label = action_model.predict(X_new)[0]
-        pred_action_proba = action_model.predict_proba(X_new)[0]
+        pred_action_label = action_model.predict(X_new_for_action_model)[0]
+        pred_action_proba = action_model.predict_proba(X_new_for_action_model)[0]
 
         # Predict speaker
-        pred_speaker_label = speaker_model.predict(X_new)[0]
-        pred_speaker_proba = speaker_model.predict_proba(X_new)[0]
+        pred_speaker_label = speaker_model.predict(X_new_for_speaker_model)[0]
+        pred_speaker_proba = speaker_model.predict_proba(X_new_for_speaker_model)[0]
 
-        # --- START: Modified logic for speaker prediction --- #
-        if pred_speaker_label == 'Unknown':
-            # Find indices for 'Asep' and 'Yotan'
-            asep_idx = np.where(speaker_model.classes_ == 'Asep')[0]
-            yotan_idx = np.where(speaker_model.classes_ == 'Yotan')[0]
+        # --- START: Modified logic for speaker prediction (from notebook) ---
+        # Logic to handle confidence from proba array
+        action_confidence = max(pred_action_proba)
+        speaker_confidence = max(pred_speaker_proba)
+        # --- END: Modified logic for speaker prediction ---
 
-            if len(asep_idx) > 0 and len(yotan_idx) > 0:
-                prob_asep = pred_speaker_proba[asep_idx[0]]
-                prob_yotan = pred_speaker_proba[yotan_idx[0]]
-
-                if prob_asep > prob_yotan:
-                    pred_speaker_label = 'Asep'
-                    speaker_confidence = prob_asep
-                else:
-                    pred_speaker_label = 'Yotan'
-                    speaker_confidence = prob_yotan
-            else:
-                # Fallback if Asep or Yotan not in classes (shouldn't happen with updated model)
-                speaker_confidence = max(pred_speaker_proba)
-        else:
-            speaker_confidence = max(pred_speaker_proba)
-        # --- END: Modified logic for speaker prediction --- #
-
-        return pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed
+        return pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features_dict, y_processed, sr_processed
 
     except Exception as e:
         st.error(f"❌ Error in prediction: {str(e)}")
@@ -429,8 +478,8 @@ def create_waveform_plot(y, sr, title="Audio Waveform"):
         return None
 
 def main():
-    # Load models
-    action_model, speaker_model, models_loaded, loaded_paths = load_models() # Updated call
+    # Load models and their expected features
+    action_model, speaker_model, models_loaded, loaded_paths, action_model_features, speaker_model_features = load_models() # Updated call
 
     if not models_loaded:
         st.error("🚨 **CRITICAL ERROR**: Satu atau lebih model tidak dapat dimuat. Aplikasi tidak dapat berjalan tanpa model.") # Updated message
@@ -446,6 +495,7 @@ def main():
             **Tipe:** Random Forest
             **Kelas:** {', '.join(action_model.classes_)}
             **Path:** {loaded_paths.get('action_model', 'N/A')}
+            **Fitur:** {len(action_model_features) if action_model_features is not None else 'N/A'}
             """)
         if speaker_model is not None:
             st.info(f"""
@@ -453,6 +503,7 @@ def main():
             **Tipe:** Random Forest
             **Kelas:** {', '.join(speaker_model.classes_)}
             **Path:** {loaded_paths.get('speaker_model', 'N/A')}
+            **Fitur:** {len(speaker_model_features) if speaker_model_features is not None else 'N/A'}
             """)
 
     # Check if Streamlit has audio input feature using hasattr
@@ -498,7 +549,7 @@ def main():
             if st.button("🔍 Analisis Audio", type="primary"):
                 with st.spinner("🔄 Memproses audio... Ini mungkin memakan waktu beberapa detik..."):
                     pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
-                        temp_file_path, action_model, speaker_model # Updated call
+                        temp_file_path, action_model, speaker_model, action_model_features, speaker_model_features # Updated call
                     )
 
                 if pred_action_label is not None: # Updated check
@@ -646,7 +697,7 @@ def main():
                     if st.button("🔍 Analisis Audio Rekaman", type="primary"):
                         with st.spinner("🔄 Memproses audio rekaman..."):
                             pred_action_label, pred_action_proba, pred_speaker_label, pred_speaker_proba, features, y_processed, sr_processed = predict_audio(
-                                recorded_file_path, action_model, speaker_model # Updated call
+                                recorded_file_path, action_model, speaker_model, action_model_features, speaker_model_features # Updated call
                             )
 
                         if pred_action_label is not None: # Updated check
