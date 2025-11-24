@@ -1,0 +1,1953 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Menghitung Jarak(buka,tutup) audio rekaman langsung dengan data yang sudah disimpan &#8212; My sample book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'HitungJarak';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/selfie.jpg" class="logo__image only-light" alt="My sample book - Home"/>
+    <script>document.write(`<img src="_static/selfie.jpg" class="logo__image only-dark" alt="My sample book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Profile
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Business Understanding</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="BusinessUnderstanding.html">Business Understanding (Iris)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Understanding</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DataUNderstanding.html">Data Understanding (Iris)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Preprocessing Data</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="PreprocessingData.html">Preprocessing (Iris)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Balancing Data</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="PlotingData.html">Penyeimbangan Data (Ecoli)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BaggingClassifier.html">BaggingClassifier (Ecoli)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dokumentasi Knime</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Dokumentasi.html">Dokumentasi PraUTS by KNIME</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Banyuwangi Analysis</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DUbanyuwangi.html">Data Understanding (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BUbanyuwangi.html">Business Understanding (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PreprocessingBanyu.html">Preprocessing (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModelData.html">Modelling Data (Banyuwangi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deploy.html">Deployment Program Prediksi (Banyuwangi)</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Buka Tutup suara</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Suara.html">Data Understanding buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Suarapreprocess.html">Preprocesing buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Suaralanjutana.html">Modeling Dan Evaluasi buka tutup suara</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeploySuara.html">Deployment Program buka tutup suara</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FHitungJarak.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/HitungJarak.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Menghitung Jarak(buka,tutup) audio rekaman langsung dengan data yang sudah disimpan</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-library">Install library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library">import library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fungsi-ekstraksi-mfcc">Fungsi Ekstraksi MFCC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset-audio-buka-tutup">Load dataset audio buka/tutup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-rekaman-input-antara-buka-dan-tutup">Load rekaman input antara buka dan tutup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-dtw-meggunakan-dtaidistance">Hitung DTW (meggunakan DTAIDistance)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="menghitung-jarak-buka-tutup-audio-rekaman-langsung-dengan-data-yang-sudah-disimpan">
+<h1>Menghitung Jarak(buka,tutup) audio rekaman langsung dengan data yang sudah disimpan<a class="headerlink" href="#menghitung-jarak-buka-tutup-audio-rekaman-langsung-dengan-data-yang-sudah-disimpan" title="Link to this heading">#</a></h1>
+<section id="install-library">
+<h2>Install library<a class="headerlink" href="#install-library" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>dtaidistance<span class="w"> </span>librosa<span class="w"> </span>numpy
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting dtaidistance
+  Downloading dtaidistance-2.3.13-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (13 kB)
+Requirement already satisfied: librosa in /home/codespace/.python/current/lib/python3.12/site-packages (0.10.1)
+Requirement already satisfied: numpy in /home/codespace/.python/current/lib/python3.12/site-packages (2.2.6)
+Requirement already satisfied: audioread&gt;=2.1.9 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (3.1.0)
+Requirement already satisfied: scipy&gt;=1.2.0 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.16.3)
+Requirement already satisfied: scikit-learn&gt;=0.20.0 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.6.1)
+Requirement already satisfied: joblib&gt;=0.14 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.3.2)
+Requirement already satisfied: decorator&gt;=4.3.0 in /home/codespace/.local/lib/python3.12/site-packages (from librosa) (5.2.1)
+Requirement already satisfied: numba&gt;=0.51.0 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (0.61.2)
+Requirement already satisfied: soundfile&gt;=0.12.1 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (0.13.1)
+Requirement already satisfied: pooch&gt;=1.0 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.8.2)
+Requirement already satisfied: soxr&gt;=0.3.2 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.0.0)
+Requirement already satisfied: typing-extensions&gt;=4.1.1 in /home/codespace/.local/lib/python3.12/site-packages (from librosa) (4.14.1)
+Requirement already satisfied: lazy-loader&gt;=0.1 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (0.4)
+Requirement already satisfied: msgpack&gt;=1.0 in /home/codespace/.python/current/lib/python3.12/site-packages (from librosa) (1.1.2)
+Requirement already satisfied: packaging in /home/codespace/.python/current/lib/python3.12/site-packages (from lazy-loader&gt;=0.1-&gt;librosa) (23.2)
+Requirement already satisfied: llvmlite&lt;0.45,&gt;=0.44.0dev0 in /home/codespace/.python/current/lib/python3.12/site-packages (from numba&gt;=0.51.0-&gt;librosa) (0.44.0)
+Requirement already satisfied: platformdirs&gt;=2.5.0 in /home/codespace/.local/lib/python3.12/site-packages (from pooch&gt;=1.0-&gt;librosa) (4.3.8)
+Requirement already satisfied: requests&gt;=2.19.0 in /home/codespace/.local/lib/python3.12/site-packages (from pooch&gt;=1.0-&gt;librosa) (2.32.4)
+Requirement already satisfied: charset_normalizer&lt;4,&gt;=2 in /home/codespace/.local/lib/python3.12/site-packages (from requests&gt;=2.19.0-&gt;pooch&gt;=1.0-&gt;librosa) (3.4.2)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/codespace/.local/lib/python3.12/site-packages (from requests&gt;=2.19.0-&gt;pooch&gt;=1.0-&gt;librosa) (3.10)
+Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /home/codespace/.local/lib/python3.12/site-packages (from requests&gt;=2.19.0-&gt;pooch&gt;=1.0-&gt;librosa) (2.5.0)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /home/codespace/.local/lib/python3.12/site-packages (from requests&gt;=2.19.0-&gt;pooch&gt;=1.0-&gt;librosa) (2025.7.9)
+Requirement already satisfied: threadpoolctl&gt;=3.1.0 in /home/codespace/.local/lib/python3.12/site-packages (from scikit-learn&gt;=0.20.0-&gt;librosa) (3.6.0)
+Requirement already satisfied: cffi&gt;=1.0 in /home/codespace/.local/lib/python3.12/site-packages (from soundfile&gt;=0.12.1-&gt;librosa) (1.17.1)
+Requirement already satisfied: pycparser in /home/codespace/.local/lib/python3.12/site-packages (from cffi&gt;=1.0-&gt;soundfile&gt;=0.12.1-&gt;librosa) (2.22)
+Downloading dtaidistance-2.3.13-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.0/3.0 MB</span> <span class=" -Color -Color-Red">35.9 MB/s</span>  <span class=" -Color -Color-Yellow">0:00:00</span>
+?25hInstalling collected packages: dtaidistance
+Successfully installed dtaidistance-2.3.13
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="import-library">
+<h2>import library<a class="headerlink" href="#import-library" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dtaidistance</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtw</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fungsi-ekstraksi-mfcc">
+<h2>Fungsi Ekstraksi MFCC<a class="headerlink" href="#fungsi-ekstraksi-mfcc" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_mfcc</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">22050</span><span class="p">)</span>
+    <span class="n">mfcc</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="n">n_mfcc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mfcc</span><span class="o">.</span><span class="n">T</span>   <span class="c1"># time × feature</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="load-dataset-audio-buka-tutup">
+<h2>Load dataset audio buka/tutup<a class="headerlink" href="#load-dataset-audio-buka-tutup" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_path</span> <span class="o">=</span> <span class="s2">&quot;Gabungan_Suara&quot;</span>
+
+<span class="n">data_mfcc</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;buka&quot;</span><span class="p">,</span> <span class="s2">&quot;tutup&quot;</span><span class="p">]:</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.wav&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.mp3&quot;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="n">mfcc</span> <span class="o">=</span> <span class="n">extract_mfcc</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">data_mfcc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfcc</span><span class="p">)</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Jumlah data:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_mfcc</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah data: 400
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="load-rekaman-input-antara-buka-dan-tutup">
+<h2>Load rekaman input antara buka dan tutup<a class="headerlink" href="#load-rekaman-input-antara-buka-dan-tutup" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rekaman_path</span> <span class="o">=</span> <span class="s2">&quot;Rekaman_baru .wav&quot;</span>   <span class="c1"># ganti nama file kamu</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rekaman ini adalah: BUKA (sesuai input pengguna)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">mfcc_input</span> <span class="o">=</span> <span class="n">extract_mfcc</span><span class="p">(</span><span class="n">rekaman_path</span><span class="p">)</span>
+
+<span class="c1"># Hitung jarak dengan tiap data</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtw_distance</span><span class="p">(</span><span class="n">mfcc_input</span><span class="p">,</span> <span class="n">mfcc_data</span><span class="p">)</span> <span class="k">for</span> <span class="n">mfcc_data</span> <span class="ow">in</span> <span class="n">data_mfcc</span><span class="p">]</span>
+
+<span class="n">min_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+<span class="n">hasil_prediksi</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">min_idx</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== HASIL DTW ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">distances</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> → jarak = </span><span class="si">{</span><span class="n">d</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; HASIL PREDIKSI DTW:&quot;</span><span class="p">,</span> <span class="n">hasil_prediksi</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+
+<span class="c1"># Koreksi apakah cocok atau tidak</span>
+<span class="k">if</span> <span class="n">hasil_prediksi</span> <span class="o">==</span> <span class="s2">&quot;buka&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Cocok! Rekaman benar adalah BUKA.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ Tidak cocok! DTW memprediksi TUTUP padahal ini BUKA.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rekaman ini adalah: BUKA (sesuai input pengguna)
+
+=== HASIL DTW ===
+buka → jarak = 1280.95
+buka → jarak = 1788.55
+buka → jarak = 1112.20
+buka → jarak = 1466.73
+buka → jarak = 1633.98
+buka → jarak = 1714.61
+buka → jarak = 1913.92
+buka → jarak = 857.23
+buka → jarak = 875.05
+buka → jarak = 1218.96
+buka → jarak = 1137.55
+buka → jarak = 1098.30
+buka → jarak = 1527.10
+buka → jarak = 1120.85
+buka → jarak = 1077.61
+buka → jarak = 1290.51
+buka → jarak = 1310.17
+buka → jarak = 1093.38
+buka → jarak = 1665.44
+buka → jarak = 951.97
+buka → jarak = 1353.62
+buka → jarak = 1711.96
+buka → jarak = 1115.91
+buka → jarak = 1262.22
+buka → jarak = 1866.18
+buka → jarak = 1068.64
+buka → jarak = 1315.56
+buka → jarak = 889.89
+buka → jarak = 1359.03
+buka → jarak = 1105.39
+buka → jarak = 1556.92
+buka → jarak = 2320.83
+buka → jarak = 1195.50
+buka → jarak = 1542.52
+buka → jarak = 1245.89
+buka → jarak = 1529.23
+buka → jarak = 1081.88
+buka → jarak = 1003.53
+buka → jarak = 1705.33
+buka → jarak = 1014.03
+buka → jarak = 1141.43
+buka → jarak = 1076.82
+buka → jarak = 1596.86
+buka → jarak = 1033.55
+buka → jarak = 1058.29
+buka → jarak = 1448.30
+buka → jarak = 1253.80
+buka → jarak = 1055.51
+buka → jarak = 1874.67
+buka → jarak = 1444.60
+buka → jarak = 1578.18
+buka → jarak = 1100.31
+buka → jarak = 1345.30
+buka → jarak = 1539.26
+buka → jarak = 1081.62
+buka → jarak = 1217.09
+buka → jarak = 1264.27
+buka → jarak = 1248.51
+buka → jarak = 1027.28
+buka → jarak = 1807.11
+buka → jarak = 962.80
+buka → jarak = 1610.94
+buka → jarak = 1078.36
+buka → jarak = 1066.07
+buka → jarak = 1148.28
+buka → jarak = 1352.34
+buka → jarak = 1531.68
+buka → jarak = 1803.78
+buka → jarak = 1355.52
+buka → jarak = 1646.74
+buka → jarak = 1459.30
+buka → jarak = 957.48
+buka → jarak = 1596.38
+buka → jarak = 1057.80
+buka → jarak = 1038.04
+buka → jarak = 1060.18
+buka → jarak = 1132.49
+buka → jarak = 1722.44
+buka → jarak = 1528.28
+buka → jarak = 1053.18
+buka → jarak = 1101.18
+buka → jarak = 1777.10
+buka → jarak = 1042.62
+buka → jarak = 1242.54
+buka → jarak = 1039.25
+buka → jarak = 1655.29
+buka → jarak = 1522.14
+buka → jarak = 999.07
+buka → jarak = 1149.95
+buka → jarak = 1114.91
+buka → jarak = 1431.91
+buka → jarak = 1052.68
+buka → jarak = 1743.95
+buka → jarak = 1478.64
+buka → jarak = 1716.69
+buka → jarak = 1553.95
+buka → jarak = 1634.89
+buka → jarak = 1038.77
+buka → jarak = 1761.67
+buka → jarak = 1279.08
+buka → jarak = 1580.27
+buka → jarak = 1026.32
+buka → jarak = 1128.20
+buka → jarak = 1070.70
+buka → jarak = 1122.74
+buka → jarak = 1549.69
+buka → jarak = 1532.85
+buka → jarak = 1034.16
+buka → jarak = 1175.73
+buka → jarak = 1357.06
+buka → jarak = 957.04
+buka → jarak = 1866.76
+buka → jarak = 1075.37
+buka → jarak = 1259.19
+buka → jarak = 1086.41
+buka → jarak = 1019.33
+buka → jarak = 1043.73
+buka → jarak = 1584.07
+buka → jarak = 913.52
+buka → jarak = 1106.33
+buka → jarak = 1316.33
+buka → jarak = 1693.20
+buka → jarak = 1790.41
+buka → jarak = 1201.52
+buka → jarak = 1147.20
+buka → jarak = 1121.67
+buka → jarak = 1180.91
+buka → jarak = 1128.02
+buka → jarak = 1706.48
+buka → jarak = 2160.90
+buka → jarak = 1003.16
+buka → jarak = 1570.45
+buka → jarak = 2143.72
+buka → jarak = 1797.68
+buka → jarak = 1473.92
+buka → jarak = 955.83
+buka → jarak = 1581.43
+buka → jarak = 957.18
+buka → jarak = 1678.21
+buka → jarak = 1631.83
+buka → jarak = 1587.22
+buka → jarak = 1897.10
+buka → jarak = 1075.35
+buka → jarak = 1292.95
+buka → jarak = 1289.31
+buka → jarak = 1555.97
+buka → jarak = 981.38
+buka → jarak = 1383.52
+buka → jarak = 1630.72
+buka → jarak = 1119.14
+buka → jarak = 1554.91
+buka → jarak = 1235.63
+buka → jarak = 1092.82
+buka → jarak = 1825.30
+buka → jarak = 1663.11
+buka → jarak = 1578.48
+buka → jarak = 1561.45
+buka → jarak = 1576.27
+buka → jarak = 1042.88
+buka → jarak = 962.51
+buka → jarak = 1582.10
+buka → jarak = 1736.32
+buka → jarak = 1898.19
+buka → jarak = 1135.63
+buka → jarak = 1070.72
+buka → jarak = 1052.75
+buka → jarak = 1065.89
+buka → jarak = 1340.17
+buka → jarak = 1002.42
+buka → jarak = 1397.78
+buka → jarak = 1609.75
+buka → jarak = 1532.59
+buka → jarak = 1486.68
+buka → jarak = 1822.26
+buka → jarak = 1465.28
+buka → jarak = 1237.60
+buka → jarak = 1131.04
+buka → jarak = 1069.30
+buka → jarak = 1144.51
+buka → jarak = 1255.73
+buka → jarak = 1728.52
+buka → jarak = 1767.00
+buka → jarak = 1549.82
+buka → jarak = 1248.02
+buka → jarak = 1038.66
+buka → jarak = 1695.42
+buka → jarak = 1557.85
+buka → jarak = 1086.29
+buka → jarak = 1776.81
+buka → jarak = 1105.16
+buka → jarak = 1524.33
+buka → jarak = 1436.94
+buka → jarak = 974.98
+buka → jarak = 1129.73
+buka → jarak = 1710.26
+buka → jarak = 968.97
+buka → jarak = 1215.63
+buka → jarak = 1210.58
+buka → jarak = 1083.18
+buka → jarak = 1354.80
+tutup → jarak = 1885.53
+tutup → jarak = 1513.94
+tutup → jarak = 1058.45
+tutup → jarak = 1445.69
+tutup → jarak = 1805.47
+tutup → jarak = 1326.54
+tutup → jarak = 1648.49
+tutup → jarak = 1379.69
+tutup → jarak = 1828.85
+tutup → jarak = 1877.48
+tutup → jarak = 1305.04
+tutup → jarak = 1182.30
+tutup → jarak = 1302.56
+tutup → jarak = 1592.18
+tutup → jarak = 1126.47
+tutup → jarak = 1529.22
+tutup → jarak = 1760.80
+tutup → jarak = 1716.25
+tutup → jarak = 1567.85
+tutup → jarak = 1194.00
+tutup → jarak = 1273.81
+tutup → jarak = 1838.23
+tutup → jarak = 1552.34
+tutup → jarak = 1710.07
+tutup → jarak = 1499.16
+tutup → jarak = 1963.92
+tutup → jarak = 1596.31
+tutup → jarak = 1721.84
+tutup → jarak = 1343.29
+tutup → jarak = 1897.76
+tutup → jarak = 1821.05
+tutup → jarak = 1792.19
+tutup → jarak = 1450.95
+tutup → jarak = 1384.19
+tutup → jarak = 1698.94
+tutup → jarak = 1764.51
+tutup → jarak = 1301.62
+tutup → jarak = 1611.55
+tutup → jarak = 1676.41
+tutup → jarak = 1654.89
+tutup → jarak = 1439.93
+tutup → jarak = 1319.48
+tutup → jarak = 1610.81
+tutup → jarak = 1400.23
+tutup → jarak = 1753.27
+tutup → jarak = 1481.18
+tutup → jarak = 1300.82
+tutup → jarak = 1207.93
+tutup → jarak = 1414.70
+tutup → jarak = 1172.45
+tutup → jarak = 1817.04
+tutup → jarak = 1726.66
+tutup → jarak = 1563.24
+tutup → jarak = 1788.60
+tutup → jarak = 1217.25
+tutup → jarak = 1308.20
+tutup → jarak = 1887.41
+tutup → jarak = 2047.87
+tutup → jarak = 1662.58
+tutup → jarak = 1527.01
+tutup → jarak = 1773.05
+tutup → jarak = 1277.50
+tutup → jarak = 1493.58
+tutup → jarak = 1838.52
+tutup → jarak = 1804.43
+tutup → jarak = 1672.93
+tutup → jarak = 1258.72
+tutup → jarak = 1116.16
+tutup → jarak = 1320.87
+tutup → jarak = 1722.53
+tutup → jarak = 1304.67
+tutup → jarak = 1636.29
+tutup → jarak = 2312.57
+tutup → jarak = 1273.86
+tutup → jarak = 1275.86
+tutup → jarak = 1675.93
+tutup → jarak = 1716.87
+tutup → jarak = 1205.70
+tutup → jarak = 1556.61
+tutup → jarak = 1483.53
+tutup → jarak = 1840.08
+tutup → jarak = 1750.29
+tutup → jarak = 1204.78
+tutup → jarak = 1572.30
+tutup → jarak = 1388.61
+tutup → jarak = 1306.11
+tutup → jarak = 1801.99
+tutup → jarak = 1371.58
+tutup → jarak = 1445.11
+tutup → jarak = 1210.51
+tutup → jarak = 2341.66
+tutup → jarak = 1406.11
+tutup → jarak = 1877.55
+tutup → jarak = 1293.50
+tutup → jarak = 1583.90
+tutup → jarak = 1254.48
+tutup → jarak = 1214.66
+tutup → jarak = 1400.58
+tutup → jarak = 1822.48
+tutup → jarak = 1569.54
+tutup → jarak = 1980.89
+tutup → jarak = 1208.44
+tutup → jarak = 1095.56
+tutup → jarak = 2094.98
+tutup → jarak = 1214.10
+tutup → jarak = 1831.15
+tutup → jarak = 1645.26
+tutup → jarak = 1347.78
+tutup → jarak = 1220.97
+tutup → jarak = 1866.51
+tutup → jarak = 1440.92
+tutup → jarak = 1328.76
+tutup → jarak = 1228.28
+tutup → jarak = 1781.66
+tutup → jarak = 1727.80
+tutup → jarak = 1419.17
+tutup → jarak = 1584.39
+tutup → jarak = 1613.70
+tutup → jarak = 1487.86
+tutup → jarak = 1124.62
+tutup → jarak = 1420.18
+tutup → jarak = 2029.67
+tutup → jarak = 1812.13
+tutup → jarak = 1351.65
+tutup → jarak = 1797.18
+tutup → jarak = 1601.75
+tutup → jarak = 2252.15
+tutup → jarak = 1300.54
+tutup → jarak = 1791.69
+tutup → jarak = 1764.24
+tutup → jarak = 1771.28
+tutup → jarak = 1653.48
+tutup → jarak = 1747.53
+tutup → jarak = 1335.07
+tutup → jarak = 1966.19
+tutup → jarak = 1289.99
+tutup → jarak = 1397.63
+tutup → jarak = 1680.52
+tutup → jarak = 1244.57
+tutup → jarak = 1693.14
+tutup → jarak = 1186.08
+tutup → jarak = 1563.73
+tutup → jarak = 1475.85
+tutup → jarak = 1844.59
+tutup → jarak = 1136.81
+tutup → jarak = 2176.42
+tutup → jarak = 1220.35
+tutup → jarak = 2087.39
+tutup → jarak = 1679.63
+tutup → jarak = 1296.51
+tutup → jarak = 1781.83
+tutup → jarak = 1741.97
+tutup → jarak = 1044.33
+tutup → jarak = 1462.56
+tutup → jarak = 2061.21
+tutup → jarak = 1007.16
+tutup → jarak = 1606.72
+tutup → jarak = 1592.10
+tutup → jarak = 1440.02
+tutup → jarak = 1456.81
+tutup → jarak = 1579.61
+tutup → jarak = 1317.10
+tutup → jarak = 1347.54
+tutup → jarak = 1730.44
+tutup → jarak = 1144.13
+tutup → jarak = 1649.73
+tutup → jarak = 1127.73
+tutup → jarak = 1184.84
+tutup → jarak = 1353.15
+tutup → jarak = 2078.28
+tutup → jarak = 2056.49
+tutup → jarak = 1743.87
+tutup → jarak = 1091.11
+tutup → jarak = 1547.89
+tutup → jarak = 1541.60
+tutup → jarak = 986.15
+tutup → jarak = 1285.28
+tutup → jarak = 1236.63
+tutup → jarak = 1628.49
+tutup → jarak = 1282.34
+tutup → jarak = 1443.36
+tutup → jarak = 2102.98
+tutup → jarak = 1794.15
+tutup → jarak = 1683.36
+tutup → jarak = 1698.53
+tutup → jarak = 1193.21
+tutup → jarak = 1276.16
+tutup → jarak = 1229.95
+tutup → jarak = 1799.61
+tutup → jarak = 1139.60
+tutup → jarak = 1626.19
+tutup → jarak = 1361.32
+tutup → jarak = 1909.55
+tutup → jarak = 1581.87
+tutup → jarak = 1240.99
+tutup → jarak = 1175.88
+tutup → jarak = 1122.10
+tutup → jarak = 1807.44
+tutup → jarak = 1682.91
+tutup → jarak = 1551.82
+
+&gt;&gt;&gt; HASIL PREDIKSI DTW: BUKA
+✓ Cocok! Rekaman benar adalah BUKA.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rekaman_path</span> <span class="o">=</span> <span class="s2">&quot;rekaman_tutup.wav&quot;</span>   <span class="c1"># ganti nama file kamu</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rekaman ini adalah: TUTUP (sesuai input pengguna)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">mfcc_input</span> <span class="o">=</span> <span class="n">extract_mfcc</span><span class="p">(</span><span class="n">rekaman_path</span><span class="p">)</span>
+
+<span class="c1"># Hitung jarak dengan tiap data</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtw_distance</span><span class="p">(</span><span class="n">mfcc_input</span><span class="p">,</span> <span class="n">mfcc_data</span><span class="p">)</span> <span class="k">for</span> <span class="n">mfcc_data</span> <span class="ow">in</span> <span class="n">data_mfcc</span><span class="p">]</span>
+
+<span class="n">min_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+<span class="n">hasil_prediksi</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">min_idx</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== HASIL DTW ===&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">distances</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> → jarak = </span><span class="si">{</span><span class="n">d</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; HASIL PREDIKSI DTW:&quot;</span><span class="p">,</span> <span class="n">hasil_prediksi</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+
+<span class="c1"># Koreksi apakah cocok atau tidak</span>
+<span class="k">if</span> <span class="n">hasil_prediksi</span> <span class="o">==</span> <span class="s2">&quot;tutup&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Cocok! Rekaman benar adalah TUTUP.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ Tidak cocok! DTW memprediksi BUKA padahal ini TUTUP.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rekaman ini adalah: TUTUP (sesuai input pengguna)
+
+=== HASIL DTW ===
+buka → jarak = 1202.29
+buka → jarak = 1628.56
+buka → jarak = 901.32
+buka → jarak = 1296.36
+buka → jarak = 1457.85
+buka → jarak = 1517.66
+buka → jarak = 1657.59
+buka → jarak = 817.87
+buka → jarak = 824.68
+buka → jarak = 1012.40
+buka → jarak = 855.76
+buka → jarak = 983.98
+buka → jarak = 1280.76
+buka → jarak = 975.62
+buka → jarak = 983.13
+buka → jarak = 1204.59
+buka → jarak = 1142.18
+buka → jarak = 1042.18
+buka → jarak = 1587.99
+buka → jarak = 867.63
+buka → jarak = 1139.86
+buka → jarak = 1519.28
+buka → jarak = 866.15
+buka → jarak = 1058.78
+buka → jarak = 1661.71
+buka → jarak = 881.44
+buka → jarak = 1132.64
+buka → jarak = 851.64
+buka → jarak = 1163.65
+buka → jarak = 1008.29
+buka → jarak = 1358.51
+buka → jarak = 2097.54
+buka → jarak = 981.17
+buka → jarak = 1362.01
+buka → jarak = 978.97
+buka → jarak = 1359.47
+buka → jarak = 995.37
+buka → jarak = 867.71
+buka → jarak = 1557.99
+buka → jarak = 800.39
+buka → jarak = 849.42
+buka → jarak = 941.73
+buka → jarak = 1426.28
+buka → jarak = 929.28
+buka → jarak = 920.58
+buka → jarak = 1304.67
+buka → jarak = 1011.11
+buka → jarak = 990.49
+buka → jarak = 1668.09
+buka → jarak = 1302.15
+buka → jarak = 1426.11
+buka → jarak = 958.93
+buka → jarak = 1150.66
+buka → jarak = 1288.60
+buka → jarak = 928.37
+buka → jarak = 984.39
+buka → jarak = 1075.55
+buka → jarak = 1045.66
+buka → jarak = 945.98
+buka → jarak = 1805.86
+buka → jarak = 868.98
+buka → jarak = 1450.12
+buka → jarak = 981.80
+buka → jarak = 905.57
+buka → jarak = 1010.22
+buka → jarak = 1135.97
+buka → jarak = 1379.85
+buka → jarak = 1804.94
+buka → jarak = 1183.45
+buka → jarak = 1640.88
+buka → jarak = 1290.66
+buka → jarak = 853.54
+buka → jarak = 1371.68
+buka → jarak = 993.05
+buka → jarak = 845.43
+buka → jarak = 883.27
+buka → jarak = 1031.30
+buka → jarak = 1653.40
+buka → jarak = 1280.23
+buka → jarak = 871.94
+buka → jarak = 1000.25
+buka → jarak = 1787.26
+buka → jarak = 947.17
+buka → jarak = 1035.73
+buka → jarak = 975.28
+buka → jarak = 1641.30
+buka → jarak = 1330.91
+buka → jarak = 858.58
+buka → jarak = 1041.71
+buka → jarak = 1003.45
+buka → jarak = 1290.57
+buka → jarak = 894.43
+buka → jarak = 1751.84
+buka → jarak = 1312.86
+buka → jarak = 1518.38
+buka → jarak = 1319.78
+buka → jarak = 1510.30
+buka → jarak = 952.56
+buka → jarak = 1726.48
+buka → jarak = 1073.02
+buka → jarak = 1334.28
+buka → jarak = 979.78
+buka → jarak = 945.71
+buka → jarak = 933.65
+buka → jarak = 943.45
+buka → jarak = 1321.57
+buka → jarak = 1332.27
+buka → jarak = 929.64
+buka → jarak = 1070.92
+buka → jarak = 1137.95
+buka → jarak = 932.84
+buka → jarak = 1662.33
+buka → jarak = 891.64
+buka → jarak = 1013.62
+buka → jarak = 988.48
+buka → jarak = 973.04
+buka → jarak = 809.90
+buka → jarak = 1388.10
+buka → jarak = 885.10
+buka → jarak = 935.76
+buka → jarak = 1097.35
+buka → jarak = 1550.48
+buka → jarak = 1778.67
+buka → jarak = 1078.06
+buka → jarak = 1012.55
+buka → jarak = 1060.89
+buka → jarak = 1003.37
+buka → jarak = 1064.32
+buka → jarak = 1668.19
+buka → jarak = 1901.02
+buka → jarak = 911.90
+buka → jarak = 1313.08
+buka → jarak = 1877.47
+buka → jarak = 1654.83
+buka → jarak = 1301.62
+buka → jarak = 780.83
+buka → jarak = 1459.19
+buka → jarak = 858.41
+buka → jarak = 1589.35
+buka → jarak = 1521.82
+buka → jarak = 1389.20
+buka → jarak = 1689.20
+buka → jarak = 941.99
+buka → jarak = 1052.76
+buka → jarak = 1074.83
+buka → jarak = 1338.84
+buka → jarak = 854.13
+buka → jarak = 1175.77
+buka → jarak = 1542.10
+buka → jarak = 1061.95
+buka → jarak = 1401.54
+buka → jarak = 1025.68
+buka → jarak = 933.28
+buka → jarak = 1807.53
+buka → jarak = 1537.39
+buka → jarak = 1320.21
+buka → jarak = 1325.81
+buka → jarak = 1343.32
+buka → jarak = 983.29
+buka → jarak = 925.87
+buka → jarak = 1390.69
+buka → jarak = 1551.13
+buka → jarak = 1703.51
+buka → jarak = 977.94
+buka → jarak = 921.45
+buka → jarak = 819.08
+buka → jarak = 822.97
+buka → jarak = 1150.54
+buka → jarak = 861.99
+buka → jarak = 1183.28
+buka → jarak = 1454.69
+buka → jarak = 1343.29
+buka → jarak = 1333.67
+buka → jarak = 1812.16
+buka → jarak = 1297.49
+buka → jarak = 1021.55
+buka → jarak = 914.87
+buka → jarak = 876.04
+buka → jarak = 930.02
+buka → jarak = 1047.52
+buka → jarak = 1575.57
+buka → jarak = 1733.16
+buka → jarak = 1339.76
+buka → jarak = 1046.64
+buka → jarak = 965.68
+buka → jarak = 1553.56
+buka → jarak = 1325.39
+buka → jarak = 985.98
+buka → jarak = 1590.76
+buka → jarak = 919.19
+buka → jarak = 1339.76
+buka → jarak = 1235.00
+buka → jarak = 832.76
+buka → jarak = 1071.34
+buka → jarak = 1553.54
+buka → jarak = 928.27
+buka → jarak = 991.42
+buka → jarak = 1025.49
+buka → jarak = 964.34
+buka → jarak = 1159.75
+tutup → jarak = 1832.59
+tutup → jarak = 1107.43
+tutup → jarak = 864.11
+tutup → jarak = 974.39
+tutup → jarak = 1486.79
+tutup → jarak = 966.42
+tutup → jarak = 1290.63
+tutup → jarak = 1034.63
+tutup → jarak = 1514.77
+tutup → jarak = 1791.18
+tutup → jarak = 946.96
+tutup → jarak = 915.92
+tutup → jarak = 894.15
+tutup → jarak = 1264.59
+tutup → jarak = 897.80
+tutup → jarak = 1215.79
+tutup → jarak = 1711.92
+tutup → jarak = 1392.04
+tutup → jarak = 1160.51
+tutup → jarak = 801.90
+tutup → jarak = 903.93
+tutup → jarak = 1748.76
+tutup → jarak = 1238.99
+tutup → jarak = 1429.10
+tutup → jarak = 1183.39
+tutup → jarak = 1666.07
+tutup → jarak = 1264.10
+tutup → jarak = 1345.62
+tutup → jarak = 974.55
+tutup → jarak = 1537.54
+tutup → jarak = 1516.77
+tutup → jarak = 1506.90
+tutup → jarak = 1139.34
+tutup → jarak = 1060.41
+tutup → jarak = 1570.68
+tutup → jarak = 1636.91
+tutup → jarak = 940.99
+tutup → jarak = 1285.44
+tutup → jarak = 1333.57
+tutup → jarak = 1449.30
+tutup → jarak = 1142.74
+tutup → jarak = 1012.86
+tutup → jarak = 1276.31
+tutup → jarak = 976.28
+tutup → jarak = 1706.57
+tutup → jarak = 1151.69
+tutup → jarak = 991.12
+tutup → jarak = 990.93
+tutup → jarak = 1120.02
+tutup → jarak = 938.66
+tutup → jarak = 1540.84
+tutup → jarak = 1409.60
+tutup → jarak = 1287.69
+tutup → jarak = 1701.67
+tutup → jarak = 962.55
+tutup → jarak = 1001.76
+tutup → jarak = 1585.98
+tutup → jarak = 1742.61
+tutup → jarak = 1292.96
+tutup → jarak = 1180.58
+tutup → jarak = 1420.65
+tutup → jarak = 901.95
+tutup → jarak = 1214.74
+tutup → jarak = 1747.84
+tutup → jarak = 1524.05
+tutup → jarak = 1344.78
+tutup → jarak = 957.90
+tutup → jarak = 865.60
+tutup → jarak = 938.85
+tutup → jarak = 1564.39
+tutup → jarak = 996.43
+tutup → jarak = 1246.95
+tutup → jarak = 1963.98
+tutup → jarak = 1018.38
+tutup → jarak = 970.16
+tutup → jarak = 1313.12
+tutup → jarak = 1437.32
+tutup → jarak = 976.82
+tutup → jarak = 1175.13
+tutup → jarak = 1136.83
+tutup → jarak = 1755.82
+tutup → jarak = 1397.82
+tutup → jarak = 812.97
+tutup → jarak = 1216.52
+tutup → jarak = 1063.42
+tutup → jarak = 975.95
+tutup → jarak = 1499.00
+tutup → jarak = 989.38
+tutup → jarak = 1100.24
+tutup → jarak = 792.51
+tutup → jarak = 1985.57
+tutup → jarak = 1065.60
+tutup → jarak = 1788.93
+tutup → jarak = 990.83
+tutup → jarak = 1300.44
+tutup → jarak = 865.80
+tutup → jarak = 939.75
+tutup → jarak = 1064.26
+tutup → jarak = 1664.64
+tutup → jarak = 1296.34
+tutup → jarak = 1626.72
+tutup → jarak = 933.85
+tutup → jarak = 756.97
+tutup → jarak = 1759.11
+tutup → jarak = 953.04
+tutup → jarak = 1473.23
+tutup → jarak = 1318.85
+tutup → jarak = 1053.50
+tutup → jarak = 835.77
+tutup → jarak = 1485.14
+tutup → jarak = 1070.46
+tutup → jarak = 962.31
+tutup → jarak = 837.27
+tutup → jarak = 1702.96
+tutup → jarak = 1485.83
+tutup → jarak = 1071.75
+tutup → jarak = 1252.56
+tutup → jarak = 1253.02
+tutup → jarak = 1022.81
+tutup → jarak = 855.37
+tutup → jarak = 1084.74
+tutup → jarak = 1664.85
+tutup → jarak = 1502.99
+tutup → jarak = 1009.74
+tutup → jarak = 1437.71
+tutup → jarak = 1263.96
+tutup → jarak = 1908.34
+tutup → jarak = 1004.68
+tutup → jarak = 1707.08
+tutup → jarak = 1641.28
+tutup → jarak = 1456.80
+tutup → jarak = 1447.63
+tutup → jarak = 1654.86
+tutup → jarak = 1065.95
+tutup → jarak = 1660.16
+tutup → jarak = 922.15
+tutup → jarak = 1062.49
+tutup → jarak = 1320.18
+tutup → jarak = 852.39
+tutup → jarak = 1476.79
+tutup → jarak = 795.02
+tutup → jarak = 1243.50
+tutup → jarak = 1146.33
+tutup → jarak = 1534.25
+tutup → jarak = 857.59
+tutup → jarak = 1858.99
+tutup → jarak = 943.41
+tutup → jarak = 1714.78
+tutup → jarak = 1318.36
+tutup → jarak = 992.62
+tutup → jarak = 1708.08
+tutup → jarak = 1562.10
+tutup → jarak = 862.83
+tutup → jarak = 1129.91
+tutup → jarak = 1698.52
+tutup → jarak = 768.66
+tutup → jarak = 1277.48
+tutup → jarak = 1312.60
+tutup → jarak = 1071.25
+tutup → jarak = 1186.09
+tutup → jarak = 1304.76
+tutup → jarak = 1009.50
+tutup → jarak = 971.35
+tutup → jarak = 1411.60
+tutup → jarak = 878.60
+tutup → jarak = 1320.80
+tutup → jarak = 899.95
+tutup → jarak = 845.99
+tutup → jarak = 1009.76
+tutup → jarak = 1716.97
+tutup → jarak = 1737.60
+tutup → jarak = 1654.38
+tutup → jarak = 900.82
+tutup → jarak = 1143.11
+tutup → jarak = 1246.22
+tutup → jarak = 759.85
+tutup → jarak = 911.17
+tutup → jarak = 907.74
+tutup → jarak = 1306.75
+tutup → jarak = 1022.20
+tutup → jarak = 1053.02
+tutup → jarak = 1763.28
+tutup → jarak = 1731.85
+tutup → jarak = 1599.39
+tutup → jarak = 1573.61
+tutup → jarak = 852.70
+tutup → jarak = 870.24
+tutup → jarak = 1008.78
+tutup → jarak = 1729.74
+tutup → jarak = 854.20
+tutup → jarak = 1300.65
+tutup → jarak = 1086.91
+tutup → jarak = 1581.09
+tutup → jarak = 1305.33
+tutup → jarak = 917.01
+tutup → jarak = 927.80
+tutup → jarak = 883.02
+tutup → jarak = 1740.08
+tutup → jarak = 1398.46
+tutup → jarak = 1268.83
+
+&gt;&gt;&gt; HASIL PREDIKSI DTW: TUTUP
+✓ Cocok! Rekaman benar adalah TUTUP.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="hitung-dtw-meggunakan-dtaidistance">
+<h2>Hitung DTW (meggunakan DTAIDistance)<a class="headerlink" href="#hitung-dtw-meggunakan-dtaidistance" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dtaidistance</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtw_ndim</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dtw_distance</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dtw_ndim</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">)</span>
+
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtw_distance</span><span class="p">(</span><span class="n">mfcc_input</span><span class="p">,</span> <span class="n">mfcc_data</span><span class="p">)</span> <span class="k">for</span> <span class="n">mfcc_data</span> <span class="ow">in</span> <span class="n">data_mfcc</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">min_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hasil perbandingan DTW:&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">distances</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> → jarak = </span><span class="si">{</span><span class="n">d</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; Hasil Terdekat:&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="p">[</span><span class="n">min_idx</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hasil perbandingan DTW:
+buka → jarak = 1280.95
+buka → jarak = 1788.55
+buka → jarak = 1112.20
+buka → jarak = 1466.73
+buka → jarak = 1633.98
+buka → jarak = 1714.61
+buka → jarak = 1913.92
+buka → jarak = 857.23
+buka → jarak = 875.05
+buka → jarak = 1218.96
+buka → jarak = 1137.55
+buka → jarak = 1098.30
+buka → jarak = 1527.10
+buka → jarak = 1120.85
+buka → jarak = 1077.61
+buka → jarak = 1290.51
+buka → jarak = 1310.17
+buka → jarak = 1093.38
+buka → jarak = 1665.44
+buka → jarak = 951.97
+buka → jarak = 1353.62
+buka → jarak = 1711.96
+buka → jarak = 1115.91
+buka → jarak = 1262.22
+buka → jarak = 1866.18
+buka → jarak = 1068.64
+buka → jarak = 1315.56
+buka → jarak = 889.89
+buka → jarak = 1359.03
+buka → jarak = 1105.39
+buka → jarak = 1556.92
+buka → jarak = 2320.83
+buka → jarak = 1195.50
+buka → jarak = 1542.52
+buka → jarak = 1245.89
+buka → jarak = 1529.23
+buka → jarak = 1081.88
+buka → jarak = 1003.53
+buka → jarak = 1705.33
+buka → jarak = 1014.03
+buka → jarak = 1141.43
+buka → jarak = 1076.82
+buka → jarak = 1596.86
+buka → jarak = 1033.55
+buka → jarak = 1058.29
+buka → jarak = 1448.30
+buka → jarak = 1253.80
+buka → jarak = 1055.51
+buka → jarak = 1874.67
+buka → jarak = 1444.60
+buka → jarak = 1578.18
+buka → jarak = 1100.31
+buka → jarak = 1345.30
+buka → jarak = 1539.26
+buka → jarak = 1081.62
+buka → jarak = 1217.09
+buka → jarak = 1264.27
+buka → jarak = 1248.51
+buka → jarak = 1027.28
+buka → jarak = 1807.11
+buka → jarak = 962.80
+buka → jarak = 1610.94
+buka → jarak = 1078.36
+buka → jarak = 1066.07
+buka → jarak = 1148.28
+buka → jarak = 1352.34
+buka → jarak = 1531.68
+buka → jarak = 1803.78
+buka → jarak = 1355.52
+buka → jarak = 1646.74
+buka → jarak = 1459.30
+buka → jarak = 957.48
+buka → jarak = 1596.38
+buka → jarak = 1057.80
+buka → jarak = 1038.04
+buka → jarak = 1060.18
+buka → jarak = 1132.49
+buka → jarak = 1722.44
+buka → jarak = 1528.28
+buka → jarak = 1053.18
+buka → jarak = 1101.18
+buka → jarak = 1777.10
+buka → jarak = 1042.62
+buka → jarak = 1242.54
+buka → jarak = 1039.25
+buka → jarak = 1655.29
+buka → jarak = 1522.14
+buka → jarak = 999.07
+buka → jarak = 1149.95
+buka → jarak = 1114.91
+buka → jarak = 1431.91
+buka → jarak = 1052.68
+buka → jarak = 1743.95
+buka → jarak = 1478.64
+buka → jarak = 1716.69
+buka → jarak = 1553.95
+buka → jarak = 1634.89
+buka → jarak = 1038.77
+buka → jarak = 1761.67
+buka → jarak = 1279.08
+buka → jarak = 1580.27
+buka → jarak = 1026.32
+buka → jarak = 1128.20
+buka → jarak = 1070.70
+buka → jarak = 1122.74
+buka → jarak = 1549.69
+buka → jarak = 1532.85
+buka → jarak = 1034.16
+buka → jarak = 1175.73
+buka → jarak = 1357.06
+buka → jarak = 957.04
+buka → jarak = 1866.76
+buka → jarak = 1075.37
+buka → jarak = 1259.19
+buka → jarak = 1086.41
+buka → jarak = 1019.33
+buka → jarak = 1043.73
+buka → jarak = 1584.07
+buka → jarak = 913.52
+buka → jarak = 1106.33
+buka → jarak = 1316.33
+buka → jarak = 1693.20
+buka → jarak = 1790.41
+buka → jarak = 1201.52
+buka → jarak = 1147.20
+buka → jarak = 1121.67
+buka → jarak = 1180.91
+buka → jarak = 1128.02
+buka → jarak = 1706.48
+buka → jarak = 2160.90
+buka → jarak = 1003.16
+buka → jarak = 1570.45
+buka → jarak = 2143.72
+buka → jarak = 1797.68
+buka → jarak = 1473.92
+buka → jarak = 955.83
+buka → jarak = 1581.43
+buka → jarak = 957.18
+buka → jarak = 1678.21
+buka → jarak = 1631.83
+buka → jarak = 1587.22
+buka → jarak = 1897.10
+buka → jarak = 1075.35
+buka → jarak = 1292.95
+buka → jarak = 1289.31
+buka → jarak = 1555.97
+buka → jarak = 981.38
+buka → jarak = 1383.52
+buka → jarak = 1630.72
+buka → jarak = 1119.14
+buka → jarak = 1554.91
+buka → jarak = 1235.63
+buka → jarak = 1092.82
+buka → jarak = 1825.30
+buka → jarak = 1663.11
+buka → jarak = 1578.48
+buka → jarak = 1561.45
+buka → jarak = 1576.27
+buka → jarak = 1042.88
+buka → jarak = 962.51
+buka → jarak = 1582.10
+buka → jarak = 1736.32
+buka → jarak = 1898.19
+buka → jarak = 1135.63
+buka → jarak = 1070.72
+buka → jarak = 1052.75
+buka → jarak = 1065.89
+buka → jarak = 1340.17
+buka → jarak = 1002.42
+buka → jarak = 1397.78
+buka → jarak = 1609.75
+buka → jarak = 1532.59
+buka → jarak = 1486.68
+buka → jarak = 1822.26
+buka → jarak = 1465.28
+buka → jarak = 1237.60
+buka → jarak = 1131.04
+buka → jarak = 1069.30
+buka → jarak = 1144.51
+buka → jarak = 1255.73
+buka → jarak = 1728.52
+buka → jarak = 1767.00
+buka → jarak = 1549.82
+buka → jarak = 1248.02
+buka → jarak = 1038.66
+buka → jarak = 1695.42
+buka → jarak = 1557.85
+buka → jarak = 1086.29
+buka → jarak = 1776.81
+buka → jarak = 1105.16
+buka → jarak = 1524.33
+buka → jarak = 1436.94
+buka → jarak = 974.98
+buka → jarak = 1129.73
+buka → jarak = 1710.26
+buka → jarak = 968.97
+buka → jarak = 1215.63
+buka → jarak = 1210.58
+buka → jarak = 1083.18
+buka → jarak = 1354.80
+tutup → jarak = 1885.53
+tutup → jarak = 1513.94
+tutup → jarak = 1058.45
+tutup → jarak = 1445.69
+tutup → jarak = 1805.47
+tutup → jarak = 1326.54
+tutup → jarak = 1648.49
+tutup → jarak = 1379.69
+tutup → jarak = 1828.85
+tutup → jarak = 1877.48
+tutup → jarak = 1305.04
+tutup → jarak = 1182.30
+tutup → jarak = 1302.56
+tutup → jarak = 1592.18
+tutup → jarak = 1126.47
+tutup → jarak = 1529.22
+tutup → jarak = 1760.80
+tutup → jarak = 1716.25
+tutup → jarak = 1567.85
+tutup → jarak = 1194.00
+tutup → jarak = 1273.81
+tutup → jarak = 1838.23
+tutup → jarak = 1552.34
+tutup → jarak = 1710.07
+tutup → jarak = 1499.16
+tutup → jarak = 1963.92
+tutup → jarak = 1596.31
+tutup → jarak = 1721.84
+tutup → jarak = 1343.29
+tutup → jarak = 1897.76
+tutup → jarak = 1821.05
+tutup → jarak = 1792.19
+tutup → jarak = 1450.95
+tutup → jarak = 1384.19
+tutup → jarak = 1698.94
+tutup → jarak = 1764.51
+tutup → jarak = 1301.62
+tutup → jarak = 1611.55
+tutup → jarak = 1676.41
+tutup → jarak = 1654.89
+tutup → jarak = 1439.93
+tutup → jarak = 1319.48
+tutup → jarak = 1610.81
+tutup → jarak = 1400.23
+tutup → jarak = 1753.27
+tutup → jarak = 1481.18
+tutup → jarak = 1300.82
+tutup → jarak = 1207.93
+tutup → jarak = 1414.70
+tutup → jarak = 1172.45
+tutup → jarak = 1817.04
+tutup → jarak = 1726.66
+tutup → jarak = 1563.24
+tutup → jarak = 1788.60
+tutup → jarak = 1217.25
+tutup → jarak = 1308.20
+tutup → jarak = 1887.41
+tutup → jarak = 2047.87
+tutup → jarak = 1662.58
+tutup → jarak = 1527.01
+tutup → jarak = 1773.05
+tutup → jarak = 1277.50
+tutup → jarak = 1493.58
+tutup → jarak = 1838.52
+tutup → jarak = 1804.43
+tutup → jarak = 1672.93
+tutup → jarak = 1258.72
+tutup → jarak = 1116.16
+tutup → jarak = 1320.87
+tutup → jarak = 1722.53
+tutup → jarak = 1304.67
+tutup → jarak = 1636.29
+tutup → jarak = 2312.57
+tutup → jarak = 1273.86
+tutup → jarak = 1275.86
+tutup → jarak = 1675.93
+tutup → jarak = 1716.87
+tutup → jarak = 1205.70
+tutup → jarak = 1556.61
+tutup → jarak = 1483.53
+tutup → jarak = 1840.08
+tutup → jarak = 1750.29
+tutup → jarak = 1204.78
+tutup → jarak = 1572.30
+tutup → jarak = 1388.61
+tutup → jarak = 1306.11
+tutup → jarak = 1801.99
+tutup → jarak = 1371.58
+tutup → jarak = 1445.11
+tutup → jarak = 1210.51
+tutup → jarak = 2341.66
+tutup → jarak = 1406.11
+tutup → jarak = 1877.55
+tutup → jarak = 1293.50
+tutup → jarak = 1583.90
+tutup → jarak = 1254.48
+tutup → jarak = 1214.66
+tutup → jarak = 1400.58
+tutup → jarak = 1822.48
+tutup → jarak = 1569.54
+tutup → jarak = 1980.89
+tutup → jarak = 1208.44
+tutup → jarak = 1095.56
+tutup → jarak = 2094.98
+tutup → jarak = 1214.10
+tutup → jarak = 1831.15
+tutup → jarak = 1645.26
+tutup → jarak = 1347.78
+tutup → jarak = 1220.97
+tutup → jarak = 1866.51
+tutup → jarak = 1440.92
+tutup → jarak = 1328.76
+tutup → jarak = 1228.28
+tutup → jarak = 1781.66
+tutup → jarak = 1727.80
+tutup → jarak = 1419.17
+tutup → jarak = 1584.39
+tutup → jarak = 1613.70
+tutup → jarak = 1487.86
+tutup → jarak = 1124.62
+tutup → jarak = 1420.18
+tutup → jarak = 2029.67
+tutup → jarak = 1812.13
+tutup → jarak = 1351.65
+tutup → jarak = 1797.18
+tutup → jarak = 1601.75
+tutup → jarak = 2252.15
+tutup → jarak = 1300.54
+tutup → jarak = 1791.69
+tutup → jarak = 1764.24
+tutup → jarak = 1771.28
+tutup → jarak = 1653.48
+tutup → jarak = 1747.53
+tutup → jarak = 1335.07
+tutup → jarak = 1966.19
+tutup → jarak = 1289.99
+tutup → jarak = 1397.63
+tutup → jarak = 1680.52
+tutup → jarak = 1244.57
+tutup → jarak = 1693.14
+tutup → jarak = 1186.08
+tutup → jarak = 1563.73
+tutup → jarak = 1475.85
+tutup → jarak = 1844.59
+tutup → jarak = 1136.81
+tutup → jarak = 2176.42
+tutup → jarak = 1220.35
+tutup → jarak = 2087.39
+tutup → jarak = 1679.63
+tutup → jarak = 1296.51
+tutup → jarak = 1781.83
+tutup → jarak = 1741.97
+tutup → jarak = 1044.33
+tutup → jarak = 1462.56
+tutup → jarak = 2061.21
+tutup → jarak = 1007.16
+tutup → jarak = 1606.72
+tutup → jarak = 1592.10
+tutup → jarak = 1440.02
+tutup → jarak = 1456.81
+tutup → jarak = 1579.61
+tutup → jarak = 1317.10
+tutup → jarak = 1347.54
+tutup → jarak = 1730.44
+tutup → jarak = 1144.13
+tutup → jarak = 1649.73
+tutup → jarak = 1127.73
+tutup → jarak = 1184.84
+tutup → jarak = 1353.15
+tutup → jarak = 2078.28
+tutup → jarak = 2056.49
+tutup → jarak = 1743.87
+tutup → jarak = 1091.11
+tutup → jarak = 1547.89
+tutup → jarak = 1541.60
+tutup → jarak = 986.15
+tutup → jarak = 1285.28
+tutup → jarak = 1236.63
+tutup → jarak = 1628.49
+tutup → jarak = 1282.34
+tutup → jarak = 1443.36
+tutup → jarak = 2102.98
+tutup → jarak = 1794.15
+tutup → jarak = 1683.36
+tutup → jarak = 1698.53
+tutup → jarak = 1193.21
+tutup → jarak = 1276.16
+tutup → jarak = 1229.95
+tutup → jarak = 1799.61
+tutup → jarak = 1139.60
+tutup → jarak = 1626.19
+tutup → jarak = 1361.32
+tutup → jarak = 1909.55
+tutup → jarak = 1581.87
+tutup → jarak = 1240.99
+tutup → jarak = 1175.88
+tutup → jarak = 1122.10
+tutup → jarak = 1807.44
+tutup → jarak = 1682.91
+tutup → jarak = 1551.82
+
+&gt;&gt;&gt; Hasil Terdekat: BUKA
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-library">Install library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library">import library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fungsi-ekstraksi-mfcc">Fungsi Ekstraksi MFCC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset-audio-buka-tutup">Load dataset audio buka/tutup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-rekaman-input-antara-buka-dan-tutup">Load rekaman input antara buka dan tutup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-dtw-meggunakan-dtaidistance">Hitung DTW (meggunakan DTAIDistance)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
