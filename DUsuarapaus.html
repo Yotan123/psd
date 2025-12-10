@@ -417,6 +417,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pemahaman-data-awal-rightwhalecalls">Pemahaman data awal (RightWhalecalls)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membaca-file-ts-dataset">Membaca File.ts(Dataset)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-file-train-test">Load File TRAIN &amp; TEST</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-dasar-dataset">Informasi Dasar Dataset</a></li>
@@ -436,6 +437,29 @@ document.write(`
                   
   <section id="data-understanding-rightwhalecalls">
 <h1>Data Understanding (RightWhaleCalls)<a class="headerlink" href="#data-understanding-rightwhalecalls" title="Link to this heading">#</a></h1>
+<section id="pemahaman-data-awal-rightwhalecalls">
+<h2>Pemahaman data awal (RightWhalecalls)<a class="headerlink" href="#pemahaman-data-awal-rightwhalecalls" title="Link to this heading">#</a></h2>
+<p><strong>SUMBER DATA:</strong>
+Data ini berasal dari Marinexplore and Cornell University Whale Detection Challenge. dan bisa menemukan dataset atau challangenya  di kaggle pada link berikut:<a class="reference external" href="https://www.kaggle.com/c/whale-detection-challenge/data">https://www.kaggle.com/c/whale-detection-challenge/data</a></p>
+<p><strong>Tujuan dari data ini disediakan:</strong>
+mendeteksi “up-call” dari North Atlantic right whale (NARW) — yaitu suara “contact call” khas dari paus sikat (Right Whale). Deteksi otomatis ini berguna agar kapal atau sistem pemantauan bisa mengenali keberadaan paus dan mengurangi risiko tabrakan</p>
+<p><strong>Dari Mana Data Diambil (Sumber Perekaman):</strong></p>
+<ul class="simple">
+<li><p>Hidrofon Tetap (Fixed Hydrophones): Ditempatkan di dasar laut di area migrasi atau makan paus sikat, merekam suara secara kontinu selama berbulan-bulan atau bertahun-tahun (misalnya, di lepas pantai Amerika Utara).</p></li>
+<li><p>Wahana Bergerak (Moored Buoys/Gliders): Pelampung atau glider bawah air yang dilengkapi hidrofon bergerak di area jelajah paus, mengumpulkan data dari berbagai lokasi.</p></li>
+<li><p>Tag Akustik (Acoustic Tags): Tag kecil yang dipasang di kulit paus untuk merekam suara mereka secara langsung dari dekat paus, memberikan data perilaku spesifik.</p></li>
+<li><p>Hidrofon Kapal (Ship-mounted Hydrophones): Perekaman saat kapal riset berlayar di perairan tempat paus berada, sering kali untuk mendeteksi keberadaan paus secara cepat.</p></li>
+</ul>
+<p><strong>Bagaimana Cara Mendapatkan Data (Metode Pengambilan &amp; Analisis):</strong></p>
+<p>Pemasangan Hidrofon: Hidrofon diletakkan di area penting (feeding/breeding grounds) menggunakan kapal penelitian, diikat pada jangkar atau mengambang bebas.</p>
+<ol class="arabic simple">
+<li><p>Perekaman Data: Hidrofon terus-menerus merekam suara bawah air (noise ambient dan panggilan paus) ke dalam unit penyimpanan data.</p></li>
+<li><p>Pengambilan Data: Data diambil secara berkala (bulanan/tahunan) atau dikirimkan secara real-time (untuk sistem yang terhubung satelit).</p></li>
+<li><p>Analisis Spektral: Data suara diubah menjadi spektogram (visualisasi frekuensi vs waktu) untuk mengidentifikasi karakteristik panggilan (nada, durasi).</p></li>
+<li><p>Deteksi Otomatis (Automated Detection): Algoritma komputer digunakan untuk secara otomatis mendeteksi dan mengklasifikasikan panggilan paus (misalnya, “up-calls”, “gunshots”) dari rekaman yang panjang.
+Korelasi dengan Data Lain: Panggilan paus dikorelasikan dengan data visual (pengamatan paus), data pelacakan (GPS), dan data lingkungan (suhu air, aktivitas kapal) untuk memahami konteks perilaku.</p></li>
+</ol>
+</section>
 <section id="membaca-file-ts-dataset">
 <h2>Membaca File.ts(Dataset)<a class="headerlink" href="#membaca-file-ts-dataset" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -511,23 +535,6 @@ Panjang time series : 4000
 </div>
 </div>
 </div>
-<p>Suara paus sikat (right whale calls) diambil dari habitat alami mereka di laut menggunakan hidrofon (mikrofon bawah air) yang dipasang di dasar laut atau dibawa oleh pelampung/wahana bawah air, merekam panggilan unik paus untuk komunikasi, navigasi, dan perkawinan, lalu data akustik ini dianalisis untuk memahami populasi, perilaku, dan ancaman seperti tabrakan kapal, memberikan data vital bagi konservasi paus sikat.</p>
-<p><strong>Dari Mana Data Diambil (Sumber Perekaman)</strong></p>
-<ul class="simple">
-<li><p>Hidrofon Tetap (Fixed Hydrophones): Ditempatkan di dasar laut di area migrasi atau makan paus sikat, merekam suara secara kontinu selama berbulan-bulan atau bertahun-tahun (misalnya, di lepas pantai Amerika Utara).</p></li>
-<li><p>Wahana Bergerak (Moored Buoys/Gliders): Pelampung atau glider bawah air yang dilengkapi hidrofon bergerak di area jelajah paus, mengumpulkan data dari berbagai lokasi.</p></li>
-<li><p>Tag Akustik (Acoustic Tags): Tag kecil yang dipasang di kulit paus untuk merekam suara mereka secara langsung dari dekat paus, memberikan data perilaku spesifik.</p></li>
-<li><p>Hidrofon Kapal (Ship-mounted Hydrophones): Perekaman saat kapal riset berlayar di perairan tempat paus berada, sering kali untuk mendeteksi keberadaan paus secara cepat.</p></li>
-</ul>
-<p><strong>Bagaimana Cara Mendapatkan Data (Metode Pengambilan &amp; Analisis)</strong></p>
-<p>Pemasangan Hidrofon: Hidrofon diletakkan di area penting (feeding/breeding grounds) menggunakan kapal penelitian, diikat pada jangkar atau mengambang bebas.</p>
-<ol class="arabic simple">
-<li><p>Perekaman Data: Hidrofon terus-menerus merekam suara bawah air (noise ambient dan panggilan paus) ke dalam unit penyimpanan data.</p></li>
-<li><p>Pengambilan Data: Data diambil secara berkala (bulanan/tahunan) atau dikirimkan secara real-time (untuk sistem yang terhubung satelit).</p></li>
-<li><p>Analisis Spektral: Data suara diubah menjadi spektogram (visualisasi frekuensi vs waktu) untuk mengidentifikasi karakteristik panggilan (nada, durasi).</p></li>
-<li><p>Deteksi Otomatis (Automated Detection): Algoritma komputer digunakan untuk secara otomatis mendeteksi dan mengklasifikasikan panggilan paus (misalnya, “up-calls”, “gunshots”) dari rekaman yang panjang.
-Korelasi dengan Data Lain: Panggilan paus dikorelasikan dengan data visual (pengamatan paus), data pelacakan (GPS), dan data lingkungan (suhu air, aktivitas kapal) untuk memahami konteks perilaku.</p></li>
-</ol>
 </section>
 <section id="informasi-kelas">
 <h2>Informasi Kelas<a class="headerlink" href="#informasi-kelas" title="Link to this heading">#</a></h2>
@@ -617,6 +624,7 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
 <img alt="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" src="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" />
 </div>
 </div>
+<p>Penjelasan amplitudo suara</p>
 </section>
 </section>
 
@@ -675,6 +683,7 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pemahaman-data-awal-rightwhalecalls">Pemahaman data awal (RightWhalecalls)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membaca-file-ts-dataset">Membaca File.ts(Dataset)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-file-train-test">Load File TRAIN &amp; TEST</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-dasar-dataset">Informasi Dasar Dataset</a></li>
