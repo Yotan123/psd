@@ -12,5 +12,7 @@ plotly==5.18.0
 streamlit==1.51.0
 scikit-learn==1.6.1
 setuptools==68.2.2
+tensorflow
+
 
 
