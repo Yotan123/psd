@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Business Understanding – Klasifikasi Time Series (Right Whale Calls) &#8212; My sample book</title>
+    <title>Deployment Sistem Deteksi suara paus di streamlit &#8212; My sample book</title>
   
   
   
@@ -57,11 +57,9 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'BUsuarapaus';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'deploymentsuarapaus';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Understanding (RightWhaleCalls)" href="DUsuarapaus.html" />
-    <link rel="prev" title="Menghitung Jarak(buka,tutup) audio rekaman baru dengan data audio yang sudah disimpan menggunakan DTW(DYNAMIC TIME WARPING)" href="HitungJarak.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -123,6 +121,8 @@
     <div class="bd-container__inner bd-page-width">
       
       
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -220,8 +220,8 @@
 <li class="toctree-l1"><a class="reference internal" href="HitungJarak.html">Hitung Jarak Buka Tutup Suara</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Klasifikasi Time Series (Right Whale Calls)</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Business Understanding Right Whale Calls</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="BUsuarapaus.html">Business Understanding Right Whale Calls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DUsuarapaus.html">Data Understanding Right Whale Calls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Preprocessingsuarapaus.html">Preprocessing Right Whale Calls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modellingsuarapaus.html">Modelling Menggunakan Arsitektur CNN 1D</a></li>
@@ -296,7 +296,7 @@
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FBUsuarapaus.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fdeploymentsuarapaus.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -326,7 +326,7 @@
       
       
       
-      <li><a href="_sources/BUsuarapaus.ipynb" target="_blank"
+      <li><a href="_sources/deploymentsuarapaus.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -397,7 +397,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -408,11 +410,20 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Business Understanding – Klasifikasi Time Series (Right Whale Calls)</h1>
+    <h1>Deployment Sistem Deteksi suara paus di streamlit</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#link-streamlit">Link streamlit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kode-program-deployment">Kode program deployment</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -422,57 +433,147 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="business-understanding-klasifikasi-time-series-right-whale-calls">
-<h1>Business Understanding – Klasifikasi Time Series (Right Whale Calls)<a class="headerlink" href="#business-understanding-klasifikasi-time-series-right-whale-calls" title="Link to this heading">#</a></h1>
-<ol class="arabic simple">
-<li><p>Latar Belakang Masalah</p></li>
-</ol>
-<p>Paus kanan Atlantik Utara (North Atlantic Right Whale) atau disebut juga sebagai Paus sikat merupakan salah satu spesies paus paling terancam punah di dunia. Populasinya diperkirakan kurang dari 400 individu dan terus menurun akibat tabrakan kapal, aktivitas industri laut, serta perubahan lingkungan. Oleh karena itu, pemantauan populasi paus ini menjadi sangat penting bagi para peneliti dan konservasionis.</p>
-<p>Salah satu metode utama untuk memantau keberadaan paus adalah analisis suara bawah laut (bioacoustic). Paus kanan menghasilkan suara khas seperti up-calls, yaitu suara frekuensi rendah yang digunakan untuk komunikasi. Dengan mengklasifikasikan pola suara tersebut, kita dapat mendeteksi keberadaan paus secara otomatis tanpa harus melakukan observasi manual.</p>
-<ol class="arabic simple" start="2">
-<li><p>Permasalahan Bisnis</p></li>
-</ol>
-<p>Masalah utama yang ingin dipecahkan adalah bagaimana mendeteksi keberadaan paus kanan secara otomatis dari data audio laut. Data rekaman audio bawah laut biasanya:</p>
-<ul class="simple">
-<li><p>Panjang durasi rekaman besar,</p></li>
-<li><p>Banyak noise (kapal, gelombang, hewan lain),</p></li>
-<li><p>Tidak mungkin dianalisis satu per satu secara manual.</p></li>
-</ul>
-<p>Tanpa sistem otomatis, proses identifikasi paus akan:</p>
-<ul class="simple">
-<li><p>Memakan waktu lama,</p></li>
-<li><p>Membutuhkan tenaga ahli akustik laut,</p></li>
-<li><p>Tidak efisien untuk skala besar.</p></li>
-</ul>
-<ol class="arabic simple" start="3">
-<li><p>Tujuan Bisnis(Tujuan Analisis)</p></li>
-</ol>
-<p>Tujuan dari proyek ini adalah membangun model klasifikasi time series yang mampu:</p>
-<ul class="simple">
-<li><p>Membedakan apakah suatu rekaman audio mengandung suara paus kanan atau tidak,</p></li>
-<li><p>Mengurangi beban kerja manual dalam identifikasi suara,</p></li>
-<li><p>Mendukung pemantauan populasi paus secara lebih cepat dan akurat.</p></li>
-</ul>
-<p>Dengan model klasifikasi yang baik, organisasi konservasi laut dapat:</p>
-<ul class="simple">
-<li><p>Menentukan area migrasi paus dengan lebih akurat,</p></li>
-<li><p>Mengurangi resiko tabrakan kapal,</p></li>
-<li><p>Merancang kebijakan perlindungan habitat secara lebih efektif.</p></li>
-</ul>
-<ol class="arabic simple" start="4">
-<li><p>Ruang Lingkup Proyek</p></li>
-</ol>
-<p>Dalam proyek klasifikasi time series ini, scope utamanya meliputi:</p>
-<ul class="simple">
-<li><p>Pengolahan dataset RightWhaleCalls,</p></li>
-<li><p>Pelatihan model klasifikasi time series,</p></li>
-<li><p>Evaluasi menggunakan akurasi, precision, recall, dan f1-score,</p></li>
-<li><p>Visualisasi performa model dan interpretasi hasil.</p></li>
-</ul>
-<ol class="arabic simple" start="5">
-<li><p>Dampak Jangka Panjang</p></li>
-</ol>
-<p>Model deteksi otomatis dapat diterapkan pada sistem pemantauan laut real-time (misalnya buoy sensor), sehingga upaya konservasi paus lebih adaptif dan responsif terhadap perubahan.</p>
+  <section id="deployment-sistem-deteksi-suara-paus-di-streamlit">
+<h1>Deployment Sistem Deteksi suara paus di streamlit<a class="headerlink" href="#deployment-sistem-deteksi-suara-paus-di-streamlit" title="Link to this heading">#</a></h1>
+<section id="link-streamlit">
+<h2>Link streamlit<a class="headerlink" href="#link-streamlit" title="Link to this heading">#</a></h2>
+<p>berikut adalah link menuju aplikasi deteksi suara paus <a class="reference external" href="https://deteksisuarapaus.streamlit.app/">https://deteksisuarapaus.streamlit.app/</a></p>
+</section>
+<section id="kode-program-deployment">
+<h2>Kode program deployment<a class="headerlink" href="#kode-program-deployment" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_model</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Page config (WAJIB di atas)</span>
+<span class="c1"># =====================================</span>
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span>
+    <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;Right Whale Call Detection&quot;</span><span class="p">,</span>
+    <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;🐋&quot;</span><span class="p">,</span>
+    <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;centered&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Load model (sekali saja)</span>
+<span class="c1"># =====================================</span>
+<span class="nd">@st</span><span class="o">.</span><span class="n">cache_resource</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_cnn_model</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;best_cnn1d_model.keras&quot;</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_cnn_model</span><span class="p">()</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Preprocessing (SAMA seperti training)</span>
+<span class="c1"># =====================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">preprocess_timeseries</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ts</span>
+
+
+<span class="c1"># =====================================</span>
+<span class="c1"># HEADER</span>
+<span class="c1"># =====================================</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &lt;h1 style=&#39;text-align: center;&#39;&gt;🐋 Right Whale Call Detection&lt;/h1&gt;</span>
+<span class="sd">    &lt;p style=&#39;text-align: center; font-size: 16px;&#39;&gt;</span>
+<span class="sd">        Sistem klasifikasi time series untuk mendeteksi suara Paus Kanan Atlantik</span>
+<span class="sd">    &lt;/p&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">divider</span><span class="p">()</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Upload Section</span>
+<span class="c1"># =====================================</span>
+<span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📂 Upload File Time Series&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Unggah **1 file CSV/TXT** berisi **1 data time series suara** (tanpa label).&quot;</span><span class="p">)</span>
+
+<span class="n">uploaded_file</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span>
+    <span class="s2">&quot;Pilih file&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;txt&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Prediction</span>
+<span class="c1"># =====================================</span>
+<span class="k">if</span> <span class="n">uploaded_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Load data</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">uploaded_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;File berhasil diupload ✅&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Info file</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📊 Panjang time series: **</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="si">}</span><span class="s2"> data point**&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Preprocess</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">preprocess_timeseries</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+        <span class="c1"># Predict</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">spinner</span><span class="p">(</span><span class="s2">&quot;🔍 Menganalisis suara paus...&quot;</span><span class="p">):</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">predicted_class</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">prediction</span><span class="p">))</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">prediction</span><span class="p">))</span>
+
+        <span class="c1"># Label mapping</span>
+        <span class="n">label_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;No Call (Bukan Suara Paus)&quot;</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Right Whale Call 🐋&quot;</span>
+        <span class="p">}</span>
+
+        <span class="c1"># =====================================</span>
+        <span class="c1"># Result Section</span>
+        <span class="c1"># =====================================</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📌 Hasil Prediksi&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">predicted_class</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🐋 **TERDETEKSI SUARA PAUS**&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;❌ **TIDAK TERDETEKSI SUARA PAUS**&quot;</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Prediksi:** </span><span class="si">{</span><span class="n">label_map</span><span class="p">[</span><span class="n">predicted_class</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**Confidence:** </span><span class="si">{</span><span class="n">confidence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># =====================================</span>
+        <span class="c1"># Probability Visualization</span>
+        <span class="c1"># =====================================</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;📈 Confidence per Kelas&quot;</span><span class="p">)</span>
+
+        <span class="n">prob_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s2">&quot;Kelas&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;No Call&quot;</span><span class="p">,</span> <span class="s2">&quot;Right Whale Call&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;Probabilitas&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">})</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">bar_chart</span><span class="p">(</span><span class="n">prob_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Kelas&quot;</span><span class="p">))</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Terjadi kesalahan saat memproses file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># =====================================</span>
+<span class="c1"># Footer</span>
+<span class="c1"># =====================================</span>
+<span class="n">st</span><span class="o">.</span><span class="n">divider</span><span class="p">()</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+    <span class="s2">&quot;&lt;p style=&#39;text-align: center; font-size: 13px;&#39;&gt;&quot;</span>
+    <span class="s2">&quot;CNN 1D Time Series Classification • RightWhaleCalls Dataset&quot;</span>
+    <span class="s2">&quot;&lt;/p&gt;&quot;</span><span class="p">,</span>
+    <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -505,30 +606,28 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="HitungJarak.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Menghitung Jarak(buka,tutup) audio rekaman baru dengan data audio yang sudah disimpan menggunakan DTW(DYNAMIC TIME WARPING)</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="DUsuarapaus.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data Understanding (RightWhaleCalls)</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#link-streamlit">Link streamlit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kode-program-deployment">Kode program deployment</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

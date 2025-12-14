@@ -431,6 +431,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menggunakan-learning-rate-yang-kecil">Menggunakan learning rate yang kecil</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#early-stopping">Early Stopping</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-checkpoint">Model Checkpoint</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-model">Training Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-hasil-training">Visualisasi Hasil Training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluasi-model">Evaluasi Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification-report">Classification Report</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion Matrix</a></li>
 </ul>
             </nav>
         </div>
@@ -797,6 +802,9 @@ Contoh label encode : [1 1 1 1 1]
 </div>
 </div>
 </div>
+</section>
+<section id="training-model">
+<h2>Training Model<a class="headerlink" href="#training-model" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
@@ -853,6 +861,9 @@ Epoch 8: val_loss did not improve from 0.73470
 </div>
 </div>
 </div>
+</section>
+<section id="visualisasi-hasil-training">
+<h2>Visualisasi Hasil Training<a class="headerlink" href="#visualisasi-hasil-training" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -879,6 +890,9 @@ Epoch 8: val_loss did not improve from 0.73470
 <img alt="_images/d4712a938b08486e8165fcd9aca5165a48ae4c4ce07b8b9d773acf8ac7702d2b.png" src="_images/d4712a938b08486e8165fcd9aca5165a48ae4c4ce07b8b9d773acf8ac7702d2b.png" />
 </div>
 </div>
+</section>
+<section id="evaluasi-model">
+<h2>Evaluasi Model<a class="headerlink" href="#evaluasi-model" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test_np</span><span class="p">,</span> <span class="n">y_test_cat</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -892,6 +906,9 @@ Epoch 8: val_loss did not improve from 0.73470
 </div>
 </div>
 </div>
+</section>
+<section id="classification-report">
+<h2>Classification Report<a class="headerlink" href="#classification-report" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_np</span><span class="p">)</span>
@@ -915,6 +932,9 @@ weighted avg       0.81      0.78      0.78      1962
 </div>
 </div>
 </div>
+</section>
+<section id="confusion-matrix">
+<h2>Confusion Matrix<a class="headerlink" href="#confusion-matrix" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -1007,6 +1027,11 @@ weighted avg       0.81      0.78      0.78      1962
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menggunakan-learning-rate-yang-kecil">Menggunakan learning rate yang kecil</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#early-stopping">Early Stopping</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-checkpoint">Model Checkpoint</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-model">Training Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-hasil-training">Visualisasi Hasil Training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluasi-model">Evaluasi Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification-report">Classification Report</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion Matrix</a></li>
 </ul>
   </nav></div>
 
