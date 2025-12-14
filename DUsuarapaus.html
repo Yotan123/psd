@@ -418,12 +418,16 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pemahaman-data-awal-rightwhalecalls">Pemahaman data awal (RightWhalecalls)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library">Import Library</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membaca-file-ts-dataset">Membaca File.ts(Dataset)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-file-train-test">Load File TRAIN &amp; TEST</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-dasar-dataset">Informasi Dasar Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-kelas">Informasi Kelas</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-jumlah-data-per-kelas">Distribusi Jumlah Data per Kelas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-train">Visualisasi Distribusi kelas(TRAIN)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-test">Visualisasi Distribusi kelas(TEST)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-1-contoh-time-series">Visualisasi 1 Contoh Time Series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-nilai-amplitudo">Statistik Nilai Amplitudo</a></li>
 </ul>
             </nav>
         </div>
@@ -459,6 +463,22 @@ mendeteksi “up-call” dari North Atlantic right whale (NARW) — yaitu suara 
 <li><p>Deteksi Otomatis (Automated Detection): Algoritma komputer digunakan untuk secara otomatis mendeteksi dan mengklasifikasikan panggilan paus (misalnya, “up-calls”, “gunshots”) dari rekaman yang panjang.
 Korelasi dengan Data Lain: Panggilan paus dikorelasikan dengan data visual (pengamatan paus), data pelacakan (GPS), dan data lingkungan (suhu air, aktivitas kapal) untuk memahami konteks perilaku.</p></li>
 </ol>
+</section>
+<section id="import-library">
+<h2>Import Library<a class="headerlink" href="#import-library" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">arff</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="membaca-file-ts-dataset">
 <h2>Membaca File.ts(Dataset)<a class="headerlink" href="#membaca-file-ts-dataset" title="Link to this heading">#</a></h2>
@@ -528,11 +548,40 @@ Korelasi dengan Data Lain: Panggilan paus dikorelasikan dengan data visual (peng
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== INFORMASI DATASET ===
-Jumlah data TRAIN : 8941
+Jumlah data TRAIN : 9324
 Jumlah data TEST  : 1962
 Panjang time series : 4000
 </pre></div>
 </div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Jumlah data</span>
+<span class="n">train_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">test_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TRAIN&#39;</span><span class="p">,</span> <span class="s1">&#39;TEST&#39;</span><span class="p">]</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_count</span><span class="p">,</span> <span class="n">test_count</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Jumlah Data TRAIN dan TEST&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Jumlah Instance&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Dataset&quot;</span><span class="p">)</span>
+
+<span class="c1"># Menampilkan nilai di atas batang</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">counts</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/439d4916c8b5ad6f81b84c32b5a16baea5f9888acebad7f8a8c29b919504ed6c.png" src="_images/439d4916c8b5ad6f81b84c32b5a16baea5f9888acebad7f8a8c29b919504ed6c.png" />
 </div>
 </div>
 </section>
@@ -604,6 +653,56 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
 </ul>
 <p>Ini berarti setiap kelas memiliki persentase yang sama (50%) di dalam data uji. Keseimbangan ini sangat ideal untuk evaluasi, karena metrik kinerja model (seperti akurasi) akan mencerminkan kemampuan model dalam memprediksi kedua kelas secara adil, tanpa dipengaruhi oleh dominasi jumlah sampel.</p>
 </section>
+<section id="visualisasi-distribusi-kelas-train">
+<h2>Visualisasi Distribusi kelas(TRAIN)<a class="headerlink" href="#visualisasi-distribusi-kelas-train" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">train_dist</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">train_dist</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">train_dist</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi Kelas pada Data TRAIN&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Kelas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Jumlah Data&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_dist</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/310d04c221f7f6f002e4c952d5d6ba9c98286793c52c4180abca5bb9131ce08c.png" src="_images/310d04c221f7f6f002e4c952d5d6ba9c98286793c52c4180abca5bb9131ce08c.png" />
+</div>
+</div>
+</section>
+<section id="visualisasi-distribusi-kelas-test">
+<h2>Visualisasi Distribusi kelas(TEST)<a class="headerlink" href="#visualisasi-distribusi-kelas-test" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_dist</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">test_dist</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">test_dist</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribusi Kelas pada Data TEST&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Kelas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Jumlah Data&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_dist</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/48744bc0dc7e12f248f3849269726ab60c4117331e30ef661da5518d680ee566.png" src="_images/48744bc0dc7e12f248f3849269726ab60c4117331e30ef661da5518d680ee566.png" />
+</div>
+</div>
+</section>
 <section id="visualisasi-1-contoh-time-series">
 <h2>Visualisasi 1 Contoh Time Series<a class="headerlink" href="#visualisasi-1-contoh-time-series" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -624,7 +723,31 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
 <img alt="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" src="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" />
 </div>
 </div>
-<p>Penjelasan amplitudo suara</p>
+</section>
+<section id="statistik-nilai-amplitudo">
+<h2>Statistik Nilai Amplitudo<a class="headerlink" href="#statistik-nilai-amplitudo" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Statistik Nilai Amplitudo ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min  : </span><span class="si">{</span><span class="n">all_values</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max  : </span><span class="si">{</span><span class="n">all_values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean : </span><span class="si">{</span><span class="n">all_values</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std  : </span><span class="si">{</span><span class="n">all_values</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== Statistik Nilai Amplitudo ===
+Min  : -1.0000
+Max  : 1.0000
+Mean : -0.0000
+Std  : 0.0472
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -684,12 +807,16 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pemahaman-data-awal-rightwhalecalls">Pemahaman data awal (RightWhalecalls)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-library">Import Library</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#membaca-file-ts-dataset">Membaca File.ts(Dataset)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-file-train-test">Load File TRAIN &amp; TEST</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-dasar-dataset">Informasi Dasar Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#informasi-kelas">Informasi Kelas</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-jumlah-data-per-kelas">Distribusi Jumlah Data per Kelas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-train">Visualisasi Distribusi kelas(TRAIN)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-test">Visualisasi Distribusi kelas(TEST)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-1-contoh-time-series">Visualisasi 1 Contoh Time Series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-nilai-amplitudo">Statistik Nilai Amplitudo</a></li>
 </ul>
   </nav></div>
 
