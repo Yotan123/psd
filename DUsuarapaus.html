@@ -60,6 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'DUsuarapaus';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Preprocessing RightWhalecalls" href="Preprocessingsuarapaus.html" />
     <link rel="prev" title="Business Understanding – Klasifikasi Time Series (Right Whale Calls)" href="BUsuarapaus.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -222,6 +223,9 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="BUsuarapaus.html">Business Understanding Right Whale Calls</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Understanding Right Whale Calls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Preprocessingsuarapaus.html">Preprocessing Right Whale Calls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modellingsuarapaus.html">Modelling Menggunakan Arsitektur CNN 1D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploymentsuarapaus.html">Deployment Sistem deteksi suara paus di Streamlit</a></li>
 </ul>
 
     </div>
@@ -426,7 +430,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-jumlah-data-per-kelas">Distribusi Jumlah Data per Kelas</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-train">Visualisasi Distribusi kelas(TRAIN)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-test">Visualisasi Distribusi kelas(TEST)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-1-contoh-time-series">Visualisasi 1 Contoh Time Series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-contoh-time-series-dengan-label-1-terdeteksi-paus">Visualisasi Contoh Time Series dengan label 1(terdeteksi paus)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-contoh-time-series-dengan-label-0-tidak-terdeteksi-paus">Visualisasi Contoh Time Series dengan label 0(tidak terdeteksi paus)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-nilai-amplitudo">Statistik Nilai Amplitudo</a></li>
 </ul>
             </nav>
@@ -597,7 +602,7 @@ Panjang time series : 4000
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah kelas unik : 2
-Daftar kelas : {&#39;1&#39;, &#39;0&#39;}
+Daftar kelas : {&#39;0&#39;, &#39;1&#39;}
 </pre></div>
 </div>
 </div>
@@ -625,7 +630,7 @@ Daftar kelas : {&#39;1&#39;, &#39;0&#39;}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Distribusi Kelas TRAIN:
-Counter({&#39;1&#39;: 5467, &#39;0&#39;: 3474})
+Counter({&#39;1&#39;: 5467, &#39;0&#39;: 3857})
 
 Distribusi Kelas TEST:
 Counter({&#39;1&#39;: 981, &#39;0&#39;: 981})
@@ -702,8 +707,8 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
 </div>
 </div>
 </section>
-<section id="visualisasi-1-contoh-time-series">
-<h2>Visualisasi 1 Contoh Time Series<a class="headerlink" href="#visualisasi-1-contoh-time-series" title="Link to this heading">#</a></h2>
+<section id="visualisasi-contoh-time-series-dengan-label-1-terdeteksi-paus">
+<h2>Visualisasi Contoh Time Series dengan label 1(terdeteksi paus)<a class="headerlink" href="#visualisasi-contoh-time-series-dengan-label-1-terdeteksi-paus" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -720,6 +725,30 @@ Berbeda dengan data latih, data yang digunakan untuk pengujian menunjukkan kesei
 </div>
 <div class="cell_output docutils container">
 <img alt="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" src="_images/a899ebbcad14c0b33aa3ff5801d10d71c24eab2d2c418b9d1c34268dc51ca069.png" />
+</div>
+</div>
+</section>
+<section id="visualisasi-contoh-time-series-dengan-label-0-tidak-terdeteksi-paus">
+<h2>Visualisasi Contoh Time Series dengan label 0(tidak terdeteksi paus)<a class="headerlink" href="#visualisasi-contoh-time-series-dengan-label-0-tidak-terdeteksi-paus" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Cari index pertama dengan label &#39;0&#39; (string)</span>
+<span class="n">idx_no_call</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">idx_no_call</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Contoh Time Series - Label: 0 (No Call / Bukan Paus)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time Index&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Amplitude&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/445e383d71af53df53a95d5bf6d1ba49e898750737d0fda8950cea844a3f6fbb.png" src="_images/445e383d71af53df53a95d5bf6d1ba49e898750737d0fda8950cea844a3f6fbb.png" />
 </div>
 </div>
 </section>
@@ -789,6 +818,15 @@ Std  : 0.0472
         <p class="prev-next-title">Business Understanding – Klasifikasi Time Series (Right Whale Calls)</p>
       </div>
     </a>
+    <a class="right-next"
+       href="Preprocessingsuarapaus.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Preprocessing RightWhalecalls</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -814,7 +852,8 @@ Std  : 0.0472
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-jumlah-data-per-kelas">Distribusi Jumlah Data per Kelas</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-train">Visualisasi Distribusi kelas(TRAIN)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-distribusi-kelas-test">Visualisasi Distribusi kelas(TEST)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-1-contoh-time-series">Visualisasi 1 Contoh Time Series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-contoh-time-series-dengan-label-1-terdeteksi-paus">Visualisasi Contoh Time Series dengan label 1(terdeteksi paus)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-contoh-time-series-dengan-label-0-tidak-terdeteksi-paus">Visualisasi Contoh Time Series dengan label 0(tidak terdeteksi paus)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-nilai-amplitudo">Statistik Nilai Amplitudo</a></li>
 </ul>
   </nav></div>
